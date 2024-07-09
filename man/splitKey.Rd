@@ -58,5 +58,4 @@ microbenchmark( # speed O(n)
  splitKey(X, split = ',', assign2parent = FALSE))
 }
 
-
 }

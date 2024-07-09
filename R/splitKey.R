@@ -55,8 +55,6 @@
 #'  splitKey(X, split = ',', assign2parent = FALSE))
 #' }
 #' 
-#' 
-#' @importFrom ThomasJeffersonUniv trimws_
 #' @export
 splitKey <- function(
     x, keys = xkeys, 
