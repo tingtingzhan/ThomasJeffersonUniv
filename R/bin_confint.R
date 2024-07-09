@@ -83,8 +83,21 @@ bin_confint_ <- function(x, n, level = .95, alternative = c('two.sided', 'less',
 
 
 
-
-
+#' @title Format Clopper-Pearson Exact Binomial Confidence Interval
+#' 
+#' @description
+#' ..
+#' 
+#' @param ... see function [bin_confint_]
+#' 
+#' @param count.name (optional) \link[base]{character} scalar
+#' 
+#' @returns
+#' Function [format_bin_confint_] returns a \link[base]{character}
+#' \link[base]{vector} when argument `count.name` is \link[base]{missing};
+#' otherwise, a \link[base]{noquote} \link[base]{character} \link[base]{matrix} is returned.
+#' 
+#' @export
 format_bin_confint_ <- function(..., count.name) {
   
   cint <- bin_confint_(...)
