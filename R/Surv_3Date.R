@@ -47,10 +47,18 @@ Surv_3Date <- function(
     message('`start` date later than `stop` date\nsee `subset_(, subset = ', start_nm, ' > ', stop_nm, ')`')
     return(invisible()) # dont stop; inspect multiple definition
   }
+  if (any(unclass(stop2) == 0, na.rm = TRUE)) {
+    message('`start` date same as `stop` date\nsee `subset_(, subset = ', start_nm, ' == ', stop_nm, ')`')
+    return(invisible()) # dont stop; inspect multiple definition
+  }
   
   censor2 <- censor - start # recycled; may have NA
   if (any(unclass(censor2) < 0, na.rm = TRUE)) {
     message('`start` date later than `censor` date\nsee `subset_(, subset = ', start_nm, ' > ', censor_nm, ')`')
+    return(invisible()) # dont stop; inspect multiple definition
+  }
+  if (any(unclass(censor2) == 0, na.rm = TRUE)) {
+    message('`start` date same as `censor` date\nsee `subset_(, subset = ', start_nm, ' == ', censor_nm, ')`')
     return(invisible()) # dont stop; inspect multiple definition
   }
   
