@@ -9,6 +9,10 @@
 #' @param duplicated_rm \link[base]{logical} scalar, whether to remove duplicated *rows*.
 #' Default `FALSE`.
 #' 
+#' @param date_pattern regular expression \link[base]{regex},
+#' pattern of column names for \link[base]{Dates}.
+#' Default `^Date_`.
+#' 
 #' @param ... additional parameters, currently not in use
 #' 
 #' @details
@@ -18,7 +22,7 @@
 #' }
 #' 
 #' @export
-inspect <- function(x, duplicated_rm = TRUE, ...) {
+inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
   
   x <- as.data.frame(x) # ?tibble:::as.data.frame.tbl_df, for returned object of ?readxl::read_excel
   
@@ -37,7 +41,7 @@ inspect <- function(x, duplicated_rm = TRUE, ...) {
     } else message('')
   }
   
-  x <- inspect_Date(x)
+  inspect_Date(x, pattern = date_pattern)
   
   # x <- inspect_POSIXct(x)
   
@@ -55,68 +59,57 @@ inspect <- function(x, duplicated_rm = TRUE, ...) {
 
 
 
-# Function \link[lubridate]{is.Date} is much slower than \link[base]{inherits}.
 
-
-# @param subj_id \link[base]{integer} scalar or \link[base]{vector}, subject column of `x`.
-# 
-# [inspect_Date] any `'^Date_'` columns read as \link[base]{character} or \link[base]{numeric}
-inspect_Date <- function(x, subj_id = 1L) {
+not_Date <- function(x) {
+  if (is.factor(x)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
+  n <- length(x)
+  ret <- logical(length = n) # all-FALSE
+  if (!n) return(ret)
   
-  subj_nm <- names(x)[subj_id]
-  cls <- class1List(x)
-  if (length(cls$factor)) stop('Since R 4.0.0, default stringsAsFactors = FALSE')
+  if (inherits(x, what = c('Date', 'POSIXt'))) return(ret)
   
-  # could be 'Date' or 'POSIXct'
-  if (length(cls$character)) {
-    .chr_Date <- startsWith(cls$character, prefix = 'Date_')
-    .chr_DateTime <- startsWith(cls$character, prefix = 'DateTime_') 
-    .chr <- cls$character[.chr_Date | .chr_DateTime]
-    for (ichr in .chr) { # len-0 `.chr` compatible
-      ilv <- unique.default(x[[ichr]])
-      id_not_dbl <- !type2dbl(ilv)
-      if (any(id_not_dbl)) stop('Remove level(s) ', sQuote(ilv[id_not_dbl]), ' in ', sQuote(ichr))
-      
-      # all below in this `for`: not longer needed (really?)
-      
-      id_chr <- not_numeric(ilv)
-      id_num <- type2dbl(ilv) & !is.na(ilv)
-      
-      # currently only allow '%m/%d/%y' '%m/%d/%Y' separated by '; |;|, |,'.  1st Date will be retained.
-      #iv1 <- .strsplit_id(trimws_(ilv[id_chr]), id = 1L, split = '; |;|, |,') 
-      iv1 <- vapply(strsplit(trimws_(ilv[id_chr]), split = '; |;|, |,', fixed = FALSE), FUN = `[`, i = 1L, FUN.VALUE = '')
-      #id_start_yr2 <- grepl(pattern = '^[0-9]{2}/|^[0-9]{2}-', x = iv1) # '11/24/15' will be ambiguous!!!
-      #id_start_yr4 <- grepl(pattern = '^[0-9]{4}/|^[0-9]{4}-', x = iv1)
-      id_end_yr2 <- grepl(pattern = '/[0-9]{2}$|-[0-9]{2}$', x = iv1) # consider replacing '0-9' with '\\d'
-      id_end_yr4 <- grepl(pattern = '/[0-9]{4}$|-[0-9]{4}$', x = iv1)
-      #id_error <- #!id_start_yr2 & !id_start_yr4 & !id_end_yr2 & !id_end_yr4
-      id_error <- !id_end_yr2 & !id_end_yr4
-      if (any(id_error)) {
-        print.data.frame(x[which(id_chr)[id_error], c(subj_nm, ichr)], row.names = FALSE)
-        stop('Check error above!')
-      }
-      
-      ival_new <- .Date(rep(NA_integer_, times = length(ilv)))
-      #if (any(id_start_yr2)) ival_new[id_chr][id_start_yr2] <- as.Date.character(iv1[id_start_yr2], tryFormats = c('%y/%m/%d', '%y-%m-%d'))
-      #if (any(id_start_yr4)) ival_new[id_chr][id_start_yr4] <- as.Date.character(iv1[id_start_yr4], tryFormats = c('%Y/%m/%d', '%Y-%m-%d'))
-      if (any(id_end_yr2)) ival_new[id_chr][id_end_yr2] <- as.Date.character(iv1[id_end_yr2], tryFormats = c('%m/%d/%y', '%m-%d-%y'))
-      if (any(id_end_yr4)) ival_new[id_chr][id_end_yr4] <- as.Date.character(iv1[id_end_yr4], tryFormats = c('%m/%d/%Y', '%m-%d-%Y'))
-      ival_new[id_num] <- as.Date.numeric(as.double(ilv[id_num]), origin = '1899-12-30')
-      x[[ichr]] <- ival_new
-    }
-    if (length(.chr)) message('Only the 1st date is retained in columns ', sQuote(.chr))
-  }
-
-  if (length(cls$numeric)) {
-    .num_Date <- startsWith(cls$numeric, prefix = 'Date_')
-    .num <- cls$numeric[.num_Date]
-    for (i in .num) { # len-0 `.num` compatible
-      eval(call(name = 'subset_', quote(x), subset = call(name = '<', as.symbol(i), 40000), select = quote(subj_nm)))
-    }
+  if (is.logical(x)) stop('input is `logical`')
+  
+  if (is.character(x)) {
+    x <- trimws_(x)
+    #as.Date.character(x, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y'))
+    stop('debug here!!')
   }
   
-  return(x)
+  if (is.numeric(x)) {
+    # return() # ???
+    # x < 40000 # my old code
+    # as.Date.numeric(x, origin = '1899-12-30')
+    stop('debug here!!')
+  }
   
+  stop('shouldnt come here')
+}
+
+# ?lubridate::is.Date is much slower than ?base::inherits
+
+
+inspect_Date <- function(x, pattern) {
+  
+  if (!length(pattern)) return(invisible())
+  
+  nm <- names(x)
+  cid <- grepl(pattern = pattern, x = nm)
+  if (!any(cid)) {
+    message('No column matches date pattern ', sQuote(pattern))
+    return(x)
+  }
+  
+  rid0 <- lapply(x[cid], FUN = not_Date)
+  rid <- Reduce(f = `|`, x = rid0)
+  if (any(rid)) {
+    message('Check these non-Date entries:')
+    print(x[rid, nm[1L], drop = FALSE])
+    stop()
+  }
+  
+  return(invisible())
+
 }
 
 
@@ -270,9 +263,7 @@ type2dbl <- function(x) { # element-wise
 #' not_numeric(c('1.9', '1.1.3', Inf, NA))
 #' @export
 not_numeric <- function(x) {
-  
   if (is.factor(x)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
-  
   n <- length(x)
   ret <- logical(length = n) # all-FALSE
   if (!n) return(ret)

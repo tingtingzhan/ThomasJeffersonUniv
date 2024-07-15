@@ -4,13 +4,17 @@
 \alias{inspect}
 \title{Data Inspection}
 \usage{
-inspect(x, duplicated_rm = TRUE, ...)
+inspect(x, duplicated_rm = TRUE, date_pattern = "^Date_", ...)
 }
 \arguments{
 \item{x}{\link[base]{data.frame}}
 
 \item{duplicated_rm}{\link[base]{logical} scalar, whether to remove duplicated \emph{rows}.
 Default \code{FALSE}.}
+
+\item{date_pattern}{regular expression \link[base]{regex},
+pattern of column names for \link[base]{Dates}.
+Default \verb{^Date_}.}
 
 \item{...}{additional parameters, currently not in use}
 }
