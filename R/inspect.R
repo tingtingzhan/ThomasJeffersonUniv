@@ -47,12 +47,13 @@ inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
   
   x[] <- lapply(x, FUN = force_bool)
   
-  cls <- class1List(x)
-  cls_print <- lapply(cls, FUN = function(i) {
+  # copy tzh::class1List
+  cl1 <- vapply(x, FUN = function(x) class(x)[1L], FUN.VALUE = '', USE.NAMES = TRUE)
+  cls <- lapply(split.default(names(cl1), f = factor(cl1)), FUN = function(i) {
     if (length(i) < 6L) return(i)
     c(i[1:6], 'etc.')
   })
-  cat(format_named(cls_print), sep = '\n')
+  cat(format_named(cls), sep = '\n')
   return(x)
 }
 
