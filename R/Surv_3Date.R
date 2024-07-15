@@ -44,22 +44,20 @@ Surv_3Date <- function(
   
   stop2 <- stop - start # recycled; may have NA
   if (any(unclass(stop2) < 0, na.rm = TRUE)) {
-    message('`start` date later than `stop` date\nsee `subset_(, subset = ', start_nm, ' > ', stop_nm, ')`')
+    message('\U0001f6d1 ERROR! `start` date later than `stop` date\nsee `subset_(, subset = ', start_nm, ' > ', stop_nm, ')`')
     return(invisible()) # dont stop; inspect multiple definition
   }
   if (any(unclass(stop2) == 0, na.rm = TRUE)) {
-    message('`start` date same as `stop` date\nsee `subset_(, subset = ', start_nm, ' == ', stop_nm, ')`')
-    return(invisible()) # dont stop; inspect multiple definition
+    warning('`start` date same as `stop` date\nsee `subset_(, subset = ', start_nm, ' == ', stop_nm, ')`')
   }
   
   censor2 <- censor - start # recycled; may have NA
   if (any(unclass(censor2) < 0, na.rm = TRUE)) {
-    message('`start` date later than `censor` date\nsee `subset_(, subset = ', start_nm, ' > ', censor_nm, ')`')
+    message('\U0001f6d1 ERROR! `start` date later than `censor` date\nsee `subset_(, subset = ', start_nm, ' > ', censor_nm, ')`')
     return(invisible()) # dont stop; inspect multiple definition
   }
   if (any(unclass(censor2) == 0, na.rm = TRUE)) {
-    message('`start` date same as `censor` date\nsee `subset_(, subset = ', start_nm, ' == ', censor_nm, ')`')
-    return(invisible()) # dont stop; inspect multiple definition
+    warning('`start` date same as `censor` date\nsee `subset_(, subset = ', start_nm, ' == ', censor_nm, ')`')
   }
   
   units <- match.arg(units, choices = names(timeUnits()))
