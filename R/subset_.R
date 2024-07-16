@@ -94,6 +94,6 @@ subset_ <- function(
     x[rid, var_sel, drop = FALSE],
     check.names = FALSE)
   attr(ret, which = 'vline') <- 1L
-  attr(ret, which = 'jhighlight') <- var_subset
+  attr(ret, which = 'jhighlight') <- setdiff(var_subset, avoid)
   return(ret)
 }
