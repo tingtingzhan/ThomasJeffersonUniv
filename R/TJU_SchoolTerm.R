@@ -3,7 +3,7 @@
 #' 
 #' @description ..
 #' 
-#' @param x \link[base]{Date} object
+#' @param x a \link[base]{Date} object
 #' 
 #' @returns 
 #' \link{TJU_SchoolTerm} returns a \link[base]{character} \link[base]{vector}

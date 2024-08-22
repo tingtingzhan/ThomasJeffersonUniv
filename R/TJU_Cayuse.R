@@ -15,12 +15,12 @@
 #' 
 #' @details 
 #' \itemize{
-#' \item {go to `https://jefferson.cayuse424.com/sp/index.cfm`}
+#' \item {go to `https://jefferson.cayuse424.com/sp/index.cfm` in Chrome (Safari has bugs)}
 #' \item {My Proposals -> Submitted Proposals. 
 #'   Lower-right corner of screen, 'Export to CSV'.
 #'   Downloaded file has name pattern `'^proposals_.*\\.csv'`}
 #' \item {My Awards -> Awards (*not* 'Active Projects').
-#'   Lower-right corner of screen, 'View All', then 'Export to CSV'.
+#'   Lower-right corner of screen, 'Export to CSV'.
 #'   Downloaded file has name pattern `'^Awards_.*\\.csv'`}
 #' \item {My Awards -> Awards.  Click into each project, under 'People' tab to find my 
 #'   'Sponsored Effort'}
@@ -35,7 +35,7 @@
 #' aggregateAwards()
 #' viewAward()
 #' viewProposal()
-#' award2LaTeX()
+#' # award2LaTeX() # bug to fix
 #' }
 #' 
 #' @name TJU_Cayuse
@@ -142,7 +142,11 @@ viewProposal <- function(path = '~/Downloads', fiscal.year = year(Sys.Date())) {
   }
   
   # copy to Interfolio
-  view_by_row(proposal[c('Submitted_Term', 'Project.Name', 'Sponsor', 'Prop.No', 'My.Role', 'Lead.PI', 'Status')])
+  view_by_row(proposal[c(
+    'Status', 'Submitted_Term', 
+    'Project.Name', 'Sponsor', 
+    # 'Prop.No', 
+    'My.Role', 'Lead.PI')])
   return(invisible(proposal))
 }
 
@@ -154,7 +158,10 @@ viewProposal <- function(path = '~/Downloads', fiscal.year = year(Sys.Date())) {
 viewAward <- function(path = '~/Downloads') {
   awards <- read.csv(file = file.path(path, 'aggregatedAwards.csv'))
   # copy to Interfolio
-  view_by_row(awards[c('Award.No.', 'Project.Title', 'Lead.PI', 'Sponsor', 'Award.Period', 'Status', 'Effort')])
+  view_by_row(awards[c(
+    # 'Award.No.', 
+    'Status', 
+    'Project.Title', 'Lead.PI', 'Sponsor', 'Award.Period', 'Effort')])
   return(invisible())
 }
 

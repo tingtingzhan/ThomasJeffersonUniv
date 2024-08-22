@@ -30,12 +30,12 @@ Print out grant and effort from Cayuse.
 }
 \details{
 \itemize{
-\item {go to \verb{https://jefferson.cayuse424.com/sp/index.cfm}}
+\item {go to \verb{https://jefferson.cayuse424.com/sp/index.cfm} in Chrome (Safari has bugs)}
 \item {My Proposals -> Submitted Proposals.
 Lower-right corner of screen, 'Export to CSV'.
 Downloaded file has name pattern \code{'^proposals_.*\\\\.csv'}}
 \item {My Awards -> Awards (\emph{not} 'Active Projects').
-Lower-right corner of screen, 'View All', then 'Export to CSV'.
+Lower-right corner of screen, 'Export to CSV'.
 Downloaded file has name pattern \code{'^Awards_.*\\\\.csv'}}
 \item {My Awards -> Awards.  Click into each project, under 'People' tab to find my
 'Sponsored Effort'}
@@ -50,7 +50,7 @@ if (FALSE) {
 aggregateAwards()
 viewAward()
 viewProposal()
-award2LaTeX()
+# award2LaTeX() # bug to fix
 }
 
 }

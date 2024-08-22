@@ -41,7 +41,41 @@ inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
     } else message('')
   }
   
-  inspect_Date(x, pattern = date_pattern)
+  #inspect_Date(x, pattern = date_pattern) # OLD
+  
+  nm <- names(x)
+  
+  x[] <- lapply(x, FUN = function(i) {
+    if (is.character(i)) {
+      i <- trimws_(i)
+      i[!nzchar(i)] <- NA_character_
+      return(i)
+    }
+    return(i)
+  })
+  
+  if (length(date_pattern)) {
+    cid <- grepl(pattern = date_pattern, x = nm)
+    if (any(cid)) {
+      x[cid] <- lapply(nm[cid], FUN = function(inm) {
+        # (inm = nm[cid][3L])
+        i <- x[[inm]]
+        if (is.factor(i)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
+        if (inherits(i, what = c('Date', 'POSIXt'))) return(i)
+        if (is.logical(i)) stop('`logical` cannot be converted to `Date`')
+        if (is.numeric(i)) stop(sQuote(inm), ' is `numeric`')
+        if (is.character(i)) {
+          tmp <- tryCatch(as.Date.character(i, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y', '%Y-%m-%d')), error = identity)
+          if (inherits(tmp, what = 'error')) {
+            tmp$message <- paste0(sQuote(inm), ': ', tmp$message)
+            stop(tmp)
+          }
+          tmp
+        }
+        stop('shouldnt come here')
+      })
+    } # else do nothing
+  } # else do nothing
   
   # x <- inspect_POSIXct(x)
   
@@ -69,12 +103,12 @@ not_Date <- function(x) {
   
   if (inherits(x, what = c('Date', 'POSIXt'))) return(ret)
   
-  if (is.logical(x)) stop('input is `logical`')
+  if (is.logical(x)) stop('`logical` cannot be converted to `Date`')
   
   if (is.character(x)) {
     x <- trimws_(x)
-    #as.Date.character(x, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y'))
-    stop('debug here!!')
+    x[!nzchar(x)] <- NA_character_
+    return(as.Date.character(x, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y')))
   }
   
   if (is.numeric(x)) {

@@ -7,7 +7,7 @@
 TJU_SchoolTerm(x)
 }
 \arguments{
-\item{x}{\link[base]{Date} object}
+\item{x}{a \link[base]{Date} object}
 }
 \value{
 \link{TJU_SchoolTerm} returns a \link[base]{character} \link[base]{vector}

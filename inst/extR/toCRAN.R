@@ -5,7 +5,7 @@
   # 'format_named' # now lives only in \pkg{ThomasJeffersonUniv}
 #), '.R')), to = './R', overwrite = TRUE)
 
-devtools::load_all('../packageAdvanced')
+library(adv.tzh) # devtools::install_github('tingtingzhan/adv.tzh')
 removeLocalPackage('ThomasJeffersonUniv')
 updateDESCRIPTION('.')
 checkDocument('.')
