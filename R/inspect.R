@@ -41,8 +41,6 @@ inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
     } else message('')
   }
   
-  #inspect_Date(x, pattern = date_pattern) # OLD
-  
   nm <- names(x)
   
   x[] <- lapply(x, FUN = function(i) {
@@ -61,17 +59,30 @@ inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
         # (inm = nm[cid][3L])
         i <- x[[inm]]
         if (is.factor(i)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
-        if (inherits(i, what = c('Date', 'POSIXt'))) return(i)
         if (is.logical(i)) stop('`logical` cannot be converted to `Date`')
         if (is.numeric(i)) stop(sQuote(inm), ' is `numeric`')
+        
+        if (inherits(i, what = c('Date'))) return(i)
+        
+        if (inherits(i, what = c('POSIXt'))) {
+          i0 <- i
+          if (inherits(i, what = 'POSIXct')) i <- as.POSIXlt.POSIXct(i)
+          i_ <- unclass(i)
+          if (any(i_$hour != 0, na.rm = TRUE)) stop('non-zero hour: ', sQuote(inm))
+          if (any(i_$min != 0, na.rm = TRUE)) stop('non-zero min: ', sQuote(inm))
+          if (any(i_$sec != 0, na.rm = TRUE)) stop('non-zero sec: ', sQuote(inm))
+          return(as.Date.POSIXlt(i0))
+        }
+        
         if (is.character(i)) {
           tmp <- tryCatch(as.Date.character(i, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y', '%Y-%m-%d')), error = identity)
           if (inherits(tmp, what = 'error')) {
             tmp$message <- paste0(sQuote(inm), ': ', tmp$message)
             stop(tmp)
           }
-          tmp
+          return(tmp)
         }
+        
         stop('shouldnt come here')
       })
     } # else do nothing
@@ -124,28 +135,6 @@ not_Date <- function(x) {
 # ?lubridate::is.Date is much slower than ?base::inherits
 
 
-inspect_Date <- function(x, pattern) {
-  
-  if (!length(pattern)) return(invisible())
-  
-  nm <- names(x)
-  cid <- grepl(pattern = pattern, x = nm)
-  if (!any(cid)) {
-    message('No column matches date pattern ', sQuote(pattern))
-    return(x)
-  }
-  
-  rid0 <- lapply(x[cid], FUN = not_Date)
-  rid <- Reduce(f = `|`, x = rid0)
-  if (any(rid)) {
-    message('Check these non-Date entries:')
-    print(x[rid, nm[1L], drop = FALSE])
-    stop()
-  }
-  
-  return(invisible())
-
-}
 
 
 
