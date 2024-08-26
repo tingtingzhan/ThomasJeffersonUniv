@@ -1,17 +1,18 @@
 
 
 
-#' @title Hexavigesimal (Base 26L) and Excel Columns
+#' @title Excel-Style Hexavigesimal (A to Z)
 #' 
 #' @description
-#' Convert between decimal, hexavigesimal in C-style, and hexavigesimal in Excel-style.
+#' Convert between decimal, C-style hexavigesimal (`0` to `9`, `A` to `P`), and Excel-style hexavigesimal (`A` to `Z`).
 #' 
-#' @param x \link[base]{character} scalar or \link[base]{vector}, 
+#' @param x \link[base]{integer} scalar or \link[base]{vector} for function [int2Excel]. 
+#' \link[base]{character} scalar or \link[base]{vector} for functions [Excel2C] and [Excel2int],
 #' which consists of (except missingness)
 #' only letters `A` to `Z` and `a` to `z`.
 #'  
 #' @details
-#' Convert between decimal, hexavigesimal in C-style, and hexavigesimal in Excel-style.
+#' Convert between decimal, C-style hexavigesimal, and Excel-style hexavigesimal.
 #' 
 #' \tabular{lrrrrrrrrrr}{
 #' Decimal \tab 0 \tab 1 \tab 25 \tab 26 \tab 27 \tab 51 \tab 52 \tab 676 \tab 702 \tab 703 \cr
@@ -20,12 +21,20 @@
 #' }
 #' 
 #' Function [Excel2C] converts 
-#' from hexavigesimal in Excel-style 
-#' to hexavigesimal in C-style.
+#' Excel-style hexavigesimal (`A` to `Z`)
+#' to C-style hexavigesimal (`0` to `9`, `A` to `P`).
 #' 
 #' Function [Excel2int] converts 
-#' from hexavigesimal in Excel-style 
+#' Excel-style hexavigesimal (`A` to `Z`)
 #' to decimal, using function [Excel2C] and \link[base]{strtoi}.
+#' 
+#' Function [int2Excel] converts decimal to 
+#' Excel-style hexavigesimal (`A` to `Z`).  
+#' This function works very differently from R's solution to 
+#' hexadecimal and decimal conversions. Function \link[base]{as.hexmode} returns an object of \link[base]{typeof} \link[base]{integer}.
+#' Then function \link[base]{format.hexmode}, i.e., the workhorse of function \link[base]{print.hexmode},
+#' relies on `%x` (hexadecimal) format option of function \link[base]{sprintf}.
+#' 
 #' 
 #' @returns 
 #' 
@@ -35,28 +44,36 @@
 #' Function [Excel2C] returns a 
 #' \link[base]{character} \link[base]{vector}.
 #' 
+#' Function [int2Excel] returns a 
+#' \link[base]{integer} \link[base]{vector}.
+#' 
 #' @references 
 #' \url{http://mathworld.wolfram.com/Hexavigesimal.html}
 #' 
 #' @examples 
+#' # table in documentation
 #' int1 = c(NA_integer_, 1L, 25L, 26L, 27L, 51L, 52L, 676L, 702L, 703L)
 #' Excel1 = c(NA_character_, 'A', 'Y', 'Z', 'AA', 'AY', 'AZ', 'YZ', 'ZZ', 'AAA')
 #' C1 = c(NA_character_, '1', 'P', '10', '11', '1P', '20', '100', '110', '111')
-#' stopifnot(identical(int1, Excel2int(Excel1)), identical(int1, strtoi(C1, base = 26L)))
+#' stopifnot(
+#'  identical(int1, Excel2int(Excel1)), 
+#'  identical(int1, strtoi(C1, base = 26L)),
+#'  identical(int2Excel(int1), Excel1)
+#' )
 #' 
+#' # another example
 #' int2 = c(NA_integer_, 1L, 4L, 19L, 37L, 104L, 678L)
 #' Excel2 = c(NA_character_, 'a', 'D', 's', 'aK', 'cZ', 'Zb')
-#' stopifnot(identical(int2, Excel2int(Excel2)))
 #' Excel2C(Excel2)
-#' 
-#' head(swiss[Excel2int('A')])
+#' stopifnot(
+#'  identical(int2, Excel2int(Excel2)),
+#'  identical(int2Excel(int2), toupper(Excel2))
+#' )
 #' @name hexavigesimalExcel
-#' @seealso \link[base]{as.hexmode}
 #' @export
 Excel2int <- function(x) {
   xok <- !is.na(x)
-  x <- Excel2C(x)
-  z <- strtoi(x, base = 26L)
+  z <- strtoi(x = Excel2C(x), base = 26L)
   if (any(is.na(z[xok]) | z[xok] < 0)) stop('should not happen')
   return(z)
 }
@@ -95,6 +112,26 @@ Excel2C <- function(x) {
   }
   
   ret[xok] <- vapply(x2, FUN = excel2c, FUN.VALUE = '')
+  return(ret)
+}
+
+
+#' @name hexavigesimalExcel
+#' @export
+int2Excel <- function(x) {
+  xok <- !is.na(x)
+  x_ <- x[xok]
+  ret <- rep(NA_character_, times = length(x))
+  ret_ <- character(length = length(x_))
+  repeat {
+    id <- x_ %% 26
+    id[(x_ != 0L) & (id == 0L)] <- 26L # because I had `-1L`
+    j <- (id == 0L)
+    if (all(j)) break
+    ret_[!j] <- paste0(LETTERS[id[!j]], ret_[!j])
+    x_ <- pmax(0L, (x_ - 1L)) %/% 26 # -1L is so smart!!!
+  }
+  ret[xok] <- ret_
   return(ret)
 }
 
