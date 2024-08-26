@@ -65,13 +65,12 @@ inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
         if (inherits(i, what = c('Date'))) return(i)
         
         if (inherits(i, what = c('POSIXt'))) {
-          i0 <- i
           if (inherits(i, what = 'POSIXct')) i <- as.POSIXlt.POSIXct(i)
           i_ <- unclass(i)
           if (any(i_$hour != 0, na.rm = TRUE)) stop('non-zero hour: ', sQuote(inm))
           if (any(i_$min != 0, na.rm = TRUE)) stop('non-zero min: ', sQuote(inm))
           if (any(i_$sec != 0, na.rm = TRUE)) stop('non-zero sec: ', sQuote(inm))
-          return(as.Date.POSIXlt(i0))
+          return(as.Date.POSIXlt(i))
         }
         
         if (is.character(i)) {
