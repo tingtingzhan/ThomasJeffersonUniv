@@ -2,36 +2,35 @@
 #' @title Divide Numeric Into Intervals
 #' 
 #' @description 
-#' Divide numeric into intervals.
-#' An Alternative to \link[base]{cut.default}.
+#' Divide numeric into intervals; an alternative to function \link[base]{cut.default}.
 #' 
 #' @param x \link[base]{integer}, \link[base]{numeric}, \link[base]{difftime}, \link[base]{Date},
 #' \link[base]{POSIXct} \link[base]{vector} or \link[base]{matrix}.
 #' 
 #' @param breaks \link[base]{vector} of the same \link[base]{class} as `x`. 
-#' `-Inf` and `Inf` will be automatically added to `breaks`
+#' `-Inf` and `Inf` will be automatically added
 #' 
 #' @param right \link[base]{logical} scalar, default `TRUE`, 
-#' see \link[base]{cut.default} and \link[base]{.bincode}.
+#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
 #' 
 #' @param include.lowest \link[base]{logical} scalar, default `TRUE`, 
-#' see \link[base]{cut.default} and \link[base]{.bincode}.
+#' see functions \link[base]{cut.default} and \link[base]{.bincode}.
 #' 
 #' @param data.name \link[base]{character} scalar, name of data.
-#' R objects which \link[base]{is.language} are also accepted.
+#' R \link[base]{language} is also accepted.
 #' Default is the argument call of `x`
 #' 
 #' @param ... additional parameters, currently not in use
 #' 
 #' @details 
 #' 
-#' Function [cut_ext] is different from \link[base]{cut.default}, that 
+#' Function [cut_] is different from function \link[base]{cut.default}, that 
 #' \itemize{
 #' \item {More classes of `x` are accepted, see **Arguments**}
 #' \item {`-Inf` and `Inf` are added to `breaks`, 
 #' so that the values outside of `breaks` will be correctly categorized,
-#' instead of returning NA per \link[base]{.bincode}}
-#' \item {More user-friendly factor levels, see helper function [cut_levels]}
+#' instead of returning an `NA_integer` per \link[base]{.bincode}}
+#' \item {More user-friendly \link[base]{factor} \link[base]{levels}, see helper function [cut_levels]}
 #' }
 #' 
 #' 
@@ -40,20 +39,20 @@
 #' x = c(tmp <- c(10, 31, 45, 50, 52, NA, 55, 55, 57, 58.5, 60, 92), rev.default(tmp))
 #' (xm = array(x, dim = c(6L, 4L)))
 #' brk = c(20, 60, 80)
-#' cut_ext(x, breaks = brk)
-#' cut_ext(xm, breaks = brk)
+#' cut_(x, breaks = brk)
+#' cut_(xm, breaks = brk)
 #' 
 #' (x2 = zoo::as.Date.ts(airmiles))
 #' length(x2)
-#' cut_ext(x2, breaks = as.Date(c('1942-01-01', '1950-01-01')))
+#' cut_(x2, breaks = as.Date(c('1942-01-01', '1950-01-01')))
 #' 
 #' x2a = x2
 #' attr(x2a, 'dim') = c(4L, 6L)
-#' cut_ext(x2a, breaks = as.Date(c('1942-01-01', '1950-01-01')))
+#' cut_(x2a, breaks = as.Date(c('1942-01-01', '1950-01-01')))
 #' 
 #' x3 = 0:10
-#' cut_ext(x3, breaks = c(0, 3, 6), right = FALSE)
-#' cut_ext(x3, breaks = c(0, 3, 6), right = TRUE)
+#' cut_(x3, breaks = c(0, 3, 6), right = FALSE)
+#' cut_(x3, breaks = c(0, 3, 6), right = TRUE)
 #' 
 #' if (FALSE) {
 #' # ?base::.bincode much faster than ?base::findInterval
@@ -65,9 +64,9 @@
 #' microbenchmark(findInterval(x, v), .bincode(x, v))
 #' }
 #'  
-#' @name cut_ext  
+#' @name cut_ext
 #' @export
-cut_ext <- function(
+cut_ <- function(
     x, 
     breaks,
     right = TRUE,
@@ -102,23 +101,18 @@ cut_ext <- function(
 
 
 
-#' @rdname cut_ext 
+#' @rdname cut_ext
 #' @examples 
 #' ## Examples on Helper Function cut_levels()
-#' fn <- function(breaks) {
-#'  print(levels(cut.default(numeric(0), breaks = breaks, right = TRUE, include.lowest = TRUE)))
-#'  print(cut_levels(breaks, right = TRUE, include.lowest = TRUE))
-#'  print(levels(cut.default(numeric(0), breaks = breaks, right = FALSE, include.lowest = TRUE)))
-#'  print(cut_levels(breaks, right = FALSE, include.lowest = TRUE))
-#'  print(levels(cut.default(numeric(0), breaks = breaks, right = TRUE, include.lowest = FALSE)))
-#'  print(cut_levels(breaks, right = TRUE, include.lowest = FALSE))
-#'  print(levels(cut.default(numeric(0), breaks = breaks, right = FALSE, include.lowest = FALSE)))
-#'  print(cut_levels(breaks, right = FALSE, include.lowest = FALSE))
-#' }
-#' fn(breaks = 1:4)
-#' fn(breaks = c(-Inf, 1:3, Inf))
-#' set.seed(2259); fn(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
-#' 
+#' foo = function(...) cbind(
+#'  levels(cut.default(numeric(0), ...)),
+#'  cut_levels(...)
+#' )
+#' foo(breaks = 1:4, right = TRUE, include.lowest = TRUE)
+#' foo(breaks = 1:4, right = FALSE, include.lowest = TRUE)
+#' foo(breaks = 1:4, right = TRUE, include.lowest = FALSE)
+#' foo(breaks = 1:4, right = FALSE, include.lowest = FALSE)
+#' set.seed(2259); foo(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
 #' @export
 cut_levels <- function(
     breaks, 

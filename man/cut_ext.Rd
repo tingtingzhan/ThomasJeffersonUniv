@@ -2,10 +2,11 @@
 % Please edit documentation in R/cut_ext.R
 \name{cut_ext}
 \alias{cut_ext}
+\alias{cut_}
 \alias{cut_levels}
 \title{Divide Numeric Into Intervals}
 \usage{
-cut_ext(
+cut_(
   x,
   breaks,
   right = TRUE,
@@ -21,52 +22,51 @@ cut_levels(breaks, right = TRUE, include.lowest = TRUE, data.name = "x")
 \link[base]{POSIXct} \link[base]{vector} or \link[base]{matrix}.}
 
 \item{breaks}{\link[base]{vector} of the same \link[base]{class} as \code{x}.
-\code{-Inf} and \code{Inf} will be automatically added to \code{breaks}}
+\code{-Inf} and \code{Inf} will be automatically added}
 
 \item{right}{\link[base]{logical} scalar, default \code{TRUE},
-see \link[base]{cut.default} and \link[base]{.bincode}.}
+see functions \link[base]{cut.default} and \link[base]{.bincode}.}
 
 \item{include.lowest}{\link[base]{logical} scalar, default \code{TRUE},
-see \link[base]{cut.default} and \link[base]{.bincode}.}
+see functions \link[base]{cut.default} and \link[base]{.bincode}.}
 
 \item{data.name}{\link[base]{character} scalar, name of data.
-R objects which \link[base]{is.language} are also accepted.
+R \link[base]{language} is also accepted.
 Default is the argument call of \code{x}}
 
 \item{...}{additional parameters, currently not in use}
 }
 \description{
-Divide numeric into intervals.
-An Alternative to \link[base]{cut.default}.
+Divide numeric into intervals; an alternative to function \link[base]{cut.default}.
 }
 \details{
-Function \link{cut_ext} is different from \link[base]{cut.default}, that
+Function \link{cut_} is different from function \link[base]{cut.default}, that
 \itemize{
 \item {More classes of \code{x} are accepted, see \strong{Arguments}}
 \item {\code{-Inf} and \code{Inf} are added to \code{breaks},
 so that the values outside of \code{breaks} will be correctly categorized,
-instead of returning NA per \link[base]{.bincode}}
-\item {More user-friendly factor levels, see helper function \link{cut_levels}}
+instead of returning an \code{NA_integer} per \link[base]{.bincode}}
+\item {More user-friendly \link[base]{factor} \link[base]{levels}, see helper function \link{cut_levels}}
 }
 }
 \examples{
 x = c(tmp <- c(10, 31, 45, 50, 52, NA, 55, 55, 57, 58.5, 60, 92), rev.default(tmp))
 (xm = array(x, dim = c(6L, 4L)))
 brk = c(20, 60, 80)
-cut_ext(x, breaks = brk)
-cut_ext(xm, breaks = brk)
+cut_(x, breaks = brk)
+cut_(xm, breaks = brk)
 
 (x2 = zoo::as.Date.ts(airmiles))
 length(x2)
-cut_ext(x2, breaks = as.Date(c('1942-01-01', '1950-01-01')))
+cut_(x2, breaks = as.Date(c('1942-01-01', '1950-01-01')))
 
 x2a = x2
 attr(x2a, 'dim') = c(4L, 6L)
-cut_ext(x2a, breaks = as.Date(c('1942-01-01', '1950-01-01')))
+cut_(x2a, breaks = as.Date(c('1942-01-01', '1950-01-01')))
 
 x3 = 0:10
-cut_ext(x3, breaks = c(0, 3, 6), right = FALSE)
-cut_ext(x3, breaks = c(0, 3, 6), right = TRUE)
+cut_(x3, breaks = c(0, 3, 6), right = FALSE)
+cut_(x3, breaks = c(0, 3, 6), right = TRUE)
 
 if (FALSE) {
 # ?base::.bincode much faster than ?base::findInterval
@@ -79,18 +79,13 @@ microbenchmark(findInterval(x, v), .bincode(x, v))
 }
  
 ## Examples on Helper Function cut_levels()
-fn <- function(breaks) {
- print(levels(cut.default(numeric(0), breaks = breaks, right = TRUE, include.lowest = TRUE)))
- print(cut_levels(breaks, right = TRUE, include.lowest = TRUE))
- print(levels(cut.default(numeric(0), breaks = breaks, right = FALSE, include.lowest = TRUE)))
- print(cut_levels(breaks, right = FALSE, include.lowest = TRUE))
- print(levels(cut.default(numeric(0), breaks = breaks, right = TRUE, include.lowest = FALSE)))
- print(cut_levels(breaks, right = TRUE, include.lowest = FALSE))
- print(levels(cut.default(numeric(0), breaks = breaks, right = FALSE, include.lowest = FALSE)))
- print(cut_levels(breaks, right = FALSE, include.lowest = FALSE))
-}
-fn(breaks = 1:4)
-fn(breaks = c(-Inf, 1:3, Inf))
-set.seed(2259); fn(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
-
+foo = function(...) cbind(
+ levels(cut.default(numeric(0), ...)),
+ cut_levels(...)
+)
+foo(breaks = 1:4, right = TRUE, include.lowest = TRUE)
+foo(breaks = 1:4, right = FALSE, include.lowest = TRUE)
+foo(breaks = 1:4, right = TRUE, include.lowest = FALSE)
+foo(breaks = 1:4, right = FALSE, include.lowest = FALSE)
+set.seed(2259); foo(breaks = c(-Inf, sort(rnorm(1:3)), Inf))
 }
