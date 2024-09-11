@@ -55,7 +55,12 @@ rmd_.bibentry <- function(x, ...) {
     }, dots = list(y_ = y, doi_ = doi), MoreArgs = NULL), use.names = FALSE)
   } # [topic](url) for doi, in R markdown grammar
   
-  return(sprintf(fmt = '<u>**`%s`**</u> %s\n', attr(x, which = 'package', exact = TRUE), y))
+  pkg <- attr(x, which = 'package', exact = TRUE)
+  
+  return(sprintf(
+    fmt = '<u>**`%s`**</u> %s\n', 
+    if (pkg == 'base') 'R' else pkg, 
+    y))
   #return(y)
   
 }
