@@ -4,7 +4,13 @@
 \alias{case_match_factor}
 \title{\link[base]{factor} Return for \link[dplyr]{case_match}}
 \usage{
-case_match_factor(.x, ..., .default = NULL, .ptype = NULL)
+case_match_factor(
+  .x,
+  ...,
+  .default = NULL,
+  .ptype = NULL,
+  envir = parent.frame()
+)
 }
 \arguments{
 \item{.x, ..., .default, .ptype}{see \link[dplyr]{case_match}}

@@ -26,11 +26,19 @@
 #' case_match_factor(y, NA ~ 0, .default = y)
 #' @importFrom dplyr case_match
 #' @export
-case_match_factor <- function(.x, ..., .default = NULL, .ptype = NULL) {
+case_match_factor <- function(
+    .x, ..., .default = NULL, .ptype = NULL,
+    envir = parent.frame()
+) {
   
   cl <- match.call()
-  cl[[1L]] <- quote(case_match)
-  ret0 <- eval(cl, envir = parent.frame())
+  cl[[1L]] <- quote(dplyr::case_match)
+  # must have `dplyr::` !!
+  # otherwise ?devtools::check() says cannot find `case_match`
+  # do not understand why..
+  
+  cl$envir <- NULL
+  ret0 <- eval(cl, envir = envir) # must use `envir`, otherwise cannot find `substitute(x)`
   
   if (length(cl$.default)) {
     message('Presence of ', sQuote('.default'), ' prohibits conversion to factor')
