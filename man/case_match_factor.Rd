@@ -14,6 +14,9 @@ case_match_factor(
 }
 \arguments{
 \item{.x, ..., .default, .ptype}{see \link[dplyr]{case_match}}
+
+\item{envir}{\link[base]{environment} to \link[base]{eval}uate function \link[dplyr]{case_match}.
+Default \code{parent.frame()}}
 }
 \value{
 Function \link{case_match_factor} returns a \link[base]{factor}.

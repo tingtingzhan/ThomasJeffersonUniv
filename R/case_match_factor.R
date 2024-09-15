@@ -6,6 +6,9 @@
 #' 
 #' @param .x,...,.default,.ptype see \link[dplyr]{case_match}
 #' 
+#' @param envir \link[base]{environment} to \link[base]{eval}uate function \link[dplyr]{case_match}.
+#' Default `parent.frame()`
+#' 
 #' @details
 #' If argument `.default` is missing, function [case_match_factor] converts 
 #' the return of \link[dplyr]{case_match} into a \link[base]{factor}.
@@ -34,7 +37,7 @@ case_match_factor <- function(
   cl <- match.call()
   cl[[1L]] <- quote(dplyr::case_match)
   # must have `dplyr::` !!
-  # otherwise ?devtools::check() says cannot find `case_match`
+  # otherwise ?devtools::check() says cannot find `case_match` (in parent.frame())
   # do not understand why..
   
   cl$envir <- NULL
