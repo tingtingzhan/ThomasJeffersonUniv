@@ -30,7 +30,7 @@ case_match_factor <- function(.x, ..., .default = NULL, .ptype = NULL) {
   
   cl <- match.call()
   cl[[1L]] <- quote(case_match)
-  ret0 <- eval(cl)
+  ret0 <- eval(cl, envir = parent.frame())
   
   if (length(cl$.default)) {
     message('Presence of ', sQuote('.default'), ' prohibits conversion to factor')
