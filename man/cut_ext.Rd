@@ -8,7 +8,8 @@
 \usage{
 cut_(
   x,
-  breaks,
+  breaks = quantile(x, probs = break_probs, na.rm = TRUE),
+  break_probs,
   right = TRUE,
   include.lowest = TRUE,
   data.name = substitute(x),
@@ -23,6 +24,9 @@ cut_levels(breaks, right = TRUE, include.lowest = TRUE, data.name = "x")
 
 \item{breaks}{\link[base]{vector} of the same \link[base]{class} as \code{x}.
 \code{-Inf} and \code{Inf} will be automatically added}
+
+\item{break_probs}{\link[base]{double} \link[base]{vector} from 0 to 1,
+probabilities to specify the \link[stats]{quantile}s to be used as \code{breaks}}
 
 \item{right}{\link[base]{logical} scalar, default \code{TRUE},
 see functions \link[base]{cut.default} and \link[base]{.bincode}.}
@@ -54,7 +58,10 @@ x = c(tmp <- c(10, 31, 45, 50, 52, NA, 55, 55, 57, 58.5, 60, 92), rev.default(tm
 (xm = array(x, dim = c(6L, 4L)))
 brk = c(20, 60, 80)
 cut_(x, breaks = brk)
+cut_(x, break_probs = c(.3, .6))
 cut_(xm, breaks = brk)
+
+cut_(rnorm(100), break_probs = c(.3, .6))
 
 (x2 = zoo::as.Date.ts(airmiles))
 length(x2)

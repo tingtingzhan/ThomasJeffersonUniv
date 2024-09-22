@@ -10,6 +10,9 @@
 #' @param breaks \link[base]{vector} of the same \link[base]{class} as `x`. 
 #' `-Inf` and `Inf` will be automatically added
 #' 
+#' @param break_probs \link[base]{double} \link[base]{vector} from 0 to 1,
+#' probabilities to specify the \link[stats]{quantile}s to be used as `breaks`
+#' 
 #' @param right \link[base]{logical} scalar, default `TRUE`, 
 #' see functions \link[base]{cut.default} and \link[base]{.bincode}.
 #' 
@@ -40,7 +43,10 @@
 #' (xm = array(x, dim = c(6L, 4L)))
 #' brk = c(20, 60, 80)
 #' cut_(x, breaks = brk)
+#' cut_(x, break_probs = c(.3, .6))
 #' cut_(xm, breaks = brk)
+#' 
+#' cut_(rnorm(100), break_probs = c(.3, .6))
 #' 
 #' (x2 = zoo::as.Date.ts(airmiles))
 #' length(x2)
@@ -65,10 +71,12 @@
 #' }
 #'  
 #' @name cut_ext
+#' @importFrom stats quantile
 #' @export
 cut_ <- function(
     x, 
-    breaks,
+    breaks = quantile(x, probs = break_probs, na.rm = TRUE), 
+    break_probs,
     right = TRUE,
     include.lowest = TRUE,
     data.name = substitute(x),
