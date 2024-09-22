@@ -17,7 +17,8 @@ cast <- reshape2:::cast
 #' @param value.var \link[base]{character} \link[base]{vector}, 
 #' names of columns which store the values 
 #' 
-#' @param ... additional parameters of `reshape2:::cast` and \link[reshape2]{acast}
+#' @param ... additional parameters of functions \link[reshape2]{acast} and \link[reshape2]{dcast},
+#' which eventually get passed into function `reshape2:::cast`.
 #' 
 #' @details
 #' Function [mdcast] is an extension of \link[reshape2]{dcast} in the following aspects,
@@ -50,7 +51,7 @@ cast <- reshape2:::cast
 #' }
 #' 
 #' @note
-#' Function [mdcast] uses `reshape2:::cast` illegally.  
+#' Function [mdcast] uses unexported function `reshape2:::cast` illegally.  
 #' I have asked Hadley, but he has no plan to export `reshape2:::cast`.
 #' 
 #' @returns 
@@ -85,7 +86,7 @@ mdcast <- function(
 ) {
   if (!(nv <- length(value.var))) stop('value.var degenerate?')
   if (!is.character(value.var) || anyNA(value.var) || !all(nzchar(value.var))) stop('`value.var` must be character')
-  if (nv == 1L) .Defunct('reshape2::dcast')
+  if (nv == 1L) .Defunct(msg = 'use reshape2::dcast directly')
   
   # using ?reshape2:::cast illegally
   labels <- cast(data = data, formula = formula, value.var = value.var[1L], ...)$labels[[1L]] # see ?reshape2::dcast
@@ -128,8 +129,6 @@ mdcast <- function(
   
   ret <- data.frame(
     labels, 
-    #ret_acast[1:8],  # 'matrix' will be turned into 'data.frame'
-    #ret_acast[7:8],  # 'matrix' will be turned into 'data.frame'
     ret_acast,  # 'matrix' will be turned into 'data.frame'
     check.names = FALSE
   )

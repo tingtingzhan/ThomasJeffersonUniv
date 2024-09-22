@@ -17,7 +17,8 @@ returned object of \link[reshape2]{melt.data.frame}}
 
 \item{formula}{casting \link[stats]{formula}, see \link[reshape2]{dcast}}
 
-\item{...}{additional parameters of \code{reshape2:::cast} and \link[reshape2]{acast}}
+\item{...}{additional parameters of functions \link[reshape2]{acast} and \link[reshape2]{dcast},
+which eventually get passed into function \code{reshape2:::cast}.}
 
 \item{value.var}{\link[base]{character} \link[base]{vector},
 names of columns which store the values}
@@ -59,7 +60,7 @@ therefore we do not need to specify to which visit it corresponds.
 }
 }
 \note{
-Function \link{mdcast} uses \code{reshape2:::cast} illegally.
+Function \link{mdcast} uses unexported function \code{reshape2:::cast} illegally.
 I have asked Hadley, but he has no plan to export \code{reshape2:::cast}.
 }
 \examples{
