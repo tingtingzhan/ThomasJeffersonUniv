@@ -21,8 +21,14 @@
 #' \link[base]{factor} and \link[base]{character} columns to \link[base]{logical}.}
 #' }
 #' 
+#' @note
+#' Be aware of potential name clash, e.g., `lavaan::inspect`.
+#' 
+#' @returns 
+#' Function [inspect_] returns a \link[base]{data.frame}.
+#' 
 #' @export
-inspect <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
+inspect_ <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
   
   x <- as.data.frame(x) # ?tibble:::as.data.frame.tbl_df, for returned object of ?readxl::read_excel
   
@@ -132,7 +138,6 @@ not_Date <- function(x) {
 }
 
 # ?lubridate::is.Date is much slower than ?base::inherits
-
 
 
 
