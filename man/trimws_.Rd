@@ -21,6 +21,7 @@ More aggressive than function \link[base]{trimws}.
 Function \link{trimws_} is more aggressive than \link[base]{trimws}, that it removes
 
 \itemize{
+\item {non-UTF-8 characters}
 \item {duplicated white spaces}
 \item {symbols that look like white space, such as \verb{\\u00a0} (no-break space)}
 }
@@ -36,6 +37,11 @@ trimws_(x)
 
 (xm = matrix(x, nrow = 2L))
 trimws_(xm)
+
+cat(x0 <- ' ab  \xa0cd ')
+tryCatch(base::trimws(x0), error = identity)
+# tryCatch(raster::trim(x0), error = identity)
+trimws_(x0)
 
 #library(microbenchmark)
 #microbenchmark(trimws(x), trimws_(x))
