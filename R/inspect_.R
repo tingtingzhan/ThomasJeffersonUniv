@@ -6,12 +6,14 @@
 #' 
 #' @param x \link[base]{data.frame}
 #' 
-#' @param duplicated_rm \link[base]{logical} scalar, whether to remove duplicated *rows*.
-#' Default `FALSE`.
+#' @param row_dup_rm \link[base]{logical} scalar, whether to remove duplicated rows.
+#' Default `TRUE`.
 #' 
-#' @param date_pattern regular expression \link[base]{regex},
-#' pattern of column names for \link[base]{Dates}.
-#' Default `^Date_`.
+#' @param col_na_rm \link[base]{logical} scalar, whether to remove all-missing columns.
+#' Default `TRUE`.
+#' 
+#' @param ptn_Date \link[base]{regex},
+#' regular expression pattern of names of the columns to be converted to \link[base]{Dates}.
 #' 
 #' @param ... additional parameters, currently not in use
 #' 
@@ -28,7 +30,13 @@
 #' Function [inspect_] returns a \link[base]{data.frame}.
 #' 
 #' @export
-inspect_ <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
+inspect_ <- function(
+    x, 
+    row_dup_rm = TRUE, 
+    col_na_rm = TRUE,
+    ptn_Date, 
+    ...
+) {
   
   x <- as.data.frame(x) # ?tibble:::as.data.frame.tbl_df, for returned object of ?readxl::read_excel
   
@@ -41,11 +49,21 @@ inspect_ <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
   id <- duplicated.data.frame(x)
   if (any(id)) {
     matchDF(x, trace = TRUE) # only to print the ?base::message
-    if (duplicated_rm) {
+    if (row_dup_rm) {
       message(sprintf(fmt = '%d duplicated rows removed.\n', sum(id)))
       x <- x[!id, , drop = FALSE] # `drop` needed for 1-column data.frame!
-    } else message('')
+    } # else message('')
   }
+
+  id <- vapply(x, FUN = function(i) all(is.na(i)), FUN.VALUE = NA)
+  if (any(id)) {
+    if (col_na_rm) {
+      #message(sum(id), ' all-missing columns removed: ', paste(sQuote(head(names(x)[id])), collapse = ', '))
+      message(sum(id), ' all-missing columns removed')
+      x <- x[!id]
+    }
+  }
+  
   
   nm <- names(x)
   
@@ -58,8 +76,9 @@ inspect_ <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
     return(i)
   })
   
-  if (length(date_pattern)) {
-    cid <- grepl(pattern = date_pattern, x = nm)
+  if (!missing(ptn_Date)) {
+    if (!is.character(ptn_Date) || length(ptn_Date) != 1L || is.na(ptn_Date) || !nzchar(ptn_Date)) stop('illegal ptn_Date')
+    cid <- grepl(pattern = ptn_Date, x = nm)
     if (any(cid)) {
       x[cid] <- lapply(nm[cid], FUN = function(inm) {
         # (inm = nm[cid][3L])
@@ -99,10 +118,12 @@ inspect_ <- function(x, duplicated_rm = TRUE, date_pattern = '^Date_', ...) {
   
   # copy tzh::class1List
   cl1 <- vapply(x, FUN = function(x) class(x)[1L], FUN.VALUE = '', USE.NAMES = TRUE)
-  cls <- lapply(split.default(names(cl1), f = factor(cl1)), FUN = function(i) {
+  cl2 <- split.default(names(cl1), f = factor(cl1))
+  cls <- lapply(cl2, FUN = function(i) {
     if (length(i) < 6L) return(i)
     c(i[1:6], 'etc.')
   })
+  names(cls) <- sprintf(fmt = '%d %s', lengths(cl2, use.names = FALSE), names(cl2))
   cat(format_named(cls), sep = '\n')
   return(x)
 }

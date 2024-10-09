@@ -4,17 +4,19 @@
 \alias{inspect_}
 \title{Data Inspection}
 \usage{
-inspect_(x, duplicated_rm = TRUE, date_pattern = "^Date_", ...)
+inspect_(x, row_dup_rm = TRUE, col_na_rm = TRUE, ptn_Date, ...)
 }
 \arguments{
 \item{x}{\link[base]{data.frame}}
 
-\item{duplicated_rm}{\link[base]{logical} scalar, whether to remove duplicated \emph{rows}.
-Default \code{FALSE}.}
+\item{row_dup_rm}{\link[base]{logical} scalar, whether to remove duplicated rows.
+Default \code{TRUE}.}
 
-\item{date_pattern}{regular expression \link[base]{regex},
-pattern of column names for \link[base]{Dates}.
-Default \verb{^Date_}.}
+\item{col_na_rm}{\link[base]{logical} scalar, whether to remove all-missing columns.
+Default \code{TRUE}.}
+
+\item{ptn_Date}{\link[base]{regex},
+regular expression pattern of names of the columns to be converted to \link[base]{Dates}.}
 
 \item{...}{additional parameters, currently not in use}
 }
