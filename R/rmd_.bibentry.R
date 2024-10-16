@@ -61,7 +61,6 @@ rmd_.bibentry <- function(x, ...) {
     fmt = '<u>**`%s`**</u> %s\n', 
     if (pkg == 'base') 'R' else pkg, 
     y))
-  #return(y)
   
 }
 
