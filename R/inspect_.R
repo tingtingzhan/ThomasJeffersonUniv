@@ -27,7 +27,7 @@
 #' Be aware of potential name clash, e.g., `lavaan::inspect`.
 #' 
 #' @returns 
-#' Function [inspect_] returns a \link[base]{data.frame}.
+#' Function [inspect_] returns (invisibly) a \link[base]{data.frame}.
 #' 
 #' @export
 inspect_ <- function(
@@ -125,7 +125,7 @@ inspect_ <- function(
   })
   names(cls) <- sprintf(fmt = '%d %s', lengths(cl2, use.names = FALSE), names(cl2))
   cat(format_named(cls), sep = '\n')
-  return(x)
+  return(invisible(x))
 }
 
 
