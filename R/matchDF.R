@@ -1,37 +1,5 @@
 
-
-
-#' @title Split \link[base]{data.frame} by Row
-#' 
-#' @description
-#' \link[base]{split.data.frame} into individual rows.
-#' 
-#' @param x \link[base]{data.frame}
-#' 
-#' @note
-#' We use \link[base]{split.data.frame} with argument `f` being `attr(x, which = 'row.names', exact = TRUE)` instead of
-#' `seq_len(.row_names_info(x, type = 2L))`,
-#' not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces 
-#' that \link[base]{row.names.data.frame} must be unique.
-#' 
-#' @returns
-#' Function [splitDF] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
-#' 
-#' @examples
-#' splitDF(head(mtcars)) # data.frame with rownames
-#' splitDF(head(warpbreaks)) # data.frame without rownames
-#' splitDF(data.frame()) # exception
-#' @export
-splitDF <- function(x) {
-  split.data.frame(x, f = attr(x, which = 'row.names', exact = TRUE))
-}
-
-
-
-
-
-
-#' @title Match Rows of One \link[base]{data.frame} to Another
+#' @title Match Rows of A \link[base]{data.frame} to Another
 #' 
 #' @description
 #' To \link[base]{match} the rows of one \link[base]{data.frame}
@@ -98,9 +66,9 @@ matchDF <- function(
   # otherwise, if `!identical(by.x, by.tab)`, ?base::match wont work
   if (anyDuplicated.data.frame(tab0)) stop('do not allow duplicated ', sQuote(paste0(by.tab, collapse = '+')), ' in `table`')
   
-  id <- match(x = splitDF(x0), table = splitDF(tab0), nomatch = NA_integer_)
+  id <- match(x = rsplit_(x0), table = rsplit_(tab0), nomatch = NA_integer_)
   
-  if (any(duplicated.default(id))) { # rows with multiple matches
+  if (anyDuplicated.default(id)) { # rows with multiple matches
     tmp1 <- split.default(seq_along(id), f = factor(id))
     tmp2 <- tmp1[lengths(tmp1, use.names = FALSE) > 1L]
     tmp <- lapply(tmp2, FUN = `+`, 1L) # Excel rows, +1 for row header
@@ -117,8 +85,8 @@ matchDF <- function(
     for (i in c(rev.default(seq_len(nby - 1L)), 0L)) { # (i = nby - 1L)
       if (i == 0L) break # to indicate nothing full-match
       iseq <- seq_len(i)
-      idx <- match(x = splitDF(unique.data.frame(x_u[iseq])), 
-                   table = splitDF(unique.data.frame(tab0[iseq])), 
+      idx <- match(x = rsplit_(unique.data.frame(x_u[iseq])), 
+                   table = rsplit_(unique.data.frame(tab0[iseq])), 
                    nomatch = NA_integer_)
       idok <- !is.na(idx)
       if (trace) message(sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])))
@@ -243,3 +211,34 @@ mergeDF <- function(
   return(ret)
   
 }
+
+
+
+
+
+#' @title Split \link[base]{data.frame} by Row
+#' 
+#' @description
+#' \link[base]{split.data.frame} into individual rows.
+#' 
+#' @param x \link[base]{data.frame}
+#' 
+#' @note
+#' We use \link[base]{split.data.frame} with argument `f` being `attr(x, which = 'row.names', exact = TRUE)` instead of
+#' `seq_len(.row_names_info(x, type = 2L))`,
+#' not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces 
+#' that \link[base]{row.names.data.frame} must be unique.
+#' 
+#' @returns
+#' Function [rsplit_] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+#' 
+#' @examples
+#' rsplit_(head(mtcars)) # data.frame with rownames
+#' rsplit_(head(warpbreaks)) # data.frame without rownames
+#' rsplit_(data.frame()) # exception
+#' @keywords internal
+#' @export
+rsplit_ <- function(x) {
+  split.data.frame(x, f = attr(x, which = 'row.names', exact = TRUE))
+}
+
