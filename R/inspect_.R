@@ -64,7 +64,6 @@ inspect_ <- function(
     }
   }
   
-  
   nm <- names(x)
   
   x[] <- lapply(x, FUN = function(i) {
@@ -81,11 +80,17 @@ inspect_ <- function(
     cid <- grepl(pattern = ptn_Date, x = nm)
     if (any(cid)) {
       x[cid] <- lapply(nm[cid], FUN = function(inm) {
-        # (inm = nm[cid][3L])
+        # (inm = nm[cid][1L])
         i <- x[[inm]]
         if (is.factor(i)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
         if (is.logical(i)) stop('`logical` cannot be converted to `Date`')
-        if (is.numeric(i)) stop(sQuote(inm), ' is `numeric`')
+        
+        if (is.numeric(i)) {
+          return(as.Date.numeric(i, origin = '1960-01-01')) # SAS processing
+          #stop(sQuote(inm), ' is `numeric`')
+          #message(sQuote(inm), ' is `numeric`')
+          #return(i)
+        }
         
         if (inherits(i, what = c('Date'))) return(i)
         
@@ -102,7 +107,9 @@ inspect_ <- function(
           tmp <- tryCatch(as.Date.character(i, tryFormats = c('%m/%d/%y', '%m-%d-%y', '%m/%d/%Y', '%m-%d-%Y', '%Y-%m-%d')), error = identity)
           if (inherits(tmp, what = 'error')) {
             tmp$message <- paste0(sQuote(inm), ': ', tmp$message)
-            stop(tmp)
+            # stop(tmp)
+            message(conditionMessage(tmp))
+            return(i)
           }
           return(tmp)
         }
