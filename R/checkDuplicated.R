@@ -1,9 +1,9 @@
 
 
-#' @title Inspect Duplicated Records in a \link[base]{data.frame}
+#' @title Inspect Duplicated Rows in a \link[base]{data.frame}
 #' 
 #' @description
-#' To inspect duplicated records in a \link[base]{data.frame}.
+#' To inspect duplicated rows in a \link[base]{data.frame}.
 #' 
 #' @param data \link[base]{data.frame}
 #' 
@@ -37,7 +37,8 @@ checkDuplicated <- function(
   
   dup_txt <- style_interaction(f)
   
-  rid <- split_int_(data = data, f = f)
+  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = interaction.formula(f, data = data, drop = TRUE))
+  
   rid_n <- lengths(rid, use.names = FALSE)
   
   rid_n1 <- (rid_n == 1L)

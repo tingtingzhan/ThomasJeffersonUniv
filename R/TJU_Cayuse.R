@@ -64,12 +64,10 @@ aggregateAwards <- function(
     Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
   })
   
-  length(ys <- split.data.frame(awards, f = ~ Award.No. + Sponsor))
-  length(ys <- ys[vapply(ys, FUN = .row_names_info, type = 2L, FUN.VALUE = 0L) > 0L])
-  rid <- split_int_(data = awards, f = ~ Award.No. + Sponsor)
+  ys <- split.data.frame(awards, f = interaction.formula(~ Award.No. + Sponsor, data = awards, drop = TRUE))
   
-  y1 <- do.call(rbind.data.frame, args = c(lapply(rid, FUN = function(id) { # (id = rid[[1L]])
-    with(data = awards[id, , drop = FALSE], expr = {
+  y1 <- do.call(rbind.data.frame, args = c(lapply(ys, FUN = function(d) {
+    with(data = d, expr = {
       if (!all(duplicated(Project.Title)[-1L])) stop('`Project.Title` not same')
       first_begin <- min(Award.Begin.Date, na.rm = TRUE)
       last_end <- max(Award.End.Date, na.rm = TRUE)
@@ -91,6 +89,7 @@ aggregateAwards <- function(
       )
     })
   }), list(make.row.names = FALSE)))
+  
   
   y2 <- within(y1, expr = {
     Status <- .bincode(as.double(Award.End.Date), breaks = c(-Inf, as.double(TJU_Fiscal_Year(fiscal.year)), Inf), right = TRUE, include.lowest = TRUE)

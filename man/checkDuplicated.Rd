@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkDuplicated.R
 \name{checkDuplicated}
 \alias{checkDuplicated}
-\title{Inspect Duplicated Records in a \link[base]{data.frame}}
+\title{Inspect Duplicated Rows in a \link[base]{data.frame}}
 \usage{
 checkDuplicated(
   data,
@@ -33,7 +33,7 @@ print out of substantial duplicates}
 Function \link{checkDuplicated} returns a \link[base]{data.frame}.
 }
 \description{
-To inspect duplicated records in a \link[base]{data.frame}.
+To inspect duplicated rows in a \link[base]{data.frame}.
 }
 \examples{
 # no examples yet
