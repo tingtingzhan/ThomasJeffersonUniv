@@ -37,30 +37,31 @@ checkDuplicated <- function(
   
   dup_txt <- style_interaction(f)
   
-  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = interaction.formula(f, data = data, drop = TRUE))
-  
-  rid_n <- lengths(rid, use.names = FALSE)
-  
-  rid_n1 <- (rid_n == 1L)
-  if (all(rid_n1)) {
+  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = interaction_lang(f, data = data, drop = TRUE))
+  n_ <- lengths(rid, use.names = FALSE)
+  if (any(n_ == 0L)) stop('wont happen')
+  ns_ <- (n_ > 1L)
+  if (!any(ns_)) {
     message(sprintf(fmt = '\u2714 No duplicated %s\n', dup_txt))
     return(invisible(data))
   }
   
   # rows of `data` without duplication
-  r0 <- sort.int(unlist(rid[rid_n1], use.names = FALSE))
+  r0 <- sort.int(unlist(rid[!ns_], use.names = FALSE))
   
-  rid_dup <- rid[rid_n > 1L]
-  nm_dup <- format(sQuote(names(rid_dup)), justify = 'left')
+  rid_dup <- rid[ns_]
+  
+  nm_dup <- format(sQuote(names(rid[ns_])), justify = 'left')
   
   # slow with big `data`!!
-  ds_dup <- mapply(FUN = function(i, nm) {
-    message('\rCreating subset ', nm, appendLF = FALSE)
-    data[i, , drop = FALSE]
-  }, i = rid_dup, nm = sprintf(fmt = '%s - %d of %d', nm_dup, seq_along(nm_dup), length(nm_dup)), SIMPLIFY = FALSE)
-  cat('\r')
+  # ds_ <- mapply(FUN = function(i, nm) {
+  #  message('\rCreating subset ', nm, appendLF = FALSE)
+  #  data[i, , drop = FALSE]
+  #}, i = rid_dup, nm = sprintf(fmt = '%s - %d/%d', nm_dup, seq_along(nm_dup), length(nm_dup)), SIMPLIFY = FALSE)
+  #cat('\r')
+  ds_ <- lapply(rid[ns_], FUN = function(i) data[i, , drop = FALSE]) # if too slow, use parallel
   
-  ds_coalesce <- lapply(ds_dup, FUN = function(d) {
+  ds_coalesce <- lapply(ds_, FUN = function(d) {
     # attempt column-wise coalesce?
     tryCatch(expr = lapply(d, FUN = unique_), error = identity)
   })
@@ -87,7 +88,7 @@ checkDuplicated <- function(
     tmp <- mapply(FUN = function(d, nm) {
       message('\rFinding duplicated columns ', nm, appendLF = FALSE)
       not_unique_(d[show_nc])
-    }, d = ds_dup[id_truedup], nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), SIMPLIFY = FALSE)
+    }, d = ds_[id_truedup], nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), SIMPLIFY = FALSE)
     cat('\r')
     
     write_xlsx(x = tmp, path = file)
