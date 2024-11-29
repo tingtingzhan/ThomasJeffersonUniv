@@ -28,6 +28,7 @@ cat(format_named(x1), sep = '\n')
 noout = lapply(format_named(x1), FUN = message)
 
 x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
+cat(format_named(x2), sep = '\n')
 noout = lapply(format_named(x2, colored = FALSE), FUN = message)
 
 x3 = c(a = '1\n2')

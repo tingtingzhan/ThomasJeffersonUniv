@@ -15,7 +15,7 @@
 #' @keywords internal
 #' @export
 style_samplesize <- function(x) {
-  sprintf(fmt = '\033[1;103m%d\033[0m', x)
+  style_bold(bg_br_yellow(x))
 }
 
 
@@ -34,14 +34,16 @@ style_samplesize <- function(x) {
 #' @keywords internal
 #' @export
 style_basename <- function(x) {
-  sprintf(fmt = '\033[33m%s\033[0m', basename(x))
-  
-  # @importFrom cli cli_text
-  #cli_text(sprintf(fmt = '\u261e {.href [%s](file://%s)}', basename(x), normalizePath(x)))
-  # as of 2024-04, an existing file can be opened **inside RStudio**
-  # .. RStudio will warn of a non-existing file
-  # also, I don't know how to base::message cli::cli_text
+  col_yellow(basename(x))
 }
+
+
+# @importFrom cli cli_text
+#cli_text(sprintf(fmt = '\u261e {.href [%s](file://%s)}', basename(x), normalizePath(x)))
+# as of 2024-04, an existing file can be opened **inside RStudio**
+# .. RStudio will warn of a non-existing file
+# also, I don't know how to base::message cli::cli_text
+
 
 # if (FALSE) {
 # style_basename_FUTURE('~/Desktop/a.pdf')
@@ -72,5 +74,5 @@ style_interaction <- function(x) {
     x <- all.vars(if (length(x) == 2L) x[[2L]] else x[[3L]])
   }
   if (!is.character(x)) stop('x must be convertible to `character`')
-  sprintf(fmt = '\033[35m%s\033[0m', paste(x, collapse = ':'))
+  col_magenta(paste(x, collapse = ':'))
 }
