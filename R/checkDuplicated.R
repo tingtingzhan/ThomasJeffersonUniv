@@ -37,7 +37,7 @@ checkDuplicated <- function(
   
   dup_txt <- style_interaction(f)
   
-  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = interaction_lang(f, data = data, drop = TRUE))
+  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = nested_(f, data = data, drop = TRUE))
   n_ <- lengths(rid, use.names = FALSE)
   if (any(n_ == 0L)) stop('wont happen')
   ns_ <- (n_ > 1L)
