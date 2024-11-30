@@ -8,9 +8,6 @@
 #' 
 #' @param sep \link[base]{character} scalar, see \link[base]{paste}
 #' 
-#' @param colored \link[base]{logical} scalar, whether use two different color
-#' to separate each element, default `TRUE`
-#' 
 #' @returns
 #' Function [format_named] returns a \link[base]{character} \link[base]{vector}.
 #' 
@@ -21,14 +18,15 @@
 #' 
 #' x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
 #' cat(format_named(x2), sep = '\n')
-#' noout = lapply(format_named(x2, colored = FALSE), FUN = message)
+#' noout = lapply(format_named(x2), FUN = message)
 #' 
 #' x3 = c(a = '1\n2')
+#' cat(format_named(x3), sep = '\n')
 #' noout = lapply(format_named(x3), FUN = message)
 #' 
 #' @keywords internal
 #' @export
-format_named <- function(x, sep = ': ', colored = TRUE) {
+format_named <- function(x, sep = ': ') {
   
   x0 <- trimws(vapply(x, FUN = paste, collapse = ' ', FUN.VALUE = ''))
   x1 <- x0[nzchar(x0)]
@@ -45,21 +43,13 @@ format_named <- function(x, sep = ': ', colored = TRUE) {
   
   xnm <- format.default(xnm., justify = 'right')
   
-  if (!colored) return(paste(xnm, x1, sep = sep))
-  
-  ANSI_head <- if (length(nx) == 1L) {
-    rep('\033[1;32m', times = nx) # bold
-  } else suppressWarnings(mapply(rep, c('\033[1;32m', '\033[1;36m'), times = nx))
-  # base::suppressWarnings on length not integer times haha
-  
-  return(paste0(
-    unlist(ANSI_head, use.names = FALSE),
-    xnm, 
-    # '\033[24m', # underline off
-    sep, 
-    '\033[22m', # bold off
-    x1, '\033[0m'
-  ))
+  ret <- style_bold(paste(xnm, x1, sep = sep))
+  id_green <- if (length(nx) == 1L) {
+    rep(TRUE, times = nx) # all green
+  } else suppressWarnings(unlist(mapply(FUN = rep, c(TRUE, FALSE), times = nx, SIMPLIFY = FALSE), use.names = FALSE))
+  ret[id_green] <- col_green(ret[id_green])
+  ret[!id_green] <- col_cyan(ret[!id_green])
+  return(ret)
   
 }
 
