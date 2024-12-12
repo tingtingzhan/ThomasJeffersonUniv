@@ -76,13 +76,3 @@ Surv_3Date <- function(
 
 
 
-survOver <- function(object, over, ...) {
-  if (!inherits(object, 'Surv') || ncol(object) != 2L) stop('`object` must be right censored')
-  if (!is.numeric(over) || length(over) != 1L || is.na(over)) stop('`over` must be len-1 numeric')
-  
-  ret <- (object[,1L] > over)
-  ret[object[,1L] < over & object[,2L] == 0] <- NA # censored before `over`
-  return(ret)
-}
-
-
