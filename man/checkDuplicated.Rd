@@ -8,7 +8,8 @@ checkDuplicated(
   data,
   f,
   dontshow = character(length = 0L),
-  file = tempfile(pattern = "checkDuplicated_", fileext = ".xlsx"),
+  file = tempfile(pattern = "checkdup_", fileext = ".xlsx"),
+  rule,
   ...
 )
 }
@@ -26,6 +27,8 @@ variable names to be omitted in output diagnosis \code{file}}
 \item{file}{\link[base]{character} scalar,
 path of diagnosis file,
 print out of substantial duplicates}
+
+\item{rule}{\link[base]{language}, rule of dealing with duplicates}
 
 \item{...}{additional parameters, currently not in use}
 }

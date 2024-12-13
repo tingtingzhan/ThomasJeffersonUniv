@@ -19,6 +19,8 @@
 #' path of diagnosis file, 
 #' print out of substantial duplicates
 #' 
+#' @param rule \link[base]{language}, rule of dealing with duplicates
+#' 
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns 
@@ -26,12 +28,14 @@
 #' 
 #' @examples
 #' # no examples yet
+#' @importFrom cli cli_text
 #' @importFrom writexl write_xlsx
 #' @export
 checkDuplicated <- function(
     data, f, 
     dontshow = character(length = 0L),
-    file = tempfile(pattern = 'checkDuplicated_', fileext = '.xlsx'),
+    file = tempfile(pattern = 'checkdup_', fileext = '.xlsx'),
+    rule,
     ...
 ) {
   
@@ -92,10 +96,26 @@ checkDuplicated <- function(
     cat('\r')
     
     write_xlsx(x = tmp, path = file)
-    message(sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
+    # https://cli.r-lib.org/reference/links.html
+    #message(sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
+    cli_text(sprintf(fmt = '\u261e {.href [%s](file://{\'%s\'})} %d %s with substantial duplicates', style_basename(file), file, n_truedup, dup_txt))
     system(paste0('open ', dirname(file)))
     
-    vapply(rid_dup[id_truedup], FUN = `[`, 1L, FUN.VALUE = NA_integer_)
+    if (missing(rule)) {
+      message('naively select the first row')
+      vapply(rid_dup[id_truedup], FUN = `[`, 1L, FUN.VALUE = NA_integer_)
+    } else {
+      message('Selection rule: ', deparse(rule))
+      vapply(rid_dup[id_truedup], FUN = function(i) { # (i = rid_dup[id_truedup][[1L]])
+        ret <- with(data[i,], expr = eval(rule))
+        if (length(ret) != 1L) {
+          print(data[i,])
+          stop()
+        }
+        return(ret)
+      }, FUN.VALUE = NA_integer_)
+    }
+    
   } # else NULL
   
   ret <- rbind.data.frame(data[c(r0, r1_truedup), , drop = FALSE], d_coalesce)
