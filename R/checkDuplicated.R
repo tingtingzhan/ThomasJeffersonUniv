@@ -90,10 +90,10 @@ checkDuplicated <- function(
     
     # slow with big `data`!!
     tmp <- mapply(FUN = function(d, nm) {
-      message('\rFinding duplicated columns ', nm, appendLF = FALSE)
+      #message('\rFinding duplicated columns ', nm, appendLF = FALSE)
       not_unique_(d[show_nc])
     }, d = ds_[id_truedup], nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), SIMPLIFY = FALSE)
-    cat('\r')
+    #cat('\r')
     
     write_xlsx(x = tmp, path = file)
     # https://cli.r-lib.org/reference/links.html
