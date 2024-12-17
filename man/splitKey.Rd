@@ -42,13 +42,15 @@ It is presumed there is few duplication in the input \code{x}.
 }
 \examples{
 
+x = letters[1:4]
+splitKey(x, split = ';;', assign2parent = FALSE)
+
 x = c('a,b,', 'c,a,b,,', NA_character_, '', 'a,b,')
 splitKey(x, split = ',', assign2parent = FALSE)
 
-within(data.frame(x), expr = {
-  splitKey(x, split = ',')
-  splitKey(x, split = ',', data.name = 'cancer')
-})
+within(data.frame(x), expr = splitKey(x, split = ','))
+
+within(data.frame(x), expr = splitKey(x, split = ',', data.name = 'cancer'))
 
 if (FALSE) {
 library(microbenchmark)

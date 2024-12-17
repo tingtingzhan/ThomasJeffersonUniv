@@ -8,6 +8,6 @@
 library(adv.tzh) # devtools::install_github('tingtingzhan/adv.tzh')
 removeLocalPackage('ThomasJeffersonUniv')
 updateDESCRIPTION('.')
-checkDocument('.')
-checkRelease('.')
+document_('.')
+release_('.')
 

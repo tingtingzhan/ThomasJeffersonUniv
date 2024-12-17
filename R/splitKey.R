@@ -39,13 +39,15 @@
 #' 
 #' @examples 
 #' 
+#' x = letters[1:4]
+#' splitKey(x, split = ';;', assign2parent = FALSE)
+#' 
 #' x = c('a,b,', 'c,a,b,,', NA_character_, '', 'a,b,')
 #' splitKey(x, split = ',', assign2parent = FALSE)
 #' 
-#' within(data.frame(x), expr = {
-#'   splitKey(x, split = ',')
-#'   splitKey(x, split = ',', data.name = 'cancer')
-#' })
+#' within(data.frame(x), expr = splitKey(x, split = ','))
+#' 
+#' within(data.frame(x), expr = splitKey(x, split = ',', data.name = 'cancer'))
 #' 
 #' if (FALSE) {
 #' library(microbenchmark)
@@ -68,11 +70,11 @@ splitKey <- function(
   xok <- (!is.na(x) & nzchar(x))
   if (!any(xok)) return(invisible())
   
-  xs_raw <- strsplit(x[xok], ...)
-  if (all(lengths(xs_raw) == 1L)) stop('No split is performed by ?base::strsplit.  Check `split` parameter')
-  if (anyNA(xs_raw, recursive = TRUE)) stop('?base::strsplit does not give NA output')
+  xs_ <- strsplit(x[xok], ...)
+  #if (all(lengths(xs_) == 1L)) stop('I now allow this')
+  if (anyNA(xs_, recursive = TRUE)) stop('?base::strsplit does not give NA output')
   
-  xs <- lapply(xs_raw, FUN = function(ix) {
+  xs <- lapply(xs_, FUN = function(ix) {
     ix <- trimws_(ix)
     return(unique.default(ix[nzchar(ix)])) # tolerate duplicates (although they should not be there)
   })
