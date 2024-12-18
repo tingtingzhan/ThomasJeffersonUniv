@@ -29,8 +29,10 @@
 #' rx = c(len = '\\.Length$', wd = '\\.Width$')
 #' mmelt(iris0, measure_rx = rx, variable.name = 'Part')
 #' 
-#' head(iris1 <- iris0[c(2:3,5L)])
+#' head(iris1 <- iris0[2:5])
 #' tryCatch(mmelt(iris1, measure_rx = rx, variable.name = 'Part'), error = identity)
+#' iris1$Sepal.Length = NA # does not have to be NA_real_
+#' mmelt(iris1, measure_rx = rx, variable.name = 'Part')
 #' @importFrom reshape2 melt
 #' @export
 mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
@@ -40,10 +42,14 @@ mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
   
   val_nm <- names(measure_rx)
   if (!length(val_nm) || anyNA(val_nm) || !all(nzchar(val_nm))) stop('`measure_rx` must be named')
-  m_vars <- lapply(measure_rx, FUN = grep, x = nm, value = TRUE)
-  # stopifnot(is.list(m_vars))
   
-  tmp <- mapply(FUN = gsub, pattern = measure_rx, x = m_vars, MoreArgs = list(replacement = ''), SIMPLIFY = FALSE)
+  m_vars_ <- lapply(measure_rx, FUN = grep, x = nm, value = TRUE)
+  # stopifnot(is.list(m_vars_))
+  tmp_ <- mapply(FUN = gsub, pattern = measure_rx, x = m_vars_, MoreArgs = list(replacement = ''), SIMPLIFY = FALSE)
+  o <- lapply(tmp_, FUN = order)
+  tmp <- mapply(FUN = `[`, tmp_, o, SIMPLIFY = FALSE)
+  m_vars <- mapply(FUN = `[`, m_vars_, o, SIMPLIFY = FALSE)
+  
   if (!all(duplicated.default(tmp)[-1L])) {
     all_ <- unique.default(unlist(tmp))
     add_ <- lapply(tmp, FUN = setdiff, x = all_)

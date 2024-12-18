@@ -34,6 +34,8 @@ Function \link{mmelt} melts by multiple groups of measurement variables.
 rx = c(len = '\\\\.Length$', wd = '\\\\.Width$')
 mmelt(iris0, measure_rx = rx, variable.name = 'Part')
 
-head(iris1 <- iris0[c(2:3,5L)])
+head(iris1 <- iris0[2:5])
 tryCatch(mmelt(iris1, measure_rx = rx, variable.name = 'Part'), error = identity)
+iris1$Sepal.Length = NA # does not have to be NA_real_
+mmelt(iris1, measure_rx = rx, variable.name = 'Part')
 }
