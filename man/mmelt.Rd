@@ -31,5 +31,9 @@ Function \link{mmelt} melts by multiple groups of measurement variables.
 }
 \examples{
 (iris0 = iris[c(1:3, 51:53, 101:103),])
-mmelt(iris0, measure_rx = c(len = '\\\\.Length$', wid = '\\\\.Width$'), variable.name = 'Part')
+rx = c(len = '\\\\.Length$', wd = '\\\\.Width$')
+mmelt(iris0, measure_rx = rx, variable.name = 'Part')
+
+head(iris1 <- iris0[c(2:3,5L)])
+tryCatch(mmelt(iris1, measure_rx = rx, variable.name = 'Part'), error = identity)
 }

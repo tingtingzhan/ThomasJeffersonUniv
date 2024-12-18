@@ -26,7 +26,11 @@
 #' 
 #' @examples 
 #' (iris0 = iris[c(1:3, 51:53, 101:103),])
-#' mmelt(iris0, measure_rx = c(len = '\\.Length$', wid = '\\.Width$'), variable.name = 'Part')
+#' rx = c(len = '\\.Length$', wd = '\\.Width$')
+#' mmelt(iris0, measure_rx = rx, variable.name = 'Part')
+#' 
+#' head(iris1 <- iris0[c(2:3,5L)])
+#' tryCatch(mmelt(iris1, measure_rx = rx, variable.name = 'Part'), error = identity)
 #' @importFrom reshape2 melt
 #' @export
 mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
@@ -38,9 +42,20 @@ mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
   if (!length(val_nm) || anyNA(val_nm) || !all(nzchar(val_nm))) stop('`measure_rx` must be named')
   m_vars <- lapply(measure_rx, FUN = grep, x = nm, value = TRUE)
   # stopifnot(is.list(m_vars))
+  
   tmp <- mapply(FUN = gsub, pattern = measure_rx, x = m_vars, MoreArgs = list(replacement = ''), SIMPLIFY = FALSE)
-  if (!all(duplicated(tmp)[-1L])) {
-    print(tmp)
+  if (!all(duplicated.default(tmp)[-1L])) {
+    all_ <- unique.default(unlist(tmp))
+    add_ <- lapply(tmp, FUN = setdiff, x = all_)
+    add_ <- add_[lengths(add_) > 0L]
+    lapply(seq_along(add_), FUN = function(i) { # (i = 1L)
+      message(
+        'Add ', 
+        col_green(paste(add_[[i]], collapse = ', ')),
+        ' for pattern ',
+        col_magenta(measure_rx[[names(add_)[i]]])
+      )
+    })
     stop('`m_vars` (after removing `measure_rx`) not all identical')
   }
   
