@@ -52,8 +52,9 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
   ret <- interaction(data[x], drop = TRUE, sep = sep, lex.order = lex.order)
   
   id <- if (lex.order) 1L else length(x)
-  attr(ret, which = 'name1') <- x[id]
-  attr(ret, which = 'f1') <- as.factor(data[[x[id]]])
+  attr(ret, which = 'group1') <- call(name = '~', as.symbol(x[id]))
+  #attr(ret, which = 'name1') <- x[id]
+  # attr(ret, which = 'f1') <- as.factor(data[[x[id]]]) # use `data[[x[id]]]` directly
   
   class(ret) <- c('nested', class(ret))
   return(ret)
@@ -63,20 +64,18 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
 
 
 
-#' @export
-print.nested <- function(x, ...) {
-  x0 <- x
-  attributes(x0)[c('name1', 'f1')] <- NULL
-  print.factor(x0, ...)
-  lev <- levels(attr(x, which = 'f1', exact = TRUE))
-  n0 <- length(lev)
-  prt <- if (n0 > 6L) paste(c(lev[1:6], '...'), collapse = ' ') else paste(lev, collapse = ' ')
-  message(sprintf(
-    fmt = '%d Independent (%s) Levels: %s', 
-    n0, 
-    attr(x, which = 'name1', exact = TRUE), 
-    prt))
-}
+# @export
+#print.nested <- function(x, ...) {
+#  x0 <- x
+  #attributes(x0)[c('group1', 'f1')] <- NULL
+#  attributes(x0)[c('group1')] <- NULL
+#  print.factor(x0, ...)
+  #lev <- levels(attr(x, which = 'f1', exact = TRUE))
+  #n0 <- length(lev)
+  #prt <- if (n0 > 6L) paste(c(lev[1:6], '...'), collapse = ' ') else paste(lev, collapse = ' ')
+  #message(sprintf(fmt = '%d Independent (%s) Levels: %s', n0, deparse(attr(x, which = 'group1', exact = TRUE)[[2L]]), prt))
+#  message(sprintf(fmt = 'Independent Level: %s', deparse(attr(x, which = 'group1', exact = TRUE))))
+#}
 
 
 
