@@ -31,17 +31,16 @@
 #' @returns
 #' Function [nested_] returns a \link[base]{factor} (from function \link[base]{interaction}) with additional \link[base]{attributes},
 #' \describe{
-#' \item{`attr(.,'name1')`}{\link[base]{character} scalar}
-#' \item{`attr(.,'f1')`}{\link[base]{factor}}
+#' \item{`attr(.,'group1')`}{\link[stats]{formula}, the highest grouping}
 #' }
 #' 
 #' @examples
 #' data(farms, package = 'MASS')
 #' interaction(farms[c('Mois', 'Manag')])
 #' 
-#' (f1 = nested_(~ Mois/Manag, data = farms))
-#' stopifnot(identical(f1, nested_(quote(~ Mois/Manag), data = farms)))
-#' stopifnot(identical(f1, nested_(quote(Mois/Manag), data = farms)))
+#' (f = nested_(~ Mois/Manag, data = farms))
+#' stopifnot(identical(f, nested_(quote(~ Mois/Manag), data = farms)))
+#' stopifnot(identical(f, nested_(quote(Mois/Manag), data = farms)))
 #' @keywords internal
 #' @export
 nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
@@ -53,31 +52,10 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
   
   id <- if (lex.order) 1L else length(x)
   attr(ret, which = 'group1') <- call(name = '~', as.symbol(x[id]))
-  #attr(ret, which = 'name1') <- x[id]
-  # attr(ret, which = 'f1') <- as.factor(data[[x[id]]]) # use `data[[x[id]]]` directly
+  # use `data[[group1[[2L]]]]` to grab the 'factor'
   
   class(ret) <- c('nested', class(ret))
   return(ret)
   
 }
-
-
-
-
-# @export
-#print.nested <- function(x, ...) {
-#  x0 <- x
-  #attributes(x0)[c('group1', 'f1')] <- NULL
-#  attributes(x0)[c('group1')] <- NULL
-#  print.factor(x0, ...)
-  #lev <- levels(attr(x, which = 'f1', exact = TRUE))
-  #n0 <- length(lev)
-  #prt <- if (n0 > 6L) paste(c(lev[1:6], '...'), collapse = ' ') else paste(lev, collapse = ' ')
-  #message(sprintf(fmt = '%d Independent (%s) Levels: %s', n0, deparse(attr(x, which = 'group1', exact = TRUE)[[2L]]), prt))
-#  message(sprintf(fmt = 'Independent Level: %s', deparse(attr(x, which = 'group1', exact = TRUE))))
-#}
-
-
-
-
 

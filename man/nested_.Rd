@@ -18,8 +18,7 @@ nested_(lang, data, sep = ".", lex.order = TRUE)
 \value{
 Function \link{nested_} returns a \link[base]{factor} (from function \link[base]{interaction}) with additional \link[base]{attributes},
 \describe{
-\item{\code{attr(.,'name1')}}{\link[base]{character} scalar}
-\item{\code{attr(.,'f1')}}{\link[base]{factor}}
+\item{\code{attr(.,'group1')}}{\link[stats]{formula}, the highest grouping}
 }
 }
 \description{
@@ -35,8 +34,8 @@ R base function \link[base]{interaction} correctly handles syntactically invalid
 data(farms, package = 'MASS')
 interaction(farms[c('Mois', 'Manag')])
 
-(f1 = nested_(~ Mois/Manag, data = farms))
-stopifnot(identical(f1, nested_(quote(~ Mois/Manag), data = farms)))
-stopifnot(identical(f1, nested_(quote(Mois/Manag), data = farms)))
+(f = nested_(~ Mois/Manag, data = farms))
+stopifnot(identical(f, nested_(quote(~ Mois/Manag), data = farms)))
+stopifnot(identical(f, nested_(quote(Mois/Manag), data = farms)))
 }
 \keyword{internal}
