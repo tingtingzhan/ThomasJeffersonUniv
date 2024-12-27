@@ -48,10 +48,10 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
   
   if (!is.language(lang)) stop('`lang` must be language')
   x <- all.vars(lang)
-  n <- length(x)
+  
   ret <- interaction(data[x], drop = TRUE, sep = sep, lex.order = lex.order)
   
-  id <- if (lex.order) 1L else n
+  id <- if (lex.order) 1L else length(x)
   attr(ret, which = 'name1') <- x[id]
   attr(ret, which = 'f1') <- as.factor(data[[x[id]]])
   
