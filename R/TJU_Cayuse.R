@@ -64,7 +64,7 @@ aggregateAwards <- function(
     Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
   })
   
-  ys <- split.data.frame(awards, f = nested_(~ Award.No./Sponsor, data = awards, drop = TRUE))
+  ys <- split.data.frame(awards, f = nested_(~ Award.No./Sponsor, data = awards))
   
   y1 <- do.call(rbind.data.frame, args = c(lapply(ys, FUN = function(d) {
     with(data = d, expr = {

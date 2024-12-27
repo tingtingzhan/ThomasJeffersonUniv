@@ -4,14 +4,12 @@
 \alias{nested_}
 \title{Nested \link[base]{factor}s}
 \usage{
-nested_(lang, data, drop = TRUE, sep = ".", lex.order = TRUE)
+nested_(lang, data, sep = ".", lex.order = TRUE)
 }
 \arguments{
 \item{lang}{any \link[base]{language} of a nested structure, e.g., \code{~c1/c2} or \code{c1/c2}}
 
 \item{data}{\link[base]{data.frame}}
-
-\item{drop}{see function \link[base]{interaction}, default \code{TRUE}}
 
 \item{sep}{see function \link[base]{interaction}}
 
@@ -35,14 +33,10 @@ R base function \link[base]{interaction} correctly handles syntactically invalid
 }
 \examples{
 data(farms, package = 'MASS')
-interaction(farms[c('Mois', 'Manag')], drop = TRUE, lex.order = TRUE)
-(f1 = nested_(~ Mois/Manag, data = farms, drop = TRUE, lex.order = TRUE))
-  
-# first argument can be 'call' starting with '~'
-stopifnot(identical(f1, nested_(quote(~ Mois/Manag), data = farms, drop = TRUE)))
- 
-# or can be just any 'language'
-stopifnot(identical(f1, nested_(quote(Mois/Manag), data = farms, drop = TRUE)))
- 
+interaction(farms[c('Mois', 'Manag')])
+
+(f1 = nested_(~ Mois/Manag, data = farms))
+stopifnot(identical(f1, nested_(quote(~ Mois/Manag), data = farms)))
+stopifnot(identical(f1, nested_(quote(Mois/Manag), data = farms)))
 }
 \keyword{internal}
