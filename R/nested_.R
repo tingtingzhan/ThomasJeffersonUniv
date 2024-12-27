@@ -33,8 +33,8 @@
 #' @returns
 #' Function [nested_] returns a \link[base]{factor} (from function \link[base]{interaction}) with additional \link[base]{attributes},
 #' \describe{
-#' \item{`attr(.,'1st')`}{}
-#' \item{`attr(.,'1st.levels')`}{}
+#' \item{`attr(.,'name1')`}{\link[base]{character} scalar}
+#' \item{`attr(.,'f1')`}{\link[base]{factor}}
 #' }
 #' 
 #' @examples
@@ -61,11 +61,13 @@ nested_ <- function(lang, data, drop = TRUE, sep = '.', lex.order = TRUE) {
   lev <- attr(ret, which = 'levels', exact = TRUE)
   tmp <- strsplit(lev, split = sep, fixed = TRUE)
   if (any(n != lengths(tmp, use.names = FALSE))) stop('original levels contains `sep`?')
-  id <- if (lex.order) 1L else n
-  attr(ret, which = '1st') <- x[id]
-  attr(ret, which = '1st.levels') <- unique.default(vapply(tmp, FUN = `[[`, id, FUN.VALUE = ''))
   
-  attr(ret, which = 'sep') <- sep
+  id <- if (lex.order) 1L else n
+  attr(ret, which = 'name1') <- x[id] # old name '1st'
+  # attr(ret, which = '1st.levels') <- unique.default(vapply(tmp, FUN = `[[`, id, FUN.VALUE = ''))
+  attr(ret, which = 'f1') <- factor(data[[x[id]]])
+  
+  # attr(ret, which = 'sep') <- sep # no longer needed
   
   class(ret) <- c('nested', class(ret))
   return(ret)
@@ -77,12 +79,12 @@ nested_ <- function(lang, data, drop = TRUE, sep = '.', lex.order = TRUE) {
 #' @export
 print.nested <- function(x, ...) {
   x0 <- x
-  attributes(x0)[c('1st', '1st.levels', 'sep')] <- NULL
+  attributes(x0)[c('name1', 'f1')] <- NULL # , 'sep'
   print.factor(x0, ...)
-  lev <- attr(x, which = '1st.levels', exact = TRUE)
+  lev <- levels(attr(x, which = 'f1', exact = TRUE))
   n0 <- length(lev)
   prt <- if (n0 > 6L) paste(c(lev[1:6], '...'), collapse = ' ') else paste(lev, collapse = ' ')
-  message(sprintf(fmt = '%d Independent (%s) Levels: %s', n0, attr(x, which = '1st'), prt))
+  message(sprintf(fmt = '%d Independent (%s) Levels: %s', n0, attr(x, which = 'name1'), prt))
 }
 
 

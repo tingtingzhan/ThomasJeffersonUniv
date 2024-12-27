@@ -20,8 +20,8 @@ nested_(lang, data, drop = TRUE, sep = ".", lex.order = TRUE)
 \value{
 Function \link{nested_} returns a \link[base]{factor} (from function \link[base]{interaction}) with additional \link[base]{attributes},
 \describe{
-\item{\code{attr(.,'1st')}}{}
-\item{\code{attr(.,'1st.levels')}}{}
+\item{\code{attr(.,'name1')}}{\link[base]{character} scalar}
+\item{\code{attr(.,'f1')}}{\link[base]{factor}}
 }
 }
 \description{
