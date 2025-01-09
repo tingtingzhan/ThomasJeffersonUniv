@@ -11,6 +11,9 @@ ma(x, order = 5L)
 
 \item{order}{\link[base]{integer} scalar}
 }
+\value{
+Function \link{ma} returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
+}
 \description{
 ..
 }
@@ -18,9 +21,13 @@ ma(x, order = 5L)
 Function \link{ma} is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
 
 Function \link{ma} is much faster than function \link[zoo]{rollmean} in package \CRANpkg{zoo}.
+
+Function \link{ma} imports function \link[stats]{filter} from package \pkg{stats},
+not function \link[dplyr]{filter} from package \CRANpkg{dplyr}.
 }
 \examples{
 unclass(ma(1:20, order = 3L))
+unclass(ma(1:2, order = 3L))
 }
 \references{
 \url{https://stackoverflow.com/questions/743812/calculating-moving-average}
