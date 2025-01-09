@@ -23,6 +23,8 @@
 #' x = c('a', 'b', 'a', 'd', 'b', NA, 'c', 'e')
 #' dplyr::case_match(x, 'a' ~ 1, 'b' ~ 2, 'c' ~ 3, 'd' ~ 4)
 #' case_match_factor(x, 'a' ~ 1, 'b' ~ 2, 'c' ~ 3, 'd' ~ 4)
+#' case_match_factor(x, 'a' ~ 1, 'b' ~ 2, 'c' ~ 1, 'd' ~ 2)
+#' 
 #' case_match_factor(x, 'a' ~ 1, 'd' ~ 4, 'b' ~ 2, 'c' ~ 3) # order matters!
 #' 
 #' y = c(1, 2, 1, 3, 1, NA, 2, 4)
@@ -51,6 +53,6 @@ case_match_factor <- function(
   arg_ <- as.list(cl)[-1L]
   target <- arg_[!nzchar(names(arg_))]
   lev_ <- vapply(target, FUN = function(i) as.character(i[[3L]]), FUN.VALUE = '')
-  factor(ret0, levels = lev_)
+  factor(ret0, levels = unique.default(lev_))
   
 }
