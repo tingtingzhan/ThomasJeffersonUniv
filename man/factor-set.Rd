@@ -40,4 +40,18 @@ ordered(x2) = LETTERS[1:5]; x2
 set.seed(141); (x10 = x20 = sample.int(n = 5L, size = 20, replace = TRUE) - 1L)
 factor(x10, plus = 1L) = letters[1:5]; x10
 ordered(x20, plus = 1L) = LETTERS[1:5]; x20
+
+# some exceptions
+x = 1:4
+factor(x) = c('a', 'b', 'c', 'c')
+x # duplicated levels dropped
+
+x = 1:4
+factor(x) = c('a', 'b', NA_character_, 'c')
+x # missing level converted to missing entry
+
+x = 1:4
+ordered(x) = c('a', 'b', NA_character_, 'c')
+x # correctly ordered
+
 }

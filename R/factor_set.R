@@ -30,6 +30,20 @@
 #' set.seed(141); (x10 = x20 = sample.int(n = 5L, size = 20, replace = TRUE) - 1L)
 #' factor(x10, plus = 1L) = letters[1:5]; x10
 #' ordered(x20, plus = 1L) = LETTERS[1:5]; x20
+#' 
+#' # some exceptions
+#' x = 1:4
+#' factor(x) = c('a', 'b', 'c', 'c')
+#' x # duplicated levels dropped
+#' 
+#' x = 1:4
+#' factor(x) = c('a', 'b', NA_character_, 'c')
+#' x # missing level converted to missing entry
+#' 
+#' x = 1:4
+#' ordered(x) = c('a', 'b', NA_character_, 'c')
+#' x # correctly ordered
+#' 
 #' @name factor-set
 #' @export
 `factor<-` <- function(x, plus = 0L, ordered = FALSE, value) {
@@ -45,13 +59,15 @@
     }
   } # else do nothing
   
-  if (!is.character(value) || anyNA(value)) stop('levels must be character, non-missing')
+  if (!is.character(value)) stop('levels must be character, non-missing')
+  # anyNA(value) # allowed
   
   if (any(x < 1L, x > length(value), na.rm = TRUE)) stop('`x+plus` must be between 1 and ', length(value))
   
   # faster than ?base::structure
   attr(x, which = 'levels') <- value
   class(x) <- c(if (ordered) 'ordered', 'factor')
+  x <- factor(x) # drop duplicated levels
   return(x)
     
 }
