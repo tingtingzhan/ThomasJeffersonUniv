@@ -44,6 +44,9 @@
 #' ordered(x) = c('a', 'b', NA_character_, 'c')
 #' x # correctly ordered
 #' 
+#' (x = array(sample.int(4, size = 20, replace = TRUE), dim = c(4,5)))
+#' factor(x) = letters[1:4]
+#' x # respects other attributes
 #' @name factor-set
 #' @export
 `factor<-` <- function(x, plus = 0L, ordered = FALSE, value) {
@@ -67,8 +70,12 @@
   # faster than ?base::structure
   attr(x, which = 'levels') <- value
   class(x) <- c(if (ordered) 'ordered', 'factor')
-  x <- factor(x) # drop duplicated levels
-  return(x)
+  
+  ret <- factor(x) # drop duplicated levels
+  atr <- attributes(x)
+  atr$levels <- atr$class <- NULL # levels being processed
+  attributes(ret)[names(atr)] <- atr
+  return(ret)
     
 }
 

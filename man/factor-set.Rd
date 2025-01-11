@@ -54,4 +54,7 @@ x = 1:4
 ordered(x) = c('a', 'b', NA_character_, 'c')
 x # correctly ordered
 
+(x = array(sample.int(4, size = 20, replace = TRUE), dim = c(4,5)))
+factor(x) = letters[1:4]
+x # respects other attributes
 }
