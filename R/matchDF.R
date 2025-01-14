@@ -16,7 +16,11 @@
 #' @param view.table (optional) \link[base]{character} scalar or \link[base]{vector},
 #' variable names of `table` to be printed in fuzzy suggestion (if applicable)
 #'  
-#' @param trace \link[base]{logical} scalar, to provide detailed diagnosis information, default `FALSE`
+#' @param trace_duplicate \link[base]{logical} scalar
+#'  
+#' @param trace_nomatch \link[base]{logical} scalar, to provide detailed diagnosis information, default `FALSE`
+#' 
+#' @param inspect_fuzzy \link[base]{logical} scalar
 #' 
 #' @param ... additional parameters, currently not in use
 #' 
@@ -37,7 +41,9 @@ matchDF <- function(
     x, table = unique.data.frame(x),
     by = names(x), by.x = character(), by.table = character(),
     view.table = character(),
-    trace = FALSE,
+    trace_duplicate = FALSE,
+    trace_nomatch = FALSE,
+    inspect_fuzzy = FALSE,
     ...
 ) {
   
@@ -72,7 +78,7 @@ matchDF <- function(
     tmp1 <- split.default(seq_along(id), f = factor(id))
     tmp2 <- tmp1[lengths(tmp1, use.names = FALSE) > 1L]
     tmp <- lapply(tmp2, FUN = `+`, 1L) # Excel rows, +1 for row header
-    if (trace) lapply(format_named(tmp, sep = 'th unique row appears on Excel rows '), FUN = message)
+    if (trace_duplicate) lapply(format_named(tmp, sep = 'th unique row appears on Excel rows '), FUN = message)
   } # rows with multiple matches
   
   if (any(na1 <- is.na(id))) { # rows without a match
@@ -89,7 +95,7 @@ matchDF <- function(
                    table = rsplit_(unique.data.frame(tab0[iseq])), 
                    nomatch = NA_integer_)
       idok <- !is.na(idx)
-      if (trace) message(sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])))
+      if (trace_nomatch) message(sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])))
       if (all(idok)) break
     }
     
@@ -119,8 +125,10 @@ matchDF <- function(
       style_basename(fuzzy_csv),
       sum(na1), sum(x_uid), 
       style_interaction(by.x), style_interaction(by.tab)))
-    write.csv(x = fuzzy_suggest, file = fuzzy_csv, row.names = FALSE)
-    system(paste0('open ', dirname(fuzzy_csv)))
+    if (inspect_fuzzy) {
+      write.csv(x = fuzzy_suggest, file = fuzzy_csv, row.names = FALSE)
+      system(paste0('open ', dirname(fuzzy_csv)))
+    }
     
     id_agree <- (lengths(min_dist, use.names = FALSE) == 1L)
     if (any(id_agree)) {  

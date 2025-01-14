@@ -11,7 +11,9 @@ matchDF(
   by.x = character(),
   by.table = character(),
   view.table = character(),
-  trace = FALSE,
+  trace_duplicate = FALSE,
+  trace_nomatch = FALSE,
+  inspect_fuzzy = FALSE,
   ...
 )
 }
@@ -27,7 +29,11 @@ matchDF(
 \item{view.table}{(optional) \link[base]{character} scalar or \link[base]{vector},
 variable names of \code{table} to be printed in fuzzy suggestion (if applicable)}
 
-\item{trace}{\link[base]{logical} scalar, to provide detailed diagnosis information, default \code{FALSE}}
+\item{trace_duplicate}{\link[base]{logical} scalar}
+
+\item{trace_nomatch}{\link[base]{logical} scalar, to provide detailed diagnosis information, default \code{FALSE}}
+
+\item{inspect_fuzzy}{\link[base]{logical} scalar}
 
 \item{...}{additional parameters, currently not in use}
 }

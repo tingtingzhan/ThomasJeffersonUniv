@@ -48,7 +48,7 @@ inspect_ <- function(
   
   id <- duplicated.data.frame(x)
   if (any(id)) {
-    matchDF(x, trace = TRUE) # only to print the ?base::message
+    matchDF(x, trace_duplicate = TRUE) # only to print the ?base::message
     if (row_dup_rm) {
       message(sprintf(fmt = '%d duplicated rows removed.\n', sum(id)))
       x <- x[!id, , drop = FALSE] # `drop` needed for 1-column data.frame!
