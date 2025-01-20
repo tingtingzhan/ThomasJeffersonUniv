@@ -31,11 +31,13 @@ Function \link{nested_} ..
 R base function \link[base]{interaction} correctly handles syntactically invalid names (see \link[base]{make.names}).
 }
 \examples{
-data(farms, package = 'MASS')
-interaction(farms[c('Mois', 'Manag')])
+library(nlme)
+data(Alfalfa, package = 'nlme')
+head(Alfalfa)
+interaction(Alfalfa[c('Block', 'Variety')])
 
-(f = nested_(~ Mois/Manag, data = farms))
-stopifnot(identical(f, nested_(quote(~ Mois/Manag), data = farms)))
-stopifnot(identical(f, nested_(quote(Mois/Manag), data = farms)))
+(f = nested_(~ Block/Variety, data = Alfalfa))
+stopifnot(identical(f, nested_(quote(~ Block/Variety), data = Alfalfa)))
+stopifnot(identical(f, nested_(quote(Block/Variety), data = Alfalfa)))
 }
 \keyword{internal}

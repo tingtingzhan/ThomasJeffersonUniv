@@ -35,12 +35,14 @@
 #' }
 #' 
 #' @examples
-#' data(farms, package = 'MASS')
-#' interaction(farms[c('Mois', 'Manag')])
+#' library(nlme)
+#' data(Alfalfa, package = 'nlme')
+#' head(Alfalfa)
+#' interaction(Alfalfa[c('Block', 'Variety')])
 #' 
-#' (f = nested_(~ Mois/Manag, data = farms))
-#' stopifnot(identical(f, nested_(quote(~ Mois/Manag), data = farms)))
-#' stopifnot(identical(f, nested_(quote(Mois/Manag), data = farms)))
+#' (f = nested_(~ Block/Variety, data = Alfalfa))
+#' stopifnot(identical(f, nested_(quote(~ Block/Variety), data = Alfalfa)))
+#' stopifnot(identical(f, nested_(quote(Block/Variety), data = Alfalfa)))
 #' @keywords internal
 #' @export
 nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
@@ -50,11 +52,12 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
   
   ret <- interaction(data[x], drop = TRUE, sep = sep, lex.order = lex.order)
   
-  id <- if (lex.order) 1L else length(x)
-  attr(ret, which = 'group1') <- call(name = '~', as.symbol(x[id]))
-  # use `data[[group1[[2L]]]]` to grab the 'factor'
+  #id <- if (lex.order) 1L else length(x)
+  #attr(ret, which = 'group1') <- call(name = '~', as.symbol(x[id]))
+  # \pkg{spatstat.grouped} no longer need!
+  # I have designed [groupedHyperframe] to handle this in a better way!
   
-  class(ret) <- c('nested', class(ret))
+  #class(ret) <- c('nested', class(ret)) # no longer need. I am not defining any S3 dispatches on this return
   return(ret)
   
 }
