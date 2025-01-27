@@ -4,17 +4,11 @@
 \alias{TJU_Cayuse}
 \alias{aggregateAwards}
 \alias{viewProposal}
-\alias{viewAward}
-\alias{award2LaTeX}
 \title{Award & Effort from Cayuse}
 \usage{
 aggregateAwards(path = "~/Downloads", fiscal.year = year(Sys.Date()))
 
 viewProposal(path = "~/Downloads", fiscal.year = year(Sys.Date()))
-
-viewAward(path = "~/Downloads")
-
-award2LaTeX(path = "~/Downloads")
 }
 \arguments{
 \item{path}{\link[base]{character} scalar, directory of downloaded award \code{.csv} file.
@@ -48,9 +42,7 @@ Then we need to manually added in our 'Sponsored Effort' in the returned \code{.
 \examples{
 if (FALSE) {
 aggregateAwards()
-viewAward()
 viewProposal()
-# award2LaTeX() # bug to fix
 }
 
 }

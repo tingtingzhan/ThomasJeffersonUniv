@@ -33,9 +33,7 @@
 #' @examples 
 #' if (FALSE) {
 #' aggregateAwards()
-#' viewAward()
 #' viewProposal()
-#' # award2LaTeX() # bug to fix
 #' }
 #' 
 #' @name TJU_Cayuse
@@ -47,27 +45,52 @@ aggregateAwards <- function(
     fiscal.year = year(Sys.Date())
 ) {
   
-  awards_csv_ <- list.files(path = path, pattern = '^Awards_.*\\.csv$', full.names = TRUE)
-  if (!length(awards_csv_)) stop('Awards file not downloaded?')
-  message('\u261e ', style_basename(awards_csv <- sort.int(awards_csv_, decreasing = TRUE)[1L]))
+  fls <- list.files(path = path, pattern = '^Awards_.*\\.csv$', full.names = TRUE)
+  if (!length(fls)) stop('Awards file not downloaded?')
+  message('\u261e ', style_basename(fl <- sort.int(fls, decreasing = TRUE)[1L]))
   
-  dim(awards <- read.csv(file = awards_csv, header = TRUE))
-  # subset(awards, nzchar(Flags)) # manually inspect
-  awards <- within.data.frame(awards, expr = {
-    Admin.Unit <- Account.Numbers <- NULL
-    Status <- Flags <- NULL # hard to consolidate with a series of extensions
-    Lead.PI <- gsub(' AOI$', replacement = '', x = Lead.PI)
-    Award.Amount <- as.double(gsub('^\\$|,', replacement = '', x = Award.Amount))
-    Award.No. <- vapply(strsplit(Award.No., split = '-'), FUN = function(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
-    Award.Notice.Received <- as.Date.character(Award.Notice.Received, format = '%m/%d/%Y')
-    Award.Begin.Date <- as.Date.character(Award.Begin.Date, format = '%m/%d/%Y')
-    Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
-  })
+  awards <- read.csv(file = fl, header = TRUE) |>
+    # subset.data.frame(subset = startsWith(Status, prefix = 'Funded')) # I dont understand this yet
+    subset.data.frame(subset = !nzchar(Flags) & !is.na(Award.End.Date)) |>
+    within.data.frame(expr = {
+      Admin.Unit <- # not relavent
+        Account.Numbers <- # not relavent
+        Status <- # um..
+        Flags <- # used
+        NULL
+      Lead.PI <- gsub(' AOI$', replacement = '', x = Lead.PI)
+      Award.Amount <- as.double(gsub('^\\$|,', replacement = '', x = Award.Amount))
+      Award.No. <- vapply(strsplit(Award.No., split = '-'), FUN = function(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
+      Award.Notice.Received <- as.Date.character(Award.Notice.Received, format = '%m/%d/%Y')
+      Award.Begin.Date <- as.Date.character(Award.Begin.Date, format = '%m/%d/%Y')
+      Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
+    }) |>
+    subset.data.frame(subset = (Award.Amount > 0)) |>
+    split.data.frame(f = ~ Award.No.) |>
+    lapply(FUN = aggregate_award_) |>
+    do.call(what = rbind.data.frame) |> 
+    within.data.frame(expr = {
+      Status2 <- .bincode(as.double(Award.End.Date), breaks = c(-Inf, as.double(TJU_Fiscal_Year(fiscal.year)), Inf), right = TRUE, include.lowest = TRUE)
+      factor(Status2) <- c(sprintf('Ends before FY%d', fiscal.year), sprintf('Ends in FY%d', fiscal.year), 'Ongoing')
+    }) |>
+    sort_by.data.frame(y = ~ Status2 + Award.End.Date, decreasing = TRUE)
   
-  ys <- split.data.frame(awards, f = nested_(~ Award.No./Sponsor, data = awards))
+  view_by_row(awards[c(
+    'Award.No.', 
+    'Status2', 
+    'Project.Title', 'Lead.PI', 'Sponsor', 'Award.Amount', 'Time.Period', 'Award.Period')])
   
-  y1 <- do.call(rbind.data.frame, args = c(lapply(ys, FUN = function(d) {
-    with(data = d, expr = {
+  # message('\u21ac Fill in `Effort` by clicking into each project under \'Active Projects\'')
+  return(invisible(awards))
+  
+}
+
+
+
+aggregate_award_ <- function(x) {
+  x |> 
+    sort_by.data.frame(y = ~ Award.End.Date, decreasing = TRUE) |>
+    with(expr = {
       if (!all(duplicated(Project.Title)[-1L])) stop('`Project.Title` not same')
       first_begin <- min(Award.Begin.Date, na.rm = TRUE)
       last_end <- max(Award.End.Date, na.rm = TRUE)
@@ -76,38 +99,18 @@ aggregateAwards <- function(
         format.difftime(asDifftime(Award.End.Date - Award.Begin.Date, units = 'years'), digits = 1L), ', ',
         '$', formatC(Award.Amount, big.mark = ',', format = 'f', digits = 2L),
         ')', collapse = '\n')
-      data.frame(
+      return(data.frame(
         Award.No. = Award.No.[1L], 
         Project.Title = trimws(Project.Title[1L]), 
         Lead.PI = paste(unique(Lead.PI), collapse = ', '), 
         Sponsor = Sponsor[1L],
-        Award.Amount = paste0('$', formatC(sum(Award.Amount, na.rm = TRUE), big.mark = ',', format = 'f', digits = 2L)),
+        Award.Amount = paste0('$', formatC(sum(Award.Amount, na.rm = TRUE), big.mark = ',', format = 'f', digits = 0L)),
         #Award.Notice.Received = min(Award.Notice.Received, na.rm = TRUE),
-        TimePeriod = paste(first_begin, '~', last_end),
+        Time.Period = paste(format.Date(first_begin, format = '%b %d, %Y'), '-', format.Date(last_end, format = '%b %d, %Y')),
         Award.End.Date = last_end,
         Award.Period = Award.Period
-      )
+      ))
     })
-  }), list(make.row.names = FALSE)))
-  
-  
-  y2 <- within(y1, expr = {
-    Status <- .bincode(as.double(Award.End.Date), breaks = c(-Inf, as.double(TJU_Fiscal_Year(fiscal.year)), Inf), right = TRUE, include.lowest = TRUE)
-    Status <- structure(Status, levels = c(sprintf('Ends before FY%d', fiscal.year), sprintf('Ends in FY%d', fiscal.year), 'Ongoing'), class = 'factor')
-    Award.End.Date <- NULL
-  })
-  
-  y3 <- subset(y2, !is.na(Status))
-  y3$Effort <- '' # to be manually filled in
-
-  y4 <- y3[order(y3$Award.No.), ]
-  aggAwards_csv <- file.path(path, 'aggregatedAwards.csv')
-  write.table(y4, file = aggAwards_csv, sep = ',', row.names = FALSE)
-  system(paste('open', aggAwards_csv))
-  
-  message('\u21ac Fill in `Effort` by clicking into each project under \'Active Projects\'')
-  return(invisible(y4))
-  
 }
 
 
@@ -151,36 +154,6 @@ viewProposal <- function(path = '~/Downloads', fiscal.year = year(Sys.Date())) {
 
 
 
-
-#' @rdname TJU_Cayuse
-#' @export
-viewAward <- function(path = '~/Downloads') {
-  awards <- read.csv(file = file.path(path, 'aggregatedAwards.csv'))
-  # copy to Interfolio
-  view_by_row(awards[c(
-    # 'Award.No.', 
-    'Status', 
-    'Project.Title', 'Lead.PI', 'Sponsor', 'Award.Period', 'Effort')])
-  return(invisible())
-}
-
-
-
-#' @rdname TJU_Cayuse
-#' @export
-award2LaTeX <- function(path = '~/Downloads') {
-  awards <- read.csv(file.path(path, 'aggregatedAwards.csv'))
-  NoOut = lapply(seq_len(.row_names_info(awards, 2L)), FUN = function(i) { 
-    # copy to LaTeX resume
-    tmp <- awards[i, ]
-    cat('\\textmd{', tmp$Role, '.}\n', sep = '')
-    cat('\\textit{', gsub('\\&', '\\\\&', tmp$Project.Title), '}.\n', sep = '')
-    if (!is.na(tmp$SponsorAward)) cat(gsub('\\&', '\\\\&', tmp$Sponsor), ', ', tmp$SponsorAward, '\n', sep = '') else cat(gsub('\\&', '\\\\&', tmp$Sponsor), '.\n', sep = '')
-    cat('awarded to ', tmp$Lead.PI, ', ', gsub('\\~', '-', tmp$TimePeriod), ', \\', tmp$Award.Amount, '\n', sep = '')
-    cat('\n\n')
-  })
-  return(invisible())
-}
 
 
 

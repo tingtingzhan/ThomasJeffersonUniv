@@ -26,8 +26,8 @@ those generated from the default options of function \link[boot]{boot}
 }
 \examples{
 set.seed(1345); (bt1 = boot::boot(data = 1:10, statistic = function(data, ind) ind, R = 3L)[['t']])
-set.seed(1345); (bt2 = do.call(rbind, bootid(10L, R = 3L)))
-stopifnot(identical(bt1, bt2))
+set.seed(1345); (bt2 = bootid(10L, R = 3L))
+stopifnot(identical(c(t(bt1)), unlist(bt2)))
 }
 \seealso{
 Function \link{bootid} is inspired by functions \code{boot:::index.array} and \code{boot:::ordinary.array}.
