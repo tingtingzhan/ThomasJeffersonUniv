@@ -4,10 +4,10 @@
 \alias{relaxed_identical}
 \title{Relaxed Identical}
 \usage{
-relaxed_identical(e1, e2)
+relaxed_identical(x, y)
 }
 \arguments{
-\item{e1, e2}{any \strong{R} objects}
+\item{x, y}{any \strong{R} objects}
 }
 \value{
 Function \link{relaxed_identical} returns a \link[base]{logical} scalar.
@@ -27,7 +27,7 @@ i.e., function \link[base]{all.equal.numeric} with option \code{check.attributes
 
 \subsection{For \link[stats]{formula}s}{
 
-Set \link[base]{environment} of \code{e1} and \code{e2} to \code{NULL},
+Set \link[base]{environment} of \code{x} and \code{y} to \code{NULL},
 then compare them using function \link[base]{identical}.
 Note that
 \itemize{
@@ -39,7 +39,7 @@ Therefore, using function \link[base]{identical} with option \code{ignore.enviro
 
 \subsection{For \link[base]{function}s}{
 
-Ignore \link[base]{environment} of \code{e1} and \code{e2},
+Ignore \link[base]{environment} of \code{x} and \code{y},
 i.e., using function \link[base]{identical} with option \code{ignore.environment = TRUE}.
 Note that
 \itemize{
@@ -50,13 +50,13 @@ Therefore it must be placed before the \link[base]{is.recursive} branching;}
 
 \subsection{For all other \link[base]{is.recursive} objects}{
 
-Function \link{relaxed_identical} is called \emph{\strong{recursively}}, for each \link[base]{$} element of \code{e1} and \code{e2}.
+Function \link{relaxed_identical} is called \emph{\strong{recursively}}, for each \link[base]{$} element of \code{x} and \code{y}.
 }
 
 \subsection{For \link[base]{S4} objects}{
 
 Function \link{relaxed_identical} is called \emph{\strong{recursively}}, for each \link[base]{@} \link[methods]{slot}
-(which is technically the \link[base]{attributes}) of \code{e1} and \code{e2},
+(which is technically the \link[base]{attributes}) of \code{x} and \code{y},
 including the \verb{@.Data} slot.
 Note that
 \itemize{

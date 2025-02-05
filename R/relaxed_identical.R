@@ -7,7 +7,7 @@
 #' to identify near-identical objects, 
 #' e.g., model estimates with mathematically identical model specifications.
 #' 
-#' @param e1,e2 any **R** objects
+#' @param x,y any **R** objects
 #' 
 #' @details
 #' Function [relaxed_identical] relaxes function \link[base]{identical} in the following ways.
@@ -19,7 +19,7 @@
 #'
 #' ## For \link[stats]{formula}s
 #' 
-#' Set \link[base]{environment} of `e1` and `e2` to `NULL`, 
+#' Set \link[base]{environment} of `x` and `y` to `NULL`, 
 #' then compare them using function \link[base]{identical}.
 #' Note that 
 #' \itemize{
@@ -30,7 +30,7 @@
 #' 
 #' ## For \link[base]{function}s
 #' 
-#' Ignore \link[base]{environment} of `e1` and `e2`, 
+#' Ignore \link[base]{environment} of `x` and `y`, 
 #' i.e., using function \link[base]{identical} with option `ignore.environment = TRUE`.  
 #' Note that 
 #' \itemize{
@@ -40,11 +40,11 @@
 #' 
 #' ## For all other \link[base]{is.recursive} objects
 #' 
-#' Function [relaxed_identical] is called ***recursively***, for each \link[base]{$} element of `e1` and `e2`.
+#' Function [relaxed_identical] is called ***recursively***, for each \link[base]{$} element of `x` and `y`.
 #' 
 #' ## For \link[base]{S4} objects
 #' Function [relaxed_identical] is called ***recursively***, for each \link[base]{@@} \link[methods]{slot} 
-#' (which is technically the \link[base]{attributes}) of `e1` and `e2`, 
+#' (which is technically the \link[base]{attributes}) of `x` and `y`, 
 #' including the `@.Data` slot.
 #' Note that 
 #' \itemize{
@@ -66,35 +66,35 @@
 #' identical(foo(m1), foo(m2)) # FALSE
 #' relaxed_identical(foo(m1), foo(m2)) # TRUE
 #' @export
-relaxed_identical <- function(e1, e2) {
+relaxed_identical <- function(x, y) {
   
-  if ((typeof(e1) %in% c('integer', 'double')) && (typeof(e2) %in% c('integer', 'double'))) {
+  if ((typeof(x) %in% c('integer', 'double')) && (typeof(y) %in% c('integer', 'double'))) {
     return(isTRUE(all.equal.numeric(
-      target = e1, current = e2, 
+      target = x, current = y, 
       check.attributes = FALSE
     )))
   }
   
-  if (inherits(e1, what = 'formula') && inherits(e2, what = 'formula')) {
-    if (identical(e1, e2)) return(TRUE)
-    environment(e1) <- environment(e2) <- NULL
-    return(identical(e1, e2))
-    # return(identical(e1, e2, ignore.environment = TRUE)) # wrong!! formula not \link[base]{closure}
+  if (inherits(x, what = 'formula') && inherits(y, what = 'formula')) {
+    if (identical(x, y)) return(TRUE)
+    environment(x) <- environment(y) <- NULL
+    return(identical(x, y))
+    # return(identical(x, y, ignore.environment = TRUE)) # wrong!! formula not \link[base]{closure}
   }
 
-  if (inherits(e1, what = 'function') && inherits(e2, what = 'function')) {
-    return(identical(e1, e2, ignore.environment = TRUE))
+  if (inherits(x, what = 'function') && inherits(y, what = 'function')) {
+    return(identical(x, y, ignore.environment = TRUE))
   }
   
-  if (is.recursive(e1) && is.recursive(e2)) {
-    if (length(e1) != length(e2)) return(FALSE)
-    return(all(mapply(FUN = relaxed_identical, e1, e2, SIMPLIFY = TRUE)))
+  if (is.recursive(x) && is.recursive(y)) {
+    if (length(x) != length(y)) return(FALSE)
+    return(all(mapply(FUN = relaxed_identical, x, y, SIMPLIFY = TRUE)))
   } # recursive call; beautiful!!
   
-  if (isS4(e1) && isS4(e2)) {
-    return(relaxed_identical(e1@.Data, e2@.Data) & relaxed_identical(attributes(e1), attributes(e2)))
+  if (isS4(x) && isS4(y)) {
+    return(relaxed_identical(x@.Data, y@.Data) & relaxed_identical(attributes(x), attributes(y)))
   } # recursive call on attributes (not tested, but should be correct)
   
-  return(identical(e1, e2)) # exception handling
+  return(identical(x, y)) # exception handling
   
 }
