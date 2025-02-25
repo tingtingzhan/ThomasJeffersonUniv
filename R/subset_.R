@@ -93,7 +93,7 @@ subset_ <- function(
     '_Excel_' = rid + 1L,
     x[rid, var_sel, drop = FALSE],
     check.names = FALSE)
-  attr(ret, which = 'vline') <- 1L
-  attr(ret, which = 'jhighlight') <- setdiff(var_subset, avoid)
+  attr(ret, which = 'vline_j') <- 1L
+  attr(ret, which = 'highlight_j') <- setdiff(var_subset, avoid)
   return(ret)
 }
