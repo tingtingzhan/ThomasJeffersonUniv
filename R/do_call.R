@@ -15,6 +15,7 @@
 #' @export
 do_plus <- function(x) {
   if (!is.character(x) || !length(x) || anyNA(x)) stop('input must be non-missing character vector')
+  x <- unique.default(x)
   if (!identical(make.names(x), x)) stop('input must be syntactically valid names')
   
   #.plus_ <- function(e1, e2) call(name = '+', e1, e2)
