@@ -10,7 +10,7 @@ Functions for admin needs of employees of Thomas Jefferson University
 and Thomas Jefferson University Hospital, Philadelphia, PA.
 }
 \author{
-\strong{Maintainer}: Tingting Zhan \email{tingtingzhan@gmail.com} (\href{https://orcid.org/0000-0001-9971-4844}{ORCID}) [copyright holder]
+\strong{Maintainer}: Tingting Zhan \email{tingtingzhan@gmail.com} (\href{https://orcid.org/0000-0001-9971-4844}{ORCID})
 
 }
 \keyword{internal}
