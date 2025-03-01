@@ -95,10 +95,8 @@ aggregate_award_ <- function(x) {
       first_begin <- min(Award.Begin.Date, na.rm = TRUE)
       last_end <- max(Award.End.Date, na.rm = TRUE)
       Award.Period <- paste0(
-        Award.Begin.Date, ' ~ ', Award.End.Date, ' (', 
-        format.difftime(asDifftime(Award.End.Date - Award.Begin.Date, units = 'years'), digits = 1L), ', ',
-        '$', formatC(Award.Amount, big.mark = ',', format = 'f', digits = 2L),
-        ')', collapse = '\n')
+        Award.Begin.Date, ' ~ ', Award.End.Date, ', ', 
+        '$', formatC(Award.Amount, big.mark = ',', format = 'f', digits = 2L), collapse = '\n')
       return(data.frame(
         Award.No. = Award.No.[1L], 
         Project.Title = trimws(Project.Title[1L]), 
