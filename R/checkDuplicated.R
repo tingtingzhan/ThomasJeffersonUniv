@@ -27,7 +27,10 @@
 #' Function [checkDuplicated] returns a \link[base]{data.frame}.
 #' 
 #' @examples
-#' # no examples yet
+#' x = swiss[c(1, 1:5), ]
+#' x$Agriculture[2] = x$Agriculture[1] + 1
+#' x
+#' checkDuplicated(x, ~ Fertility)
 #' @importFrom cli cli_text
 #' @importFrom writexl write_xlsx
 #' @export
@@ -98,8 +101,8 @@ checkDuplicated <- function(
     write_xlsx(x = tmp, path = file)
     # https://cli.r-lib.org/reference/links.html
     #message(sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
-    cli_text(sprintf(fmt = '\u261e {.href [%s](file://{\'%s\'})} %d %s with substantial duplicates', style_basename(file), file, n_truedup, dup_txt))
-    system(paste0('open ', dirname(file)))
+    cli_text(sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
+    system(command = paste0('open ', dirname(file)))
     
     if (missing(rule)) {
       message('naively select the first row')

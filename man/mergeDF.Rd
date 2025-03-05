@@ -39,7 +39,6 @@ even \code{sort = FALSE} may not completely retain the original order of input \
 }
 \examples{
 # examples inspired by ?merge.data.frame 
-
 (authors = data.frame(
  surname = c('Tukey', 'Venables', 'Tierney', 'Ripley', 'McNeil'),
  nationality = c('US', 'Australia', 'US', 'UK', 'Australia'),
@@ -56,8 +55,6 @@ even \code{sort = FALSE} may not completely retain the original order of input \
  other.author = c(
   NA, 'Ripley', NA, NA, NA, NA, 'Venables & Smith',
   'Heagerty & Liang & Scott Zeger')))
-
 (m = mergeDF(books, authors, by.x = 'name', by.table = 'surname'))
 attr(m, 'nomatch')
-
 }

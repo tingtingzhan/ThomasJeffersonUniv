@@ -136,8 +136,8 @@ viewProposal <- function(path = '~/Downloads', fiscal.year = year(Sys.Date())) {
   status_rm <- c('Funded', 'Abandoned', 'Withdrawn', 'TJU Signing Official')
   dim(proposal <- eval(quote(subset(x = proposal1, subset = !is.na(Submitted_FY) & !(Status %in% status_rm)))))
   if (FALSE) { #manually inspect
-    freqs(proposal$Submitted.Date)
-    freqs(proposal$Status)
+    table(proposal$Submitted.Date, useNA = 'ifany')
+    table(proposal$Status, useNA = 'ifany')
     length(unique(proposal$Lead.PI))
   }
   

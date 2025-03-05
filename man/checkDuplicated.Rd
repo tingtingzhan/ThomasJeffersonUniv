@@ -39,5 +39,8 @@ Function \link{checkDuplicated} returns a \link[base]{data.frame}.
 To inspect duplicated rows in a \link[base]{data.frame}.
 }
 \examples{
-# no examples yet
+x = swiss[c(1, 1:5), ]
+x$Agriculture[2] = x$Agriculture[1] + 1
+x
+checkDuplicated(x, ~ Fertility)
 }
