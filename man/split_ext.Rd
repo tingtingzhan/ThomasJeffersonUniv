@@ -26,25 +26,23 @@ user-specified keywords.  Default to all keywords appearing in input \code{x}}
 \item{data.name}{(optional) \link[base]{character} scalar or \link[base]{name},
 name of input \code{x}}
 
-\item{envir}{\code{NULL} or \link[base]{environment}.
-If an \link[base]{environment} is specified, then assign the result to it
-(i.e., when used inside \link[base]{within.data.frame}).}
+\item{envir}{\code{NULL}, \code{FALSE} or an \link[base]{environment}.}
 
 \item{...}{potential parameters of \link[base]{strsplit}, most importantly \code{split}}
 
 \item{nm}{(for function \link{splitOrd}) \link[base]{character} \link[base]{vector}}
 }
 \value{
-Function \link{splitKey} returns a \link[base]{logical} \link[base]{matrix} if \code{assign2parent = FALSE}.
-Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to the parent frame
+Function \link{splitKey} returns a \link[base]{logical} \link[base]{matrix} if \code{envir = NULL}.
+Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to \code{envir}
 (i.e., when used inside \link[base]{within.data.frame}).
 
-Function \link{splitOrd} returns a \link[base]{logical} \link[base]{matrix} if \code{envir = NULL}.
-Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to the \code{envir}
+Function \link{splitOrd} returns a \link[base]{character} \link[base]{matrix} if \code{envir = NULL}.
+Otherwise the \link[base]{character} \link[base]{vector}s are assigned to \code{envir}
 (i.e., when used inside \link[base]{within.data.frame}).
 }
 \description{
-Split \link[base]{character} \link[base]{vector}, into keywords or by order of appearance.
+Split \link[base]{character} \link[base]{vector}, into keywords or by the order of appearance.
 }
 \details{
 Function \link{splitKey} finds out whether each keyword appears in each element of input \code{x}.
@@ -55,30 +53,18 @@ instead of as missingness (i.e., we do not know if any of the keywords exists).
 This practice is most intuitive to clinicians.
 }
 \examples{
-
 letters[1:4] |> splitKey(split = ';;', envir = NULL) # exception
-
-x = c('a,b,', 'c,a,b,,', NA_character_, '', 'a,b,a')
-x |> splitKey(split = ',', envir = NULL)
-
-data.frame(x) |> within.data.frame(expr = splitKey(x, split = ','))
-
-data.frame(x) |> within.data.frame(expr = splitKey(x, split = ',', data.name = 'cancer'))
-
-if (FALSE) {
-library(microbenchmark)
-X = rep(x, times = 10L)
-microbenchmark( # speed O(n)
- splitKey(x, split = ',', envir = NULL), 
- splitKey(X, split = ',', envir = NULL))
-}
-x = c('T2,N0,M0,B1', 'T4,N0, ,B0', 'T2,N0,M0,B0', 'T2,N1,M0,B0', ',Nx,M0,B0',
-  'T4,N3,M0,B2', NA, 'T4,N1,M0,B2')
+(x1 = c('a,b,', 'c,a,b,,a', NA_character_, ''))
+x1 |> splitKey(split = ',', envir = NULL)
+data.frame(x = x1) |> within.data.frame(expr = splitKey(x, split = ','))
+data.frame(x = x1) |> within.data.frame(expr = splitKey(x, split = ',', data.name = 'cancer'))
+\dontrun{
+X = rep(x1, times = 10L)
+microbenchmark::microbenchmark( # speed O(n)
+ splitKey(x1, split = ',', envir = NULL), 
+ splitKey(X, split = ',', envir = NULL))}
+(x2 = c('T2;N0;M0;B1', '; ;M1; ', NA_character_, ''))
 nm = c('T', 'N', 'M', 'B')
-splitOrd(x, split = ',', nm = nm, envir = NULL)
-  
-data.frame(x) |> within.data.frame(expr = {
-  splitOrd(x, split = ',', nm = nm, data.name = 'Stage')
-})
-  
+splitOrd(x2, split = ';', nm = nm, envir = NULL)
+data.frame(x = x2) |> within.data.frame(expr = splitOrd(x, split = ';', nm = nm, data.name = 'Stage'))
 }

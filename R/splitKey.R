@@ -3,7 +3,7 @@
 #' @title Split \link[base]{character} \link[base]{vector}
 #' 
 #' @description
-#' Split \link[base]{character} \link[base]{vector}, into keywords or by order of appearance.
+#' Split \link[base]{character} \link[base]{vector}, into keywords or by the order of appearance.
 #' 
 #' @param x \link[base]{character} \link[base]{vector}, each element being a set of 
 #' keywords separated by a symbol (e.g., `','`)
@@ -16,9 +16,7 @@
 #' @param data.name (optional) \link[base]{character} scalar or \link[base]{name},
 #' name of input `x`
 #' 
-#' @param envir `NULL` or \link[base]{environment}. 
-#' If an \link[base]{environment} is specified, then assign the result to it
-#' (i.e., when used inside \link[base]{within.data.frame}).
+#' @param envir `NULL`, `FALSE` or an \link[base]{environment}. 
 #' 
 #' @param ... potential parameters of \link[base]{strsplit}, most importantly `split`
 #' 
@@ -33,29 +31,21 @@
 #' 
 #' 
 #' @returns 
-#' 
-#' Function [splitKey] returns a \link[base]{logical} \link[base]{matrix} if `assign2parent = FALSE`.
-#' Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to the parent frame 
+#' Function [splitKey] returns a \link[base]{logical} \link[base]{matrix} if `envir = NULL`.
+#' Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to `envir`
 #' (i.e., when used inside \link[base]{within.data.frame}).
 #' 
 #' @examples 
-#' 
 #' letters[1:4] |> splitKey(split = ';;', envir = NULL) # exception
-#' 
-#' x = c('a,b,', 'c,a,b,,', NA_character_, '', 'a,b,a')
-#' x |> splitKey(split = ',', envir = NULL)
-#' 
-#' data.frame(x) |> within.data.frame(expr = splitKey(x, split = ','))
-#' 
-#' data.frame(x) |> within.data.frame(expr = splitKey(x, split = ',', data.name = 'cancer'))
-#' 
-#' if (FALSE) {
-#' library(microbenchmark)
-#' X = rep(x, times = 10L)
-#' microbenchmark( # speed O(n)
-#'  splitKey(x, split = ',', envir = NULL), 
-#'  splitKey(X, split = ',', envir = NULL))
-#' }
+#' (x1 = c('a,b,', 'c,a,b,,a', NA_character_, ''))
+#' x1 |> splitKey(split = ',', envir = NULL)
+#' data.frame(x = x1) |> within.data.frame(expr = splitKey(x, split = ','))
+#' data.frame(x = x1) |> within.data.frame(expr = splitKey(x, split = ',', data.name = 'cancer'))
+#' \dontrun{
+#' X = rep(x1, times = 10L)
+#' microbenchmark::microbenchmark( # speed O(n)
+#'  splitKey(x1, split = ',', envir = NULL), 
+#'  splitKey(X, split = ',', envir = NULL))}
 #' @name split_ext
 #' @export
 splitKey <- function(
@@ -116,20 +106,15 @@ splitKey <- function(
 #' @rdname split_ext
 #' 
 #' @returns 
-#' Function [splitOrd] returns a \link[base]{logical} \link[base]{matrix} if `envir = NULL`.
-#' Otherwise the \link[base]{logical} \link[base]{vector}s are assigned to the `envir`
+#' Function [splitOrd] returns a \link[base]{character} \link[base]{matrix} if `envir = NULL`.
+#' Otherwise the \link[base]{character} \link[base]{vector}s are assigned to `envir`
 #' (i.e., when used inside \link[base]{within.data.frame}).
 #' 
 #' @examples 
-#' x = c('T2,N0,M0,B1', 'T4,N0, ,B0', 'T2,N0,M0,B0', 'T2,N1,M0,B0', ',Nx,M0,B0',
-#'   'T4,N3,M0,B2', NA, 'T4,N1,M0,B2')
+#' (x2 = c('T2;N0;M0;B1', '; ;M1; ', NA_character_, ''))
 #' nm = c('T', 'N', 'M', 'B')
-#' splitOrd(x, split = ',', nm = nm, envir = NULL)
-#'   
-#' data.frame(x) |> within.data.frame(expr = {
-#'   splitOrd(x, split = ',', nm = nm, data.name = 'Stage')
-#' })
-#'   
+#' splitOrd(x2, split = ';', nm = nm, envir = NULL)
+#' data.frame(x = x2) |> within.data.frame(expr = splitOrd(x, split = ';', nm = nm, data.name = 'Stage'))
 #' @export
 splitOrd <- function(
     x, nm = stop('must specify new names'),
