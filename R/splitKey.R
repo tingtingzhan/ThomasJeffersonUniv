@@ -114,7 +114,7 @@ splitKey <- function(
 #' (x2 = c('T2;N0;M0;B1', '; ;M1; ', NA_character_, ''))
 #' nm = c('T', 'N', 'M', 'B')
 #' splitOrd(x2, split = ';', nm = nm, envir = NULL)
-#' data.frame(x = x2) |> within.data.frame(expr = splitOrd(x, split = ';', nm = nm, data.name = 'Stage'))
+#' data.frame(x = x2) |> within.data.frame(expr = splitOrd(x, split = ';', nm = nm, data.name = 'st'))
 #' @export
 splitOrd <- function(
     x, nm = stop('must specify new names'),
