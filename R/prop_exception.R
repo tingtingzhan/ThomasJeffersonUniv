@@ -36,7 +36,7 @@ prop_exception <- function(x, FUN, data.name = stop(), FUN.NAME = deparse1(subst
     ret0 <- prop_bool(FUN(x))
     nm0 <- data.name
   } else {
-    y0 <- lapply(x, FUN = function(x) prop_bool(FUN(x)))
+    y0 <- lapply(x, FUN = \(x) prop_bool(FUN(x)))
     ret0 <- do.call(rbind, args = y0)
     nm0 <- names(x)
   }
@@ -79,6 +79,6 @@ prop_missing <- function(x, data.name = deparse1(substitute(x)), ...) {
 #' @rdname prop_exception
 #' @export
 prop_nonmissing <- function(x, data.name = deparse1(substitute(x)), ...) {
-  prop_exception(x, FUN = function(x) !is.na(x), data.name = data.name, FUN.NAME = c('Non-Missing'), ...)
+  prop_exception(x, FUN = \(x) !is.na(x), data.name = data.name, FUN.NAME = c('Non-Missing'), ...)
 }
 

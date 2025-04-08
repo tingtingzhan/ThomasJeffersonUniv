@@ -167,7 +167,7 @@ allDates <- function(x) {
 #' @export allDates.integer
 #' @export
 allDates.integer <- function(x) { # `x` considered as year!
-  do.call(c, args = lapply(x, FUN = function(i) {
+  do.call(c, args = lapply(x, FUN = \(i) {
     i1 <- as.Date.character(paste0(i, c('-01-01', '-12-31')), format = '%Y-%m-%d')
     seq.Date(from = i1[1L], to = i1[2L], by = 1L)
   }))
@@ -188,7 +188,7 @@ allDates.character <- function(x) {
 #' @export allDates.yearmon
 #' @export
 allDates.yearmon <- function(x) {
-  do.call(c, args = lapply(x, FUN = function(i) {
+  do.call(c, args = lapply(x, FUN = \(i) {
     seq.Date(from = as.Date.yearmon(i), to = as.Date.yearmon(i + 1/12) - 1L, by = 1L)
   }))
 }
@@ -198,7 +198,7 @@ allDates.yearmon <- function(x) {
 #' @export allDates.yearqtr
 #' @export
 allDates.yearqtr <- function(x) {
-  do.call(c, args = lapply(x, FUN = function(i) {
+  do.call(c, args = lapply(x, FUN = \(i) {
     seq.Date(from = as.Date.yearqtr(i), to = as.Date.yearqtr(i + 1/4) - 1L, by = 1L)
   }))
 }

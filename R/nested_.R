@@ -54,7 +54,7 @@ nested_ <- function(lang, data, sep = '.', lex.order = TRUE) {
   
   #id <- if (lex.order) 1L else length(x)
   #attr(ret, which = 'group1') <- call(name = '~', as.symbol(x[id]))
-  # \pkg{spatstat.grouped} no longer need!
+  # \pkg{groupedHyperframe} no longer need!
   # I have designed [groupedHyperframe] to handle this in a better way!
   
   #class(ret) <- c('nested', class(ret)) # no longer need. I am not defining any S3 dispatches on this return

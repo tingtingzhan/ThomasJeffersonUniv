@@ -61,14 +61,14 @@ checkDuplicated <- function(
   nm_dup <- format(sQuote(names(rid[ns_])), justify = 'left')
   
   # slow with big `data`!!
-  # ds_ <- mapply(FUN = function(i, nm) {
+  # ds_ <- mapply(FUN = \(i, nm) {
   #  message('\rCreating subset ', nm, appendLF = FALSE)
   #  data[i, , drop = FALSE]
   #}, i = rid_dup, nm = sprintf(fmt = '%s - %d/%d', nm_dup, seq_along(nm_dup), length(nm_dup)), SIMPLIFY = FALSE)
   #cat('\r')
-  ds_ <- lapply(rid[ns_], FUN = function(i) data[i, , drop = FALSE]) # if too slow, use parallel
+  ds_ <- lapply(rid[ns_], FUN = \(i) data[i, , drop = FALSE]) # if too slow, use parallel
   
-  ds_coalesce <- lapply(ds_, FUN = function(d) {
+  ds_coalesce <- lapply(ds_, FUN = \(d) {
     # attempt column-wise coalesce?
     tryCatch(expr = lapply(d, FUN = unique_), error = identity)
   })
@@ -92,7 +92,7 @@ checkDuplicated <- function(
     if (!length(show_nc)) show_nc <- TRUE
     
     # slow with big `data`!!
-    tmp <- mapply(FUN = function(d, nm) {
+    tmp <- mapply(FUN = \(d, nm) {
       #message('\rFinding duplicated columns ', nm, appendLF = FALSE)
       not_unique_(d[show_nc])
     }, d = ds_[id_truedup], nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), SIMPLIFY = FALSE)
@@ -109,7 +109,7 @@ checkDuplicated <- function(
       vapply(rid_dup[id_truedup], FUN = `[`, 1L, FUN.VALUE = NA_integer_)
     } else {
       message('Selection rule: ', deparse(rule))
-      vapply(rid_dup[id_truedup], FUN = function(i) { # (i = rid_dup[id_truedup][[1L]])
+      vapply(rid_dup[id_truedup], FUN = \(i) { # (i = rid_dup[id_truedup][[1L]])
         ret <- with(data[i,], expr = eval(rule))
         if (length(ret) != 1L) {
           print(data[i,])
@@ -140,7 +140,7 @@ unique_ <- function(x) {
 
 
 not_unique_ <- function(data) {
-  unique_id <- vapply(data, FUN = function(x) {
+  unique_id <- vapply(data, FUN = \(x) {
     #inherits(tryCatch(unique_(x), error = identity), what = 'error')
     # base::tryCatch too slow
     x0 <- x[!is.na(x)]

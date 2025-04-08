@@ -60,7 +60,7 @@ aggregateAwards <- function(
         NULL
       Lead.PI <- gsub(' AOI$', replacement = '', x = Lead.PI)
       Award.Amount <- as.double(gsub('^\\$|,', replacement = '', x = Award.Amount))
-      Award.No. <- vapply(strsplit(Award.No., split = '-'), FUN = function(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
+      Award.No. <- vapply(strsplit(Award.No., split = '-'), FUN = \(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
       Award.Notice.Received <- as.Date.character(Award.Notice.Received, format = '%m/%d/%Y')
       Award.Begin.Date <- as.Date.character(Award.Begin.Date, format = '%m/%d/%Y')
       Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
@@ -169,7 +169,7 @@ if (FALSE) {
 
 view_by_row <- function(data) {
   nr <- .row_names_info(data, type = 2L)
-  .mapply(FUN = function(x, nm) {
+  .mapply(FUN = \(x, nm) {
     message('Row ', sQuote(nm))
     lapply(format_named(x), FUN = message)
     cat('\n')

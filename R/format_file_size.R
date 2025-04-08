@@ -27,9 +27,9 @@
 #' @export
 format_file_size <- function(..., units = 'auto') {
   sz <- file.info(..., extra_cols = FALSE)$size # ?base::file.size
-  vapply(sz, FUN = function(i) {
-    class(i) <- 'object_size' # to invoke ?utils:::format.object_size
-    format(i, units = units)
+  vapply(sz, FUN = \(i) {
+    class(i) <- 'object_size' 
+    format(i, units = units) # ?utils:::format.object_size 
   }, FUN.VALUE = '')
 }
 

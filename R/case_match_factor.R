@@ -52,7 +52,7 @@ case_match_factor <- function(
   
   arg_ <- as.list(cl)[-1L]
   target <- arg_[!nzchar(names(arg_))]
-  lev_ <- vapply(target, FUN = function(i) as.character(i[[3L]]), FUN.VALUE = '')
+  lev_ <- vapply(target, FUN = \(i) as.character(i[[3L]]), FUN.VALUE = '')
   factor(ret0, levels = unique.default(lev_))
   
 }

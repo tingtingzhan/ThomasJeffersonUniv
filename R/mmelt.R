@@ -54,7 +54,7 @@ mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
     all_ <- unique.default(unlist(tmp))
     add_ <- lapply(tmp, FUN = setdiff, x = all_)
     add_ <- add_[lengths(add_) > 0L]
-    lapply(seq_along(add_), FUN = function(i) { # (i = 1L)
+    lapply(seq_along(add_), FUN = \(i) { # (i = 1L)
       message(
         'Add ', 
         col_green(paste(add_[[i]], collapse = ', ')),
@@ -86,7 +86,7 @@ mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
   vshare <- c(id.vars, variable.name)
   rets0 <- lapply(rets, FUN = `[`, vshare)
   if (!all(duplicated(rets0)[-1L])) stop('should not happen')
-  rets1 <- lapply(rets, FUN = function(i) { i[vshare] <- NULL; return(i) })
+  rets1 <- lapply(rets, FUN = \(i) { i[vshare] <- NULL; return(i) })
   return(data.frame(rets0[[1L]], rets1, check.names = FALSE))
   
 }

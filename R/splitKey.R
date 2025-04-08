@@ -64,7 +64,7 @@ splitKey <- function(
   xs <- x[xok] |> 
     strsplit(...) |>
     lapply(FUN = trimws_) |>
-    lapply(FUN = function(x) x[nzchar(x)]) |>
+    lapply(FUN = \(x) x[nzchar(x)]) |>
     lapply(FUN = unique.default) # tolerate duplicates (although they should not be there)
   if (anyNA(xs, recursive = TRUE)) stop('should not happen')
   

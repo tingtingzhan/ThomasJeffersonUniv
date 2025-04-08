@@ -10,7 +10,7 @@ TJU_SchoolTerm(x)
 \item{x}{a \link[base]{Date} object}
 }
 \value{
-\link{TJU_SchoolTerm} returns a \link[base]{character} \link[base]{vector}
+Function \code{\link[=TJU_SchoolTerm]{TJU_SchoolTerm()}} returns a \link[base]{character} \link[base]{vector}
 }
 \description{
 ..

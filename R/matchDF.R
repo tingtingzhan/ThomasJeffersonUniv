@@ -107,7 +107,7 @@ matchDF <- function(
       tab_dx <- tab0[, -seq_len(i), drop = FALSE]
     }
     
-    min_dist_0 <- lapply(seq_len(length(x_dx)), FUN = function(i) { # (i = 1L)
+    min_dist_0 <- lapply(seq_len(length(x_dx)), FUN = \(i) { # (i = 1L)
       tmp <- lapply(x_dx[[i]], FUN = stringdist, b = tab_dx[[i]], method = 'lcs')
       vapply(tmp, FUN = which.min, FUN.VALUE = 0L, USE.NAMES = FALSE)
     })

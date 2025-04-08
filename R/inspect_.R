@@ -55,7 +55,7 @@ inspect_ <- function(
     } # else message('')
   }
 
-  id <- vapply(x, FUN = function(i) all(is.na(i)), FUN.VALUE = NA)
+  id <- vapply(x, FUN = \(i) all(is.na(i)), FUN.VALUE = NA)
   if (any(id)) {
     if (col_na_rm) {
       #message(sum(id), ' all-missing columns removed: ', paste(sQuote(head(names(x)[id])), collapse = ', '))
@@ -66,7 +66,7 @@ inspect_ <- function(
   
   nm <- names(x)
   
-  x[] <- lapply(x, FUN = function(i) {
+  x[] <- lapply(x, FUN = \(i) {
     if (is.character(i)) {
       i <- trimws_(i)
       i[!nzchar(i)] <- NA_character_
@@ -79,7 +79,7 @@ inspect_ <- function(
     if (!is.character(ptn_Date) || length(ptn_Date) != 1L || is.na(ptn_Date) || !nzchar(ptn_Date)) stop('illegal ptn_Date')
     cid <- grepl(pattern = ptn_Date, x = nm)
     if (any(cid)) {
-      x[cid] <- lapply(nm[cid], FUN = function(inm) {
+      x[cid] <- lapply(nm[cid], FUN = \(inm) {
         # (inm = nm[cid][1L])
         i <- x[[inm]]
         if (is.factor(i)) .Defunct(msg = '?base::data.frame now has default argument `stringsAsFactors = FALSE`')
@@ -124,9 +124,9 @@ inspect_ <- function(
   x[] <- lapply(x, FUN = force_bool)
   
   # copy tzh::class1List
-  cl1 <- vapply(x, FUN = function(x) class(x)[1L], FUN.VALUE = '', USE.NAMES = TRUE)
+  cl1 <- vapply(x, FUN = \(x) class(x)[1L], FUN.VALUE = '', USE.NAMES = TRUE)
   cl2 <- split.default(names(cl1), f = factor(cl1))
-  cls <- lapply(cl2, FUN = function(i) {
+  cls <- lapply(cl2, FUN = \(i) {
     if (length(i) < 6L) return(i)
     c(i[1:6], 'etc.')
   })

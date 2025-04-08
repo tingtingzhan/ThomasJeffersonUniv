@@ -79,7 +79,7 @@ id2key <- function(x, collapse = ';', none = '[none]', ...) {
   
   x1 <- x
   x1[is.na(x1)] <- FALSE # using .Internal(which()) in lapply is slow
-  ret <- vapply(seq_len(dm[1L]), FUN = function(i) {
+  ret <- vapply(seq_len(dm[1L]), FUN = \(i) {
     nm[x1[i,]] |> paste(collapse = collapse)
   }, FUN.VALUE = '')
   ret[!nzchar(ret)] <- NA_character_ # 0-char in `ret` may be FALSE+missing, or all-FALSE (i.e., confirmed empty)

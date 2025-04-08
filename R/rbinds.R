@@ -42,10 +42,10 @@ rbinds <- function(x, make.row.names = FALSE, ..., .id = 'idx') {
   cnms <- lapply(x, FUN = names)
   if (!all(duplicated.default(cnms)[-1L])) stop('all data.frame\'s must have same column names')
   
-  cls <- lapply(x, FUN = function(idat) lapply(idat, FUN = function(jcol) paste(class(jcol), collapse = '-')))
+  cls <- lapply(x, FUN = \(idat) lapply(idat, FUN = \(jcol) paste(class(jcol), collapse = '-')))
   if (!all(duplicated.default(cls)[-1L])) {
     tmp <- do.call(Map, args = c(list(f = c), cls))
-    lapply(seq_along(tmp), FUN = function(i) {
+    lapply(seq_along(tmp), FUN = \(i) {
       if (!all(duplicated.default(tmp[[i]])[-1L])) {
         cat(names(tmp)[i], '\n')
         print(tmp[[i]])

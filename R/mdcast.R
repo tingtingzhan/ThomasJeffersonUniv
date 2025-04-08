@@ -92,7 +92,7 @@ mdcast <- function(
   labels <- cast(data = data, formula = formula, value.var = value.var[1L], ...)$labels[[1L]] # see ?reshape2::dcast
   
   names(value.var) <- value.var
-  ret_acast <- lapply(value.var, FUN = function(iv) { # (iv = 'date')
+  ret_acast <- lapply(value.var, FUN = \(iv) { # (iv = 'date')
     tmp0 <- acast(data = data, formula = formula, value.var = iv, ...)
     tmp <- tmp0[, colSums(!is.na(tmp0)) > 0, drop = FALSE] # remove all-NA columns
     # cannot use `drop = TRUE` here!  If `tmp0` is 'factor' 'matrix', `drop = TRUE` will remove attr(,'dim') 
@@ -122,7 +122,7 @@ mdcast <- function(
     dim(labels)
     sapply(ret_acast, FUN = class)
     lapply(ret_acast[1:8], head)
-    sapply(ret_acast, FUN = function(x) {
+    sapply(ret_acast, FUN = \(x) {
       if (is.matrix(x)) nrow(x) else length(x)
     })
   }
