@@ -16,6 +16,8 @@ Function \code{\link[=TJU_SchoolTerm]{TJU_SchoolTerm()}} returns a \link[base]{c
 ..
 }
 \examples{
-TJU_SchoolTerm(as.Date(c('2021-03-14', '2022-01-01', '2022-05-01')))
+c('2021-03-14', '2022-01-01', '2022-05-01') |>
+ as.Date() |> 
+ TJU_SchoolTerm()
 
 }

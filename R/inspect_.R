@@ -42,7 +42,7 @@ inspect_ <- function(
   
   # remove all-NA rows
   if (any(row_allNA <- (rowMeans(is.na(x)) == 1))) {
-    message(sprintf(fmt = '%d all-NA rows removed.', sum(row_allNA)))
+    sprintf(fmt = '%d all-NA rows removed.', sum(row_allNA)) |> message()
     x <- x[!row_allNA, , drop = FALSE]
   }
   
@@ -50,7 +50,7 @@ inspect_ <- function(
   if (any(id)) {
     matchDF(x, trace_duplicate = TRUE) # only to print the ?base::message
     if (row_dup_rm) {
-      message(sprintf(fmt = '%d duplicated rows removed.\n', sum(id)))
+      sprintf(fmt = '%d duplicated rows removed.\n', sum(id)) |> message()
       x <- x[!id, , drop = FALSE] # `drop` needed for 1-column data.frame!
     } # else message('')
   }
@@ -108,7 +108,7 @@ inspect_ <- function(
           if (inherits(tmp, what = 'error')) {
             tmp$message <- paste0(sQuote(inm), ': ', tmp$message)
             # stop(tmp)
-            message(conditionMessage(tmp))
+            tmp |> conditionMessage() |> message()
             return(i)
           }
           return(tmp)

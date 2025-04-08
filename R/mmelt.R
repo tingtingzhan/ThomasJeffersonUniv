@@ -57,9 +57,9 @@ mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {
     lapply(seq_along(add_), FUN = \(i) { # (i = 1L)
       message(
         'Add ', 
-        col_green(paste(add_[[i]], collapse = ', ')),
+        add_[[i]] |> paste(collapse = ', ') |> col_green(),
         ' for pattern ',
-        col_magenta(measure_rx[[names(add_)[i]]])
+        measure_rx[[names(add_)[i]]] |> col_magenta()
       )
     })
     stop('`m_vars` (after removing `measure_rx`) not all identical')

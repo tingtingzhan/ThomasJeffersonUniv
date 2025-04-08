@@ -43,12 +43,12 @@ format_named <- function(x, sep = ': ') {
   
   xnm <- format.default(xnm., justify = 'right')
   
-  ret <- style_bold(paste(xnm, x1, sep = sep))
+  ret <- paste(xnm, x1, sep = sep) |> style_bold()
   id_green <- if (length(nx) == 1L) {
     rep(TRUE, times = nx) # all green
   } else suppressWarnings(unlist(mapply(FUN = rep, c(TRUE, FALSE), times = nx, SIMPLIFY = FALSE), use.names = FALSE))
-  ret[id_green] <- col_green(ret[id_green])
-  ret[!id_green] <- col_cyan(ret[!id_green])
+  ret[id_green] <- ret[id_green] |> col_green()
+  ret[!id_green] <- ret[!id_green] |> col_cyan()
   return(ret)
   
 }

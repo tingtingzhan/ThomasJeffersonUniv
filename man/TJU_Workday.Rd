@@ -35,19 +35,26 @@ if a holiday is on Saturday, then the preceding Friday is considered to be a wee
 If a holiday is on Sunday, then the following Monday is considered to be a weekend day.
 }
 \examples{
-table(TJU_Workday(c('2021-01', '2021-02')))
+c('2021-01', '2021-02') |> TJU_Workday() |> table()
 
 tryCatch(TJU_Workday(c('2019-10', '2019-12')), error = identity)
-table(c(TJU_Workday('2019-10'), TJU_Workday('2019-12'))) # work-around
+c(TJU_Workday('2019-10'), TJU_Workday('2019-12')) |> table() # work-around
 
-table(TJU_Workday('2022-12'))
+'2022-12' |> TJU_Workday() |> table()
 
-table(TJU_Workday('2022 Q1', vacations = seq.Date(
- from = as.Date('2022-03-14'), to = as.Date('2022-03-18'), by = 1)))
+'2022 Q1' |> 
+ TJU_Workday(vacations = seq.Date(
+  from = as.Date('2022-03-14'), 
+  to = as.Date('2022-03-18'), 
+  by = 1
+ )) |>
+ table()
  
-table(TJU_Workday('2022 Q2', vacations = as.Date(c(
- '2022-05-22', '2022-05-30', '2022-06-01', '2022-07-04'))))
+'2022 Q2' |>
+ TJU_Workday(vacations = c('2022-05-22', '2022-05-30', 
+  '2022-06-01', '2022-07-04') |> as.Date()) |>
+ table()
  
-table(TJU_Workday(2021L))
+2021L |> TJU_Workday() |> table()
 
 }

@@ -10,14 +10,14 @@ style_samplesize(x)
 \item{x}{\link[base]{integer} scalar}
 }
 \value{
-Function \link{style_samplesize} returns a \link[base]{character} scalar.
+Function \code{\link[=style_samplesize]{style_samplesize()}} returns a \link[base]{character} scalar.
 }
 \description{
 Highlight Style for Sample Size
 }
 \examples{
-cat(style_samplesize(30L))
-message(style_samplesize(30L))
+30L |> style_samplesize() |> cat()
+30L |> style_samplesize() |> message()
 
 }
 \keyword{internal}

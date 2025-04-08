@@ -10,14 +10,13 @@ style_basename(x)
 \item{x}{\link[base]{character} scalar}
 }
 \value{
-Function \link{style_basename} returns a \link[base]{character} scalar.
+Function \code{\link[=style_basename]{style_basename()}} returns a \link[base]{character} scalar.
 }
 \description{
 Highlight Style for File Base Name
 }
 \examples{
-cat(style_basename('./a/b.R'))
-message(style_basename('./a/b.R'))
-
+'./a/b.R' |> style_basename() |> cat()
+'./a/b.R' |> style_basename() |> message()
 }
 \keyword{internal}

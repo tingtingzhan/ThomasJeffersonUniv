@@ -6,16 +6,16 @@
 #' @param x \link[base]{integer} scalar
 #' 
 #' @returns 
-#' Function [style_samplesize] returns a \link[base]{character} scalar.
+#' Function [style_samplesize()] returns a \link[base]{character} scalar.
 #' 
 #' @examples
-#' cat(style_samplesize(30L))
-#' message(style_samplesize(30L))
+#' 30L |> style_samplesize() |> cat()
+#' 30L |> style_samplesize() |> message()
 #' 
 #' @keywords internal
 #' @export
 style_samplesize <- function(x) {
-  style_bold(bg_br_yellow(x))
+  x |> bg_br_yellow() |> style_bold()
 }
 
 
@@ -25,16 +25,15 @@ style_samplesize <- function(x) {
 #' @param x \link[base]{character} scalar
 #' 
 #' @returns 
-#' Function [style_basename] returns a \link[base]{character} scalar.
+#' Function [style_basename()] returns a \link[base]{character} scalar.
 #' 
 #' @examples
-#' cat(style_basename('./a/b.R'))
-#' message(style_basename('./a/b.R'))
-#' 
+#' './a/b.R' |> style_basename() |> cat()
+#' './a/b.R' |> style_basename() |> message()
 #' @keywords internal
 #' @export
 style_basename <- function(x) {
-  col_yellow(basename(x))
+  x |> basename() |> col_yellow()
 }
 
 
@@ -63,9 +62,9 @@ style_basename <- function(x) {
 #' Function [style_interaction] returns a \link[base]{character} scalar.
 #' 
 #' @examples
-#' cat(style_interaction(letters[1:3]))
-#' message(style_interaction(letters[1:3]))
-#' cat(style_interaction(~ mrn + dob))
+#' letters[1:3] |> style_interaction() |> cat()
+#' letters[1:3] |> style_interaction() |> message()
+#' style_interaction(~ mrn + dob) |> cat()
 #' 
 #' @keywords internal
 #' @export
@@ -74,5 +73,5 @@ style_interaction <- function(x) {
     x <- all.vars(if (length(x) == 2L) x[[2L]] else x[[3L]])
   }
   if (!is.character(x)) stop('x must be convertible to `character`')
-  col_magenta(paste(x, collapse = ':'))
+  x |> paste(collapse = ':') |> col_magenta()
 }

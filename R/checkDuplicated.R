@@ -49,7 +49,7 @@ checkDuplicated <- function(
   if (any(n_ == 0L)) stop('wont happen')
   ns_ <- (n_ > 1L)
   if (!any(ns_)) {
-    message(sprintf(fmt = '\u2714 No duplicated %s\n', dup_txt))
+    sprintf(fmt = '\u2714 No duplicated %s\n', dup_txt) |> message()
     return(invisible(data))
   }
   
@@ -76,7 +76,7 @@ checkDuplicated <- function(
   id_truedup <- vapply(ds_coalesce, FUN = inherits, what = 'error', FUN.VALUE = NA)
   
   d_coalesce <- if (any(!id_truedup)) {
-    message(sprintf(fmt = '\u2756 %d %s with trivial (i.e., coalesce-able) duplicates', sum(!id_truedup), dup_txt))
+    sprintf(fmt = '\u2756 %d %s with trivial (i.e., coalesce-able) duplicates', sum(!id_truedup), dup_txt) |> message()
     as.data.frame.list(
       x = do.call(what = mapply, args = c(
         ds_coalesce[!id_truedup], 
@@ -100,12 +100,12 @@ checkDuplicated <- function(
     
     write_xlsx(x = tmp, path = file)
     # https://cli.r-lib.org/reference/links.html
-    #message(sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
-    cli_text(sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt))
-    system(command = paste0('open ', dirname(file)))
+    # sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt) |> message()
+    sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt) |> cli_text()
+    paste0('open ', dirname(file)) |> system()
     
     if (missing(rule)) {
-      message('naively select the first row')
+      'naively select the first row' |> message()
       vapply(rid_dup[id_truedup], FUN = `[`, 1L, FUN.VALUE = NA_integer_)
     } else {
       message('Selection rule: ', deparse(rule))
@@ -122,7 +122,7 @@ checkDuplicated <- function(
   } # else NULL
   
   ret <- rbind.data.frame(data[c(r0, r1_truedup), , drop = FALSE], d_coalesce)
-  message(sprintf('\u21ac %s after %s duplicates removed\n', style_samplesize(nrow(ret)), dup_txt))
+  sprintf('\u21ac %s after %s duplicates removed\n', style_samplesize(nrow(ret)), dup_txt) |> message()
   return(ret)
   
 }

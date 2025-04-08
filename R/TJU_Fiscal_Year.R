@@ -16,6 +16,8 @@
 #' @export
 TJU_Fiscal_Year <- function(x) {
   # www.jefferson.edu/finance/finance-for-staff/transaction-processing-deadlines.html 
-  range(allDates.yearmon(as.yearmon(paste0(x-1, '-07'))), 
-        allDates.yearmon(as.yearmon(paste0(x, '-06'))))
+  range(
+    paste0(x-1, '-07') |> as.yearmon() |> allDates.yearmon(), 
+    paste0(x, '-06') |> as.yearmon() |> allDates.yearmon()
+  )
 }

@@ -10,7 +10,9 @@
 #' 
 #' 
 #' @examples 
-#' TJU_SchoolTerm(as.Date(c('2021-03-14', '2022-01-01', '2022-05-01')))
+#' c('2021-03-14', '2022-01-01', '2022-05-01') |>
+#'  as.Date() |> 
+#'  TJU_SchoolTerm()
 #' 
 #' @importFrom lubridate year month
 #' @export

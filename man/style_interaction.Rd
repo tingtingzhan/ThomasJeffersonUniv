@@ -16,9 +16,9 @@ Function \link{style_interaction} returns a \link[base]{character} scalar.
 Highlight Style for (\link[base]{interaction} of) \link[base]{factor}s
 }
 \examples{
-cat(style_interaction(letters[1:3]))
-message(style_interaction(letters[1:3]))
-cat(style_interaction(~ mrn + dob))
+letters[1:3] |> style_interaction() |> cat()
+letters[1:3] |> style_interaction() |> message()
+style_interaction(~ mrn + dob) |> cat()
 
 }
 \keyword{internal}

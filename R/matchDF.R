@@ -95,7 +95,7 @@ matchDF <- function(
                    table = rsplit_(unique.data.frame(tab0[iseq])), 
                    nomatch = NA_integer_)
       idok <- !is.na(idx)
-      if (trace_nomatch) message(sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])))
+      if (trace_nomatch) sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])) |> message()
       if (all(idok)) break
     }
     
@@ -120,14 +120,17 @@ matchDF <- function(
       view_table[unlist(min_dist, use.names = FALSE), , drop = FALSE]
     )
     fuzzy_csv <- tempfile(pattern = 'fuzzy_', fileext = '.csv')
-    message(sprintf(
+    sprintf(
       fmt = '\u261e %s %d (%d unique) %s having no exact match to %s\n', # extra line feed!!
-      style_basename(fuzzy_csv),
-      sum(na1), sum(x_uid), 
-      style_interaction(by.x), style_interaction(by.tab)))
+      fuzzy_csv |> style_basename(),
+      sum(na1), 
+      sum(x_uid), 
+      by.x |> style_interaction(), 
+      by.tab |> style_interaction()
+    ) |> message()
     if (inspect_fuzzy) {
       write.csv(x = fuzzy_suggest, file = fuzzy_csv, row.names = FALSE)
-      system(paste0('open ', dirname(fuzzy_csv)))
+      paste0('open ', dirname(fuzzy_csv)) |> system()
     }
     
     id_agree <- (lengths(min_dist, use.names = FALSE) == 1L)
