@@ -25,7 +25,7 @@ exact_confint(
 \item{...}{potential parameters}
 }
 \value{
-Function \link{exact_confint} returns an S3 \code{'exact_confint'} object,
+Function \code{\link[=exact_confint]{exact_confint()}} returns an S3 \code{'exact_confint'} object,
 inspired by element \verb{$conf.int} of an \code{'htest'} object,
 i.e., the returned value of functions \link[stats]{t.test}, \link[stats]{prop.test}, etc.
 

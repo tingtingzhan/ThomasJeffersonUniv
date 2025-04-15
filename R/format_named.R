@@ -9,15 +9,15 @@
 #' @param sep \link[base]{character} scalar, see \link[base]{paste}
 #' 
 #' @returns
-#' Function [format_named] returns a \link[base]{character} \link[base]{vector}.
+#' Function [format_named()] returns a \link[base]{character} \link[base]{vector}.
 #' 
 #' @examples
 #' x1 = c(a = 'a1', bc = '2\n3')
-#' cat(format_named(x1), sep = '\n')
+#' x1 |> format_named() |> cat(sep = '\n')
 #' noout = lapply(format_named(x1), FUN = message)
 #' 
 #' x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
-#' cat(format_named(x2), sep = '\n')
+#' x2 |> format_named() |> cat(sep = '\n')
 #' noout = lapply(format_named(x2), FUN = message)
 #' 
 #' x3 = c(a = '1\n2')
@@ -28,7 +28,9 @@
 #' @export
 format_named <- function(x, sep = ': ') {
   
-  x0 <- trimws(vapply(x, FUN = paste, collapse = ' ', FUN.VALUE = ''))
+  x0 <- x |>
+    vapply(FUN = paste, collapse = ' ', FUN.VALUE = '') |> 
+    trimws()
   x1 <- x0[nzchar(x0)]
   if (!length(nm <- names(x1))) stop('input must be named')
   if (!all(nzchar(nm))) stop('do not allow empty name!')
@@ -46,7 +48,11 @@ format_named <- function(x, sep = ': ') {
   ret <- paste(xnm, x1, sep = sep) |> style_bold()
   id_green <- if (length(nx) == 1L) {
     rep(TRUE, times = nx) # all green
-  } else suppressWarnings(unlist(mapply(FUN = rep, c(TRUE, FALSE), times = nx, SIMPLIFY = FALSE), use.names = FALSE))
+  } else {
+    mapply(FUN = rep, c(TRUE, FALSE), times = nx, SIMPLIFY = FALSE) |>
+      unlist(use.names = FALSE) |>
+      suppressWarnings()
+  }
   ret[id_green] <- ret[id_green] |> col_green()
   ret[!id_green] <- ret[!id_green] |> col_cyan()
   return(ret)

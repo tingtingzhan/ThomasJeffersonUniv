@@ -5,10 +5,10 @@
 #' @param x \link[base]{character} \link[base]{vector}
 #' 
 #' @returns 
-#' Function [do_plus] returns a \link[base]{call}
+#' Function [do_plus()] returns a \link[base]{call}
 #' 
 #' @examples
-#' do_plus(letters[1:3])
+#' do_plus(letters)
 #' 
 #' @keywords internal
 #' @name Reduce_call
@@ -18,14 +18,14 @@ do_plus <- function(x) {
   x <- unique.default(x)
   if (!identical(make.names(x), x)) stop('input must be syntactically valid names')
   
-  #.plus_ <- function(e1, e2) call(name = '+', e1, e2)
-  # Reduce(f = .plus_, x = lapply(x, FUN = as.symbol)) # much slower!!!
-  str2lang(s = paste(x, collapse = '+'))
+  x |>
+    paste(collapse = '+') |> 
+    str2lang()
 }
 
 #' @rdname Reduce_call
 #' @examples
-#' do_average(letters[1:3])
+#' do_average(letters)
 #' @export
 do_average <- function(x) {
   call(name = '/', do_plus(x), length(x))

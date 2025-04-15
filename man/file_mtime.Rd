@@ -27,6 +27,9 @@ file_mtime(
 \dontrun{ # devtools::check error
 file_mtime('./R', pattern = '\\\\.R$')
 file_mtime('./src', pattern = '\\\\.cpp$')
+
+'./R' |>
+  list.files(pattern = '\\\\.R$', full.name = TRUE)
 }
 
 }

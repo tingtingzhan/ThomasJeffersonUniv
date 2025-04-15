@@ -14,18 +14,18 @@ Input \code{x} must be named}
 \item{sep}{\link[base]{character} scalar, see \link[base]{paste}}
 }
 \value{
-Function \link{format_named} returns a \link[base]{character} \link[base]{vector}.
+Function \code{\link[=format_named]{format_named()}} returns a \link[base]{character} \link[base]{vector}.
 }
 \description{
 format_named
 }
 \examples{
 x1 = c(a = 'a1', bc = '2\n3')
-cat(format_named(x1), sep = '\n')
+x1 |> format_named() |> cat(sep = '\n')
 noout = lapply(format_named(x1), FUN = message)
 
 x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
-cat(format_named(x2), sep = '\n')
+x2 |> format_named() |> cat(sep = '\n')
 noout = lapply(format_named(x2), FUN = message)
 
 x3 = c(a = '1\n2')

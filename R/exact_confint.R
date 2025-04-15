@@ -17,7 +17,7 @@
 #' @param ... potential parameters
 #' 
 #' @returns 
-#' Function [exact_confint] returns an S3 `'exact_confint'` object,
+#' Function [exact_confint()] returns an S3 `'exact_confint'` object,
 #' inspired by element `$conf.int` of an `'htest'` object,
 #' i.e., the returned value of functions \link[stats]{t.test}, \link[stats]{prop.test}, etc.
 #' 
@@ -134,7 +134,8 @@ format.exact_confint <- function(x, data.name, ...) {
 
 #' @export
 print.exact_confint <- function(x, data.name = substitute(x), ...) {
-  format.exact_confint(x, data.name = data.name, ...) |> print()
+  format.exact_confint(x, data.name = data.name, ...) |> 
+    print()
 }
 
 
