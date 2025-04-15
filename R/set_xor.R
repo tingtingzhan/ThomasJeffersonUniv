@@ -11,11 +11,11 @@
 #' Default is the function call of `e1` and `e2`.
 #' 
 #' @details 
-#' Function [set_xor] returns the exclusive-OR elements in each of the sets, which is slow
+#' Function [set_xor()] returns the exclusive-OR elements in each of the sets, which is slow
 #' and only intended for end-user.
 #' 
 #' @returns 
-#' Function [set_xor] returns either a \link[base]{list} or a \link[base]{vector}.
+#' Function [set_xor()] returns either a \link[base]{list} or a \link[base]{vector}.
 #' 
 #' @examples 
 #' set_xor(1:5, 3:7)

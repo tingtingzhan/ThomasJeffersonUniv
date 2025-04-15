@@ -20,6 +20,3 @@ POSIXct2difftime(
 \details{
 \CRANpkg{readxl} will read \code{'hour:min:sec'} as \code{'1899-12-31 hr:min:sec UTC'}
 }
-\seealso{
-\code{lubridate:::year.default} \code{lubridate:::tz.POSIXt}
-}

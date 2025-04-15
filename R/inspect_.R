@@ -194,7 +194,7 @@ inspect_POSIXct <- function(x) {
 #' @details
 #' \CRANpkg{readxl} will read `'hour:min:sec'` as `'1899-12-31 hr:min:sec UTC'`
 #' 
-#' @seealso `lubridate:::year.default` `lubridate:::tz.POSIXt`
+# @seealso `lubridate:::year.default` `lubridate:::tz.POSIXt`
 #' @export
 POSIXct2difftime <- function(
     x, 
