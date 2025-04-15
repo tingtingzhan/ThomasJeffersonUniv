@@ -13,6 +13,9 @@
 #' 
 #' @examples 
 #' npk |> within.data.frame(expr = {
+#'  N = N |> as.character() |> as.numeric()
+#'  P = P |> as.character() |> as.numeric()
+#'  K = K |> as.character() |> as.numeric()
 #'  tmp = key_rx(pattern = 'N|P|K')
 #' })
 #' @export
