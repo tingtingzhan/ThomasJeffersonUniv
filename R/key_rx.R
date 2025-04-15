@@ -20,7 +20,7 @@ key_rx <- function(pattern, envir = parent.frame(), ...) {
   x <- select_rx(pattern = pattern, envir = envir)
   if (!length(x)) return(invisible())
   x1 <- x |>
-    lapply(FUN = force_bool) |>
+    lapply(FUN = as.logical) |>
     do.call(what = cbind)
   if (!grepl(pattern = '\\|', x = pattern)) {
     colnames(x1) <- gsub(pattern = pattern, replacement = '', x = colnames(x1))

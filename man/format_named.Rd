@@ -29,7 +29,7 @@ x2 |> format_named() |> cat(sep = '\n')
 noout = lapply(format_named(x2), FUN = message)
 
 x3 = c(a = '1\n2')
-cat(format_named(x3), sep = '\n')
+x3 |> format_named() |> cat(sep = '\n')
 noout = lapply(format_named(x3), FUN = message)
 
 }

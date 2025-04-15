@@ -21,7 +21,7 @@ regular expression pattern of names of the columns to be converted to \link[base
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \link{inspect_} returns (invisibly) a \link[base]{data.frame}.
+Function \code{\link[=inspect_]{inspect_()}} returns (invisibly) a \link[base]{data.frame}.
 }
 \description{
 ..

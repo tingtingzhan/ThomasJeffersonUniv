@@ -27,7 +27,7 @@
 #' Be aware of potential name clash, e.g., `lavaan::inspect`.
 #' 
 #' @returns 
-#' Function [inspect_] returns (invisibly) a \link[base]{data.frame}.
+#' Function [inspect_()] returns (invisibly) a \link[base]{data.frame}.
 #' 
 #' @export
 inspect_ <- function(
@@ -121,8 +121,6 @@ inspect_ <- function(
   
   # x <- inspect_POSIXct(x)
   
-  x[] <- lapply(x, FUN = force_bool)
-  
   # copy tzh::class1List
   cl1 <- vapply(x, FUN = \(x) class(x)[1L], FUN.VALUE = '', USE.NAMES = TRUE)
   cl2 <- split.default(names(cl1), f = factor(cl1))
@@ -214,79 +212,6 @@ POSIXct2difftime <- function(
 
 
 
-
-
-#' @title Force to \link[base]{logical} \link[base]{vector}
-#' 
-#' @description ..
-#' 
-#' @param x a \link[base]{factor}, or a \link[base]{vector}
-#' 
-#' @param else_return an R object to return if cannot force into \link[base]{logical}.
-#' Default `x`.
-#' 
-#' @details
-#' 
-#' Function [force_bool] tries to turn an object into \link[base]{logical}.
-#' 
-#' @examples 
-#' force_bool(c('0', '1', '0', NA))
-#' (tmp = factor(rep(0:1, times = 10L)))
-#' force_bool(tmp)
-#' 
-#' @export
-force_bool <- function(x, else_return = x) {
-  
-  # 'factor' ?base::is.atomic but not ?base::is.vector
-  if (is.factor(x)) {
-    # ?base::is.na, ?base::tolower, ?base::nzchar and ?base::gsub are all O(n) !
-    x <- factor(x) # drops duplicates in levels
-    xl <- tolower(trimws_(attr(x, which = 'levels', exact = TRUE)))
-    # stopifnot(!anyNA(xl)) # !!!
-    id <- if (all(xl %in% (str_chk <- c('unchecked', 'checked')))) { # REDCap
-      xl == 'checked'
-    } else if (all(xl %in% (str_yn <- c('y', 'yes', 'no', 'n', 'true', 'false')))) {
-      xl %in% c('yes', 'y', 'true')
-    } else if (all(xl %in% (str_yni <- c('yes', 'indeterminate', 'no')))) {
-      xl %in% c('yes', 'indeterminate')
-    } else if (all(xl %in% (str_np <- c('negative', 'neg', 'positive', 'pos')))) {
-      xl %in% c('positive', 'pos')
-    } else if (all(xl %in% (str_pm <- c('+', '-', '\u00B1')))) {
-      xl %in% c('+', '\u00B1')
-    } else if (all(xl %in% (str_01 <- c('0', '1')))) {
-      as.logical(as.double(xl))
-    } else if (all(xl %in% (str_tf <- c('true', 'false')))) {
-      as.logical(xl) # ?base::as.logical handles lower-case true/false correctly
-    } else return(else_return)
-    return(id[x])
-  }
-  
-  if (!is.atomic(x) || !is.vector(x)) return(else_return) # `NULL` goes here
-  class(x) <- setdiff(class(x), y = 'AsIs')
-  
-  if (is.logical(x)) return(x)
-  
-  n <- length(x)
-  out <- rep(NA, times = n)
-  if (!n) return(out) 
-  
-  xok <- !is.na(x)
-  if (!any(xok)) return(out)
-  
-  if (is.numeric(x)) {
-    if (all(x == 0L | x == 1L, na.rm = TRUE)) {
-      out[] <- as.logical(x)
-      return(out)
-    } else return(else_return)
-  }
-  
-  if (is.character(x)) { # recursive!
-    return(force_bool(factor(x), else_return = else_return))
-  }
-  
-  return(else_return)
-  
-}
 
 
 
