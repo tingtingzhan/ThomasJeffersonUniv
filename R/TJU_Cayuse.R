@@ -59,11 +59,13 @@ aggregateAwards <- function(
         Flags <- # used
         NULL
       Lead.PI <- gsub(' AOI$', replacement = '', x = Lead.PI)
-      Award.Amount <- as.double(gsub('^\\$|,', replacement = '', x = Award.Amount))
-      Award.No. <- vapply(strsplit(Award.No., split = '-'), FUN = \(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
-      Award.Notice.Received <- as.Date.character(Award.Notice.Received, format = '%m/%d/%Y')
-      Award.Begin.Date <- as.Date.character(Award.Begin.Date, format = '%m/%d/%Y')
-      Award.End.Date <- as.Date.character(Award.End.Date, format = '%m/%d/%Y')
+      Award.Amount <- gsub('^\\$|,', replacement = '', x = Award.Amount) |> as.double()
+      Award.No. <- Award.No. |>
+        strsplit(split = '-') |> 
+        vapply(FUN = \(i) paste(i[1:2], collapse = '-'), FUN.VALUE = '')
+      Award.Notice.Received <- Award.Notice.Received |> as.Date.character(format = '%m/%d/%Y')
+      Award.Begin.Date <- Award.Begin.Date |> as.Date.character(format = '%m/%d/%Y')
+      Award.End.Date <- Award.End.Date |> as.Date.character(format = '%m/%d/%Y')
     }) |>
     subset.data.frame(subset = (Award.Amount > 0)) |>
     split.data.frame(f = ~ Award.No.) |>
