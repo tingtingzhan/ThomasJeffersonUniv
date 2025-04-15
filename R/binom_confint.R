@@ -51,12 +51,67 @@ binom_confint <- function(x, n, conf.level = .95, alternative = c('two.sided', '
   phat <- ht |>
     vapply(FUN = `[[`, 'estimate', FUN.VALUE = NA_real_)
     
-  ret <- data.frame(
-    p = sprintf(fmt = '%.1f%% (%.1f%%, %.1f%%)', 1e2*phat, 1e2*cint[,1L], 1e2*cint[,2L]), 
-    row.names = sprintf(fmt = '%d / %d', x, n)
-  )
-  names(ret) <- sprintf(fmt = 'Percentage (%.f%% %s-Sided Exact CI)', 1e2*conf.level, switch(alternative, two.sided = '2', '1'))
-  return(ret)
+  ret <- sprintf(fmt = '%.1f%% (%.1f%%, %.1f%%)', 1e2*phat, 1e2*cint[,1L], 1e2*cint[,2L])
+  nm <- sprintf(fmt = 'Percentage (%.f%% %s-Sided Exact CI)', 1e2*conf.level, switch(alternative, two.sided = '2', '1'))
+  
+  #ret <- data.frame(
+  #  p = ret, 
+  #  row.names = sprintf(fmt = '%d / %d', x, n)
+  #)
+  # `data.frame` does not allow duplicated `row.names`
+  #names(ret) <- nm0
+  
+  dim(ret) <- c(length(ret), 1L)
+  dimnames(ret) <- list(sprintf(fmt = '%d / %d', x, n), nm)
+  
+  return(noquote(ret, right = TRUE))
   
 }
+
+
+
+
+
+
+#' @title View Binomial Confidence Interval
+#' 
+#' @description ..
+#' 
+#' @param x a \link[base]{logical} \link[base]{matrix}
+#'
+#' @examples 
+#' swiss |> is.na() |> viewBinomCI()
+#' airquality |> is.na() |> viewBinomCI()
+#' (airquality$Ozone) |> is.na() |> table() # do simple way
+#' 
+#' @keywords internal
+#' @export
+viewBinomCI <- function(x) {
+  
+  obj <- x; x <- NULL
+  if (!is.matrix(obj) || !is.logical(obj)) stop('input must be `logical` `matrix`')
+  
+  x <- obj |> colSums() |> as.integer()
+  id <- (x > 0L)
+  if (!any(id)) return(invisible())
+  
+  n <- obj |> nrow()
+  nm <- obj |> colnames()
+  
+  x_ <- x[id]
+  o <- order(x_, decreasing = TRUE)
+  
+  cbind(
+    Variable = nm[id][o], 
+    binom_confint(
+      x = x_[o], 
+      n = n
+    )
+  ) |> 
+    noquote(right = TRUE)
+  
+}
+
+
+
 
