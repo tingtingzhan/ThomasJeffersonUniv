@@ -11,13 +11,13 @@
 #' 
 #' @details
 #' 
-#' Function [rowSums_] performs ..
+#' Function [rowSums_()] performs ..
 #' 
-#' Function [rowMeans_] performs ..
+#' Function [rowMeans_()] performs ..
 #' 
 #' @returns
 #' 
-#' Functions [rowSums_], [rowMeans_] return a \link[base]{numeric} \link[base]{vector}
+#' Functions [rowSums_()], [rowMeans_()] return a \link[base]{numeric} \link[base]{vector}
 #' 
 #' @seealso 
 #' \link[base]{rowSums} \link[base]{rowMeans}

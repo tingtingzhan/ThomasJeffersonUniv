@@ -58,7 +58,7 @@ binom_confint <- function(x, n, conf.level = .95, alternative = c('two.sided', '
   #  p = ret, 
   #  row.names = sprintf(fmt = '%d / %d', x, n)
   #)
-  # `data.frame` does not allow duplicated `row.names`
+  # `data.frame` does **not** allow duplicated `row.names` !!!
   #names(ret) <- nm0
   
   dim(ret) <- c(length(ret), 1L)
