@@ -20,10 +20,10 @@ Function \link{ma} returns a time-series \link[stats]{ts} object from workhorse 
 \note{
 Function \link{ma} is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
 
-Function \link{ma} is much faster than function \link[zoo]{rollmean} in package \CRANpkg{zoo}.
+Function \link{ma} is much faster than function \code{zoo::rollmean()}.
 
-Function \link{ma} imports function \link[stats]{filter} from package \pkg{stats},
-not function \link[dplyr]{filter} from package \CRANpkg{dplyr}.
+Function \link{ma} imports function \code{stats::filter()},
+not function \code{dplyr::filter()}.
 }
 \examples{
 unclass(ma(1:20, order = 3L))

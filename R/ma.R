@@ -14,10 +14,10 @@
 #' @note
 #' Function [ma] is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
 #' 
-#' Function [ma] is much faster than function \link[zoo]{rollmean} in package \CRANpkg{zoo}.
+#' Function [ma] is much faster than function `zoo::rollmean()`.
 #' 
-#' Function [ma] imports function \link[stats]{filter} from package \pkg{stats},
-#' not function \link[dplyr]{filter} from package \CRANpkg{dplyr}.
+#' Function [ma] imports function `stats::filter()`,
+#' not function `dplyr::filter()`.
 #' 
 #' @returns
 #' Function [ma] returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
