@@ -12,19 +12,19 @@
 #' \url{https://stackoverflow.com/questions/743812/calculating-moving-average}
 #' 
 #' @note
-#' Function [ma] is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
+#' Function [ma()] is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
 #' 
-#' Function [ma] is much faster than function `zoo::rollmean()`.
+#' Function [ma()] is much faster than function `zoo::rollmean()`.
 #' 
-#' Function [ma] imports function `stats::filter()`,
-#' not function `dplyr::filter()`.
+#' Function [ma()] imports function `stats::filter()`,
+#' ***not*** function `dplyr::filter()`.
 #' 
 #' @returns
-#' Function [ma] returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
+#' Function [ma()] returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
 #' 
 #' @examples
-#' unclass(ma(1:20, order = 3L))
-#' unclass(ma(1:2, order = 3L))
+#' ma(1:20, order = 3L) |> unclass()
+#' ma(1:2, order = 3L) |> unclass()
 #' @importFrom stats filter
 #' @export 
 ma <- function(x, order = 5L) {

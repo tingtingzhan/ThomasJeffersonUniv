@@ -34,7 +34,7 @@ Function \link{sign2} returns \link[base]{character} \link[base]{vector} when \c
 ..
 }
 \details{
-Function \link{sign2} extends \link[base]{sign} in the following ways
+Function \code{\link[=sign2]{sign2()}} extends \link[base]{sign} in the following ways
 \itemize{
 \item {two \link[base]{ordered} \link[base]{factor}s can be compared;}
 \item {(detailed) information on missingness are provided.}
@@ -55,3 +55,4 @@ table(sign2(x, y))
 table(sign2(x, y, na.detail = FALSE), useNA = 'always')
 
 }
+\keyword{internal}

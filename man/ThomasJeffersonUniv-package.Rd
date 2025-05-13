@@ -4,10 +4,9 @@
 \name{ThomasJeffersonUniv-package}
 \alias{ThomasJeffersonUniv}
 \alias{ThomasJeffersonUniv-package}
-\title{Handy Tools for TJU/TJUH Employees}
+\title{ThomasJeffersonUniv: Handy Tools for TJU/TJUH Employees}
 \description{
-Functions for admin needs of employees of Thomas Jefferson University
-and Thomas Jefferson University Hospital, Philadelphia, PA.
+Functions for admin needs of employees of Thomas Jefferson University and Thomas Jefferson University Hospital, Philadelphia, PA.
 }
 \author{
 \strong{Maintainer}: Tingting Zhan \email{tingtingzhan@gmail.com} (\href{https://orcid.org/0000-0001-9971-4844}{ORCID})

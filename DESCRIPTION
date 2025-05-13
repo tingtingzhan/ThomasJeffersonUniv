@@ -8,7 +8,7 @@ Description: Functions for admin needs of employees of
       University Hospital, Philadelphia, PA.
 License: GPL-2
 Encoding: UTF-8
-Imports: cli, matrixStats, reshape2, stringdist, writexl
+Imports: cli, flextable, matrixStats, reshape2, stringdist, writexl
 Authors@R: c(person(given = "Tingting", family =
       "Zhan", role = c("aut", "cre"), email =
       c("tingtingzhan@gmail.com"), comment = c(ORCID =

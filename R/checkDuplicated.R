@@ -24,14 +24,15 @@
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns 
-#' Function [checkDuplicated] returns a \link[base]{data.frame}.
+#' Function [checkDuplicated()] returns a \link[base]{data.frame}.
 #' 
 #' @examples
-#' x = swiss[c(1, 1:5), ]
+#' (x = swiss[c(1, 1:5), ])
 #' x$Agriculture[2] = x$Agriculture[1] + 1
 #' x
 #' checkDuplicated(x, ~ Fertility)
-#' @importFrom cli cli_text
+#' @keywords internal
+#' @importFrom cli cli_text bg_br_yellow col_magenta col_yellow style_bold
 #' @importFrom writexl write_xlsx
 #' @export
 checkDuplicated <- function(
@@ -42,9 +43,13 @@ checkDuplicated <- function(
     ...
 ) {
   
-  dup_txt <- style_interaction(f)
+  dup_txt <- f |> all.vars() |> paste(collapse = ':') |> col_magenta()
   
-  rid <- split.default(seq_len(.row_names_info(data, type = 2L)), f = nested_(f, data = data))
+  rid <- data |> 
+    .row_names_info(type = 2L) |> 
+    seq_len() |>
+    split.default(f = interaction(data[all.vars(f)], drop = TRUE, lex.order = TRUE))
+
   n_ <- lengths(rid, use.names = FALSE)
   if (any(n_ == 0L)) stop('wont happen')
   ns_ <- (n_ > 1L)
@@ -100,8 +105,10 @@ checkDuplicated <- function(
     
     write_xlsx(x = tmp, path = file)
     # https://cli.r-lib.org/reference/links.html
-    # sprintf(fmt = '\u261e %s %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt) |> message()
-    sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', style_basename(file), n_truedup, dup_txt) |> cli_text()
+    sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', 
+            file |> basename() |> col_yellow(), 
+            n_truedup, 
+            dup_txt) |> cli_text()
     paste0('open ', dirname(file)) |> system()
     
     if (missing(rule)) {
@@ -122,7 +129,12 @@ checkDuplicated <- function(
   } # else NULL
   
   ret <- rbind.data.frame(data[c(r0, r1_truedup), , drop = FALSE], d_coalesce)
-  sprintf('\u21ac %s after %s duplicates removed\n', style_samplesize(nrow(ret)), dup_txt) |> message()
+  sprintf(
+    fmt = '\u21ac %s after %s duplicates removed\n', 
+    ret |> nrow() |> bg_br_yellow() |> style_bold(), 
+    dup_txt
+  ) |> 
+    message()
   return(ret)
   
 }

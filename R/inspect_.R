@@ -129,7 +129,7 @@ inspect_ <- function(
     c(i[1:6], 'etc.')
   })
   names(cls) <- sprintf(fmt = '%d %s', lengths(cl2, use.names = FALSE), names(cl2))
-  cat(format_named(cls), sep = '\n')
+  cls |> format_named()
   return(invisible(x))
 }
 

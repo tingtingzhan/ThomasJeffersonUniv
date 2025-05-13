@@ -38,7 +38,7 @@ variable names of \code{table} to be printed in fuzzy suggestion (if applicable)
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \link{matchDF} returns a \link[base]{integer} \link[base]{vector}
+Function \code{\link[=matchDF]{matchDF()}} returns a \link[base]{integer} \link[base]{vector}
 }
 \description{
 To \link[base]{match} the rows of one \link[base]{data.frame}
@@ -50,5 +50,6 @@ Only case-insensitive \link[base]{grep} methods are available.
 }
 \examples{
 DF = swiss[sample(nrow(swiss), size = 55, replace = TRUE), ]
-matchDF(DF)
+matchDF(DF, trace_duplicate = TRUE)
 }
+\keyword{internal}

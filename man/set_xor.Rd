@@ -35,3 +35,4 @@ set_xor(1:5, 1:3)
 \seealso{
 \link[base]{setequal}
 }
+\keyword{internal}

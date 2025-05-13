@@ -25,7 +25,7 @@
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns 
-#' Function [matchDF] returns a \link[base]{integer} \link[base]{vector}
+#' Function [matchDF()] returns a \link[base]{integer} \link[base]{vector}
 #' 
 #' @note
 #' Unfortunately, R does not provide case-insensitive \link[base]{match}.
@@ -33,7 +33,9 @@
 #' 
 #' @examples
 #' DF = swiss[sample(nrow(swiss), size = 55, replace = TRUE), ]
-#' matchDF(DF)
+#' matchDF(DF, trace_duplicate = TRUE)
+#' @keywords internal
+#' @importFrom cli col_yellow col_magenta
 #' @importFrom stringdist stringdist
 #' @importFrom utils write.csv
 #' @export
@@ -78,7 +80,7 @@ matchDF <- function(
     tmp1 <- split.default(seq_along(id), f = factor(id))
     tmp2 <- tmp1[lengths(tmp1, use.names = FALSE) > 1L]
     tmp <- lapply(tmp2, FUN = `+`, 1L) # Excel rows, +1 for row header
-    if (trace_duplicate) lapply(format_named(tmp, sep = 'th unique row appears on Excel rows '), FUN = message)
+    if (trace_duplicate) tmp |> format_named(sep = 'th unique row appears on Excel rows ')
   } # rows with multiple matches
   
   if (any(na1 <- is.na(id))) { # rows without a match
@@ -95,7 +97,15 @@ matchDF <- function(
                    table = rsplit_(unique.data.frame(tab0[iseq])), 
                    nomatch = NA_integer_)
       idok <- !is.na(idx)
-      if (trace_nomatch) sprintf(fmt = '\u2756 Matched %d/%d by %s and %s', sum(idok), length(idx), style_interaction(by.x[iseq]), style_interaction(by.tab[iseq])) |> message()
+      if (trace_nomatch) {
+        sprintf(
+          fmt = '\u2756 Matched %d/%d by %s and %s', 
+          sum(idok), 
+          length(idx), 
+          by.x[iseq] |> paste(collapse = ':') |> col_magenta(), 
+          by.tab[iseq] |> paste(collapse = ':') |> col_magenta()
+        ) |> message()
+      }
       if (all(idok)) break
     }
     
@@ -122,11 +132,11 @@ matchDF <- function(
     fuzzy_csv <- tempfile(pattern = 'fuzzy_', fileext = '.csv')
     sprintf(
       fmt = '\u261e %s %d (%d unique) %s having no exact match to %s\n', # extra line feed!!
-      fuzzy_csv |> style_basename(),
+      fuzzy_csv |> basename() |> col_yellow(),
       sum(na1), 
       sum(x_uid), 
-      by.x |> style_interaction(), 
-      by.tab |> style_interaction()
+      by.x |> paste(collapse = ':') |> col_magenta(), 
+      by.tab |> paste(collapse = ':') |> col_magenta()
     ) |> message()
     if (inspect_fuzzy) {
       write.csv(x = fuzzy_suggest, file = fuzzy_csv, row.names = FALSE)
@@ -197,6 +207,7 @@ matchDF <- function(
 #'   'Heagerty & Liang & Scott Zeger')))
 #' (m = mergeDF(books, authors, by.x = 'name', by.table = 'surname'))
 #' attr(m, 'nomatch')
+#' @importFrom cli col_magenta
 #' @export
 mergeDF <- function(
     x, table, 
@@ -212,7 +223,9 @@ mergeDF <- function(
   if (length(nm_ <- intersect(
     x = setdiff(names(x), by.x), 
     y = nm_table
-  ))) stop('do not allow same colnames ', style_interaction(nm_), ' in `x` and `table` (except for `by`)')
+  ))) stop('do not allow same colnames ', 
+           nm_ |> paste(collapse = ':') |> col_magenta(), 
+           ' in `x` and `table` (except for `by`)')
   
   ret <- data.frame(x, table[id, nm_table, drop = FALSE])
   rownames(ret) <- rownames(x) # otherwise be overriden by rownames(table[...])

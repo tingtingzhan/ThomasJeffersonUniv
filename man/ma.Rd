@@ -12,22 +12,22 @@ ma(x, order = 5L)
 \item{order}{\link[base]{integer} scalar}
 }
 \value{
-Function \link{ma} returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
+Function \code{\link[=ma]{ma()}} returns a time-series \link[stats]{ts} object from workhorse function \link[stats]{filter}.
 }
 \description{
 ..
 }
 \note{
-Function \link{ma} is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
+Function \code{\link[=ma]{ma()}} is a simplified version of function \link[forecast]{ma} in package \CRANpkg{forecast}.
 
-Function \link{ma} is much faster than function \code{zoo::rollmean()}.
+Function \code{\link[=ma]{ma()}} is much faster than function \code{zoo::rollmean()}.
 
-Function \link{ma} imports function \code{stats::filter()},
-not function \code{dplyr::filter()}.
+Function \code{\link[=ma]{ma()}} imports function \code{stats::filter()},
+\emph{\strong{not}} function \code{dplyr::filter()}.
 }
 \examples{
-unclass(ma(1:20, order = 3L))
-unclass(ma(1:2, order = 3L))
+ma(1:20, order = 3L) |> unclass()
+ma(1:2, order = 3L) |> unclass()
 }
 \references{
 \url{https://stackoverflow.com/questions/743812/calculating-moving-average}

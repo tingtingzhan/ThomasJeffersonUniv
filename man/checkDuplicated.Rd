@@ -33,14 +33,15 @@ print out of substantial duplicates}
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \link{checkDuplicated} returns a \link[base]{data.frame}.
+Function \code{\link[=checkDuplicated]{checkDuplicated()}} returns a \link[base]{data.frame}.
 }
 \description{
 To inspect duplicated rows in a \link[base]{data.frame}.
 }
 \examples{
-x = swiss[c(1, 1:5), ]
+(x = swiss[c(1, 1:5), ])
 x$Agriculture[2] = x$Agriculture[1] + 1
 x
 checkDuplicated(x, ~ Fertility)
 }
+\keyword{internal}

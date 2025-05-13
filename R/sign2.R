@@ -16,7 +16,7 @@
 #' @param ... additional parameters, currently not in use
 #' 
 #' @details 
-#' Function [sign2] extends \link[base]{sign} in the following ways
+#' Function [sign2()] extends \link[base]{sign} in the following ways
 #' \itemize{
 #' \item {two \link[base]{ordered} \link[base]{factor}s can be compared;}
 #' \item {(detailed) information on missingness are provided.}
@@ -41,6 +41,7 @@
 #' table(sign2(x, y))
 #' table(sign2(x, y, na.detail = FALSE), useNA = 'always')
 #' 
+#' @keywords internal
 #' @export
 sign2 <- function(
     e1, e2, 

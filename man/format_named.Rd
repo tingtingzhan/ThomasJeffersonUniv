@@ -20,17 +20,11 @@ Function \code{\link[=format_named]{format_named()}} returns a \link[base]{chara
 format_named
 }
 \examples{
-x1 = c(a = 'a1', bc = '2\n3')
-x1 |> format_named() |> cat(sep = '\n')
-noout = lapply(format_named(x1), FUN = message)
+c(a = 'a1', bc = '2\n3') |> format_named()
 
-x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
-x2 |> format_named() |> cat(sep = '\n')
-noout = lapply(format_named(x2), FUN = message)
+list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7') |> format_named()
 
-x3 = c(a = '1\n2')
-x3 |> format_named() |> cat(sep = '\n')
-noout = lapply(format_named(x3), FUN = message)
+c(a = '1\n2') |> format_named()
 
 }
 \keyword{internal}

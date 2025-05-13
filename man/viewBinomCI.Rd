@@ -13,9 +13,7 @@ viewBinomCI(x)
 ..
 }
 \examples{
-swiss |> is.na() |> viewBinomCI()
+swiss |> is.na() |> viewBinomCI() # no missing
 airquality |> is.na() |> viewBinomCI()
-(airquality$Ozone) |> is.na() |> table() # do simple way
-
 }
 \keyword{internal}

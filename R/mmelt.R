@@ -33,6 +33,7 @@
 #' tryCatch(mmelt(iris1, measure_rx = rx, variable.name = 'Part'), error = identity)
 #' iris1$Sepal.Length = NA # does not have to be NA_real_
 #' mmelt(iris1, measure_rx = rx, variable.name = 'Part')
+#' @importFrom cli col_magenta col_green
 #' @importFrom reshape2 melt
 #' @export
 mmelt <- function(data, id.vars, measure_rx, variable.name = 'variable') {

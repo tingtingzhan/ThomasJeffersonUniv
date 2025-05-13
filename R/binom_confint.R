@@ -40,31 +40,59 @@ binom_confint <- function(x, n, conf.level = .95, alternative = c('two.sided', '
     lapply(FUN = `[[`, 'conf.int') |>
     do.call(what = rbind)
   
-  x <- ht |>
+  # to match behavior of ?stats::t.test
+  attr(cint, which = 'conf.level') <- conf.level
+  
+  # additional attributes
+  
+  attr(cint, which = 'alternative') <- alternative
+   
+  attr(cint, which = 'x') <- ht |>
     vapply(FUN = `[[`, 'statistic', FUN.VALUE = NA_real_) |>
     as.integer()
   
-  n <- ht |> 
+  attr(cint, which = 'n') <- ht |> 
     vapply(FUN = `[[`, 'parameter', FUN.VALUE = NA_real_) |>
     as.integer()
   
-  phat <- ht |>
-    vapply(FUN = `[[`, 'estimate', FUN.VALUE = NA_real_)
-    
-  ret <- sprintf(fmt = '%.1f%% (%.1f%%, %.1f%%)', 1e2*phat, 1e2*cint[,1L], 1e2*cint[,2L])
-  nm <- sprintf(fmt = 'Percentage (%.f%% %s-Sided Exact CI)', 1e2*conf.level, switch(alternative, two.sided = '2', '1'))
+  class(cint) <- 'binom_confint'
+  return(cint)
   
-  #ret <- data.frame(
-  #  p = ret, 
-  #  row.names = sprintf(fmt = '%d / %d', x, n)
-  #)
-  # `data.frame` does **not** allow duplicated `row.names` !!!
-  #names(ret) <- nm0
+}
+
+
+
+#' @title Convert [binom_confint] to \link[flextable]{flextable}
+#' 
+#' @param x a [binom_confint]
+#' 
+#' @param ... ..
+#' 
+#' @keywords internal
+#' @importFrom flextable as_flextable flextable autofit
+#' @export as_flextable.binom_confint
+#' @export
+as_flextable.binom_confint <- function(x, ...) {
   
-  dim(ret) <- c(length(ret), 1L)
-  dimnames(ret) <- list(sprintf(fmt = '%d / %d', x, n), nm)
+  obj <- x
   
-  return(noquote(ret, right = TRUE))
+  x <- attr(obj, which = 'x', exact = TRUE)
+  n <- attr(obj, which = 'n', exact = TRUE)
+  nm <- attr(obj, which = 'nm', exact = TRUE)
+  conf.level <- attr(obj, which = 'conf.level', exact = TRUE)
+  alternative <- attr(obj, which = 'alternative', exact = TRUE)
+  
+  d <- data.frame(
+    Count = sprintf(fmt = '%d / %d', x, n),
+    sprintf(fmt = '%.1f%% (%.1f%%, %.1f%%)', 1e2*(x/n), 1e2*obj[,1L], 1e2*obj[,2L])
+  )
+  names(d)[2L] <- sprintf(fmt = 'Percentage\n(%.f%% %s-Sided Exact CI)', 1e2*conf.level, switch(alternative, two.sided = 'Two', 'One'))
+  
+  if (length(nm)) d <- data.frame(Name = nm, d, check.names = FALSE)
+  
+  d |>
+    flextable() |>
+    autofit(part = 'all')
   
 }
 
@@ -80,10 +108,8 @@ binom_confint <- function(x, n, conf.level = .95, alternative = c('two.sided', '
 #' @param x a \link[base]{logical} \link[base]{matrix}
 #'
 #' @examples 
-#' swiss |> is.na() |> viewBinomCI()
+#' swiss |> is.na() |> viewBinomCI() # no missing
 #' airquality |> is.na() |> viewBinomCI()
-#' (airquality$Ozone) |> is.na() |> table() # do simple way
-#' 
 #' @keywords internal
 #' @export
 viewBinomCI <- function(x) {
@@ -101,14 +127,13 @@ viewBinomCI <- function(x) {
   x_ <- x[id]
   o <- order(x_, decreasing = TRUE)
   
-  cbind(
-    Variable = nm[id][o], 
-    binom_confint(
-      x = x_[o], 
-      n = n
-    )
-  ) |> 
-    noquote(right = TRUE)
+  ret <- binom_confint(
+    x = x_[o], 
+    n = n
+  )
+  attr(ret, which = 'nm') <- nm[id][o]
+  
+  as_flextable.binom_confint(ret)
   
 }
 

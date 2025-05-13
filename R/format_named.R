@@ -12,17 +12,11 @@
 #' Function [format_named()] returns a \link[base]{character} \link[base]{vector}.
 #' 
 #' @examples
-#' x1 = c(a = 'a1', bc = '2\n3')
-#' x1 |> format_named() |> cat(sep = '\n')
-#' noout = lapply(format_named(x1), FUN = message)
+#' c(a = 'a1', bc = '2\n3') |> format_named()
 #' 
-#' x2 = list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7')
-#' x2 |> format_named() |> cat(sep = '\n')
-#' noout = lapply(format_named(x2), FUN = message)
+#' list(a = '1\n2', b = character(), cd = '3\n4', efg = '5\n6\n7') |> format_named()
 #' 
-#' x3 = c(a = '1\n2')
-#' x3 |> format_named() |> cat(sep = '\n')
-#' noout = lapply(format_named(x3), FUN = message)
+#' c(a = '1\n2') |> format_named()
 #' 
 #' @keywords internal
 #' @export
@@ -31,33 +25,48 @@ format_named <- function(x, sep = ': ') {
   x0 <- x |>
     vapply(FUN = paste, collapse = ' ', FUN.VALUE = '') |> 
     trimws()
+  
   x1 <- x0[nzchar(x0)]
   if (!length(nm <- names(x1))) stop('input must be named')
   if (!all(nzchar(nm))) stop('do not allow empty name!')
   
-  x2 <- strsplit(x1, split = '\n')
+  x2 <- x1 |>
+    strsplit(split = '\n')
+  
   nx <- lengths(x2)
+  cx <- nx |> cumsum()
+  
   if (!all(nx == 1L)) { # some element(s) contains '\n'
-    x1 <- unlist(x2, use.names = FALSE)
+    x1 <- x2 |>
+      unlist(use.names = FALSE) # overwrite `x1` !!!
     xnm. <- character(length = length(x1))
-    xnm.[cumsum(nx)] <- nm # has zchar in `xnm.`
+    xnm.[cx] <- nm # now has zchar in `xnm.`
   } else xnm. <- nm
   
-  xnm <- format.default(xnm., justify = 'right')
+  xnm <- xnm. |>
+    format.default(justify = 'right')
   
-  ret <- paste(xnm, x1, sep = sep) |> style_bold()
-  id_green <- if (length(nx) == 1L) {
-    rep(TRUE, times = nx) # all green
-  } else {
-    mapply(FUN = rep, c(TRUE, FALSE), times = nx, SIMPLIFY = FALSE) |>
-      unlist(use.names = FALSE) |>
-      suppressWarnings()
-  }
-  ret[id_green] <- ret[id_green] |> col_green()
-  ret[!id_green] <- ret[!id_green] |> col_cyan()
-  return(ret)
+  ret <- paste(xnm, x1, sep = sep)
+  
+  mapply(
+    FUN = `:`, 
+    c(1L, cx[-length(cx)] + 1L) |> unname(),
+    cx |> unname(), 
+    SIMPLIFY = FALSE) |> # `real` indices
+    lapply(FUN = \(i) {
+      ret[i] |>
+        lapply(FUN = message)
+      cat('\n')
+      # make use of RStudio 2025 !!!
+    })
+  
+  return(invisible())
   
 }
+
+
+
+
 
 # https://gist.github.com/upsilun/4a85ab3bc7cf92e8acde720c6eb7ddea
 

@@ -21,6 +21,7 @@
 #' set_xor(1:5, 3:7)
 #' set_xor(1:5, 1:3)
 #' @seealso \link[base]{setequal}
+#' @keywords internal
 #' @export
 set_xor <- function(e1, e2, name1 = deparse1(substitute(e1)), name2 = deparse1(substitute(e2))) {
   force(name1)
