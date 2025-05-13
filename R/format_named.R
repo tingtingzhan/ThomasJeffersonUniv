@@ -43,16 +43,16 @@ format_named <- function(x, sep = ': ') {
     xnm.[cx] <- nm # now has zchar in `xnm.`
   } else xnm. <- nm
   
-  xnm <- xnm. |>
-    format.default(justify = 'right')
-  
-  ret <- paste(xnm, x1, sep = sep)
+  ret <- xnm. |>
+    format.default(justify = 'right') |>
+    paste(x1, sep = sep)
   
   mapply(
     FUN = `:`, 
     c(1L, cx[-length(cx)] + 1L) |> unname(),
     cx |> unname(), 
-    SIMPLIFY = FALSE) |> # `real` indices
+    SIMPLIFY = FALSE
+  ) |> # `real` indices
     lapply(FUN = \(i) {
       ret[i] |>
         lapply(FUN = message)
