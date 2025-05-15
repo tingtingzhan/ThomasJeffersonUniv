@@ -8,7 +8,6 @@ Description: Functions for admin needs of employees of
       University Hospital, Philadelphia, PA.
 License: GPL-2
 Encoding: UTF-8
-Imports: cli, flextable, matrixStats, reshape2, stringdist, writexl
 Authors@R: c(person(given = "Tingting", family =
       "Zhan", role = c("aut", "cre"), email =
       c("tingtingzhan@gmail.com"), comment = c(ORCID =
@@ -16,5 +15,6 @@ Authors@R: c(person(given = "Tingting", family =
 Language: en-US
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.5.0)
+Imports: cli, matrixStats, stringdist, writexl
 RoxygenNote: 7.3.2
-Suggests: microbenchmark, nlme, readxl
+Suggests: readxl

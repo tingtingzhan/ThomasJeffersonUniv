@@ -24,6 +24,7 @@
 #' @keywords internal
 #' @export
 set_xor <- function(e1, e2, name1 = deparse1(substitute(e1)), name2 = deparse1(substitute(e2))) {
+  
   force(name1)
   force(name2)
   if (anyDuplicated(e1)) warning('Duplicate(s) detected in ', name1)

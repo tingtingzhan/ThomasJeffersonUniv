@@ -9,7 +9,7 @@
 #' @param x an object with \link[base]{typeof} being \link[base]{character}
 #' 
 #' @details 
-#' Function [trimws_] is more aggressive than \link[base]{trimws}, that it removes
+#' Function [trimws_()] is more aggressive than \link[base]{trimws}, that it removes
 #' 
 #' \itemize{
 #' \item {non-UTF-8 characters}
@@ -21,25 +21,18 @@
 #' \link[base]{gsub} keeps \link[base]{attributes}
 #' 
 #' @returns 
-#' Function [trimws_] returns an object of \link[base]{typeof} \link[base]{character}.
+#' Function [trimws_()] returns an object of \link[base]{typeof} \link[base]{character}.
 #' 
 #' @examples 
 #' (x = c(A = ' a  b  ', b = 'a .  s', ' a  ,  b ; ', '\u00a0  ab '))
 #' base::trimws(x)
-#' # raster::trim(x) # do not want to 'Suggests'
 #' trimws_(x)
-#' 
-#' (xm = matrix(x, nrow = 2L))
-#' trimws_(xm)
 #' 
 #' cat(x0 <- ' ab  \xa0cd ')
 #' tryCatch(base::trimws(x0), error = identity)
-#' # tryCatch(raster::trim(x0), error = identity)
 #' trimws_(x0)
 #' 
-#' #library(microbenchmark)
-#' #microbenchmark(trimws(x), trimws_(x))
-#' 
+#' @keywords internal
 #' @export
 trimws_ <- function(x) {
   # http://stackoverflow.com/questions/14737266/removing-multiple-spaces-and-trailing-spaces-using-gsub

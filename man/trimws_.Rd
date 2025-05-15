@@ -10,7 +10,7 @@ trimws_(x)
 \item{x}{an object with \link[base]{typeof} being \link[base]{character}}
 }
 \value{
-Function \link{trimws_} returns an object of \link[base]{typeof} \link[base]{character}.
+Function \code{\link[=trimws_]{trimws_()}} returns an object of \link[base]{typeof} \link[base]{character}.
 }
 \description{
 To remove leading/trailing and duplicated (symbols that look like) white spaces.
@@ -18,7 +18,7 @@ To remove leading/trailing and duplicated (symbols that look like) white spaces.
 More aggressive than function \link[base]{trimws}.
 }
 \details{
-Function \link{trimws_} is more aggressive than \link[base]{trimws}, that it removes
+Function \code{\link[=trimws_]{trimws_()}} is more aggressive than \link[base]{trimws}, that it removes
 
 \itemize{
 \item {non-UTF-8 characters}
@@ -32,18 +32,11 @@ Function \link{trimws_} is more aggressive than \link[base]{trimws}, that it rem
 \examples{
 (x = c(A = ' a  b  ', b = 'a .  s', ' a  ,  b ; ', '\u00a0  ab '))
 base::trimws(x)
-# raster::trim(x) # do not want to 'Suggests'
 trimws_(x)
-
-(xm = matrix(x, nrow = 2L))
-trimws_(xm)
 
 cat(x0 <- ' ab  \xa0cd ')
 tryCatch(base::trimws(x0), error = identity)
-# tryCatch(raster::trim(x0), error = identity)
 trimws_(x0)
 
-#library(microbenchmark)
-#microbenchmark(trimws(x), trimws_(x))
-
 }
+\keyword{internal}
