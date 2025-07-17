@@ -2,7 +2,7 @@
 % Please edit documentation in R/matchDF.R
 \name{rsplit_}
 \alias{rsplit_}
-\title{Split \link[base]{data.frame} by Row}
+\title{Split \link[base]{data.frame} into Individual Rows}
 \usage{
 rsplit_(x)
 }
@@ -10,20 +10,15 @@ rsplit_(x)
 \item{x}{\link[base]{data.frame}}
 }
 \value{
-Function \link{rsplit_} returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+Function \code{\link[=rsplit_]{rsplit_()}} returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
 }
 \description{
 \link[base]{split.data.frame} into individual rows.
 }
-\note{
-We use \link[base]{split.data.frame} with argument \code{f} being \code{attr(x, which = 'row.names', exact = TRUE)} instead of
-\code{seq_len(.row_names_info(x, type = 2L))},
-not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces
-that \link[base]{row.names.data.frame} must be unique.
-}
 \examples{
-rsplit_(head(mtcars)) # data.frame with rownames
-rsplit_(head(warpbreaks)) # data.frame without rownames
-rsplit_(data.frame()) # exception
+mtcars |> head(n = 3L) |> rsplit_() # with rownames
+Formaldehyde |> rsplit_() # without rownames
+data.frame() |> rsplit_() # exception
+
 }
 \keyword{internal}

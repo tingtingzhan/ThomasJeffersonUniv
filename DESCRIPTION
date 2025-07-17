@@ -15,6 +15,6 @@ Authors@R: c(person(given = "Tingting", family =
 Language: en-US
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.5.0)
-Imports: cli, matrixStats, stringdist, writexl
+Imports: cli, english, flextable, matrixStats, stringdist, writexl
 RoxygenNote: 7.3.2
 Suggests: readxl

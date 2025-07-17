@@ -16,8 +16,6 @@
 #' @param view.table (optional) \link[base]{character} scalar or \link[base]{vector},
 #' variable names of `table` to be printed in fuzzy suggestion (if applicable)
 #'  
-#' @param trace_duplicate \link[base]{logical} scalar
-#'  
 #' @param trace_nomatch \link[base]{logical} scalar, to provide detailed diagnosis information, default `FALSE`
 #' 
 #' @param inspect_fuzzy \link[base]{logical} scalar
@@ -32,18 +30,18 @@
 #' Only case-insensitive \link[base]{grep} methods are available.
 #' 
 #' @examples
-#' DF = swiss[sample(nrow(swiss), size = 55, replace = TRUE), ]
-#' matchDF(DF, trace_duplicate = TRUE)
+#' Formaldehyde[sample(nrow(Formaldehyde), size = 20, replace = TRUE), ] |>
+#'   matchDF()
 #' @keywords internal
 #' @importFrom cli col_yellow col_magenta
 #' @importFrom stringdist stringdist
 #' @importFrom utils write.csv
 #' @export
 matchDF <- function(
-    x, table = unique.data.frame(x),
+    x, 
+    table = unique.data.frame(x),
     by = names(x), by.x = character(), by.table = character(),
     view.table = character(),
-    trace_duplicate = FALSE,
     trace_nomatch = FALSE,
     inspect_fuzzy = FALSE,
     ...
@@ -75,13 +73,7 @@ matchDF <- function(
   if (anyDuplicated.data.frame(tab0)) stop('do not allow duplicated ', sQuote(paste0(by.tab, collapse = '+')), ' in `table`')
   
   id <- match(x = rsplit_(x0), table = rsplit_(tab0), nomatch = NA_integer_)
-  
-  if (anyDuplicated.default(id)) { # rows with multiple matches
-    tmp1 <- split.default(seq_along(id), f = factor(id))
-    tmp2 <- tmp1[lengths(tmp1, use.names = FALSE) > 1L]
-    tmp <- lapply(tmp2, FUN = `+`, 1L) # Excel rows, +1 for row header
-    if (trace_duplicate) tmp |> format_named(sep = 'th unique row appears on Excel rows ')
-  } # rows with multiple matches
+  id |> show_match() |> print()
   
   if (any(na1 <- is.na(id))) { # rows without a match
     
@@ -237,29 +229,73 @@ mergeDF <- function(
 
 
 
-#' @title Split \link[base]{data.frame} by Row
+#' @title Split \link[base]{data.frame} into Individual Rows
 #' 
 #' @description
 #' \link[base]{split.data.frame} into individual rows.
 #' 
 #' @param x \link[base]{data.frame}
 #' 
-#' @note
-#' We use \link[base]{split.data.frame} with argument `f` being `attr(x, which = 'row.names', exact = TRUE)` instead of
-#' `seq_len(.row_names_info(x, type = 2L))`,
-#' not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces 
-#' that \link[base]{row.names.data.frame} must be unique.
+# @note
+# We use \link[base]{split.data.frame} with argument `f` being `attr(x, which = 'row.names', exact = TRUE)` instead of
+# `seq_len(.row_names_info(x, type = 2L))`,
+# not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces 
+# that \link[base]{row.names.data.frame} must be unique.
 #' 
 #' @returns
-#' Function [rsplit_] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+#' Function [rsplit_()] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
 #' 
 #' @examples
-#' rsplit_(head(mtcars)) # data.frame with rownames
-#' rsplit_(head(warpbreaks)) # data.frame without rownames
-#' rsplit_(data.frame()) # exception
+#' mtcars |> head(n = 3L) |> rsplit_() # with rownames
+#' Formaldehyde |> rsplit_() # without rownames
+#' data.frame() |> rsplit_() # exception
+#' 
 #' @keywords internal
 #' @export
 rsplit_ <- function(x) {
-  split.data.frame(x, f = attr(x, which = 'row.names', exact = TRUE))
+  x |>
+    .row_names_info(type = 2L) |> 
+    seq_len() |>
+    lapply(FUN = \(i) x[i, , drop = FALSE]) 
+  # inspired by 
+  # ?base::split.data.frame
+  # ?base::anyDuplicated.data.frame
 }
 
+
+
+
+rsplit_OLD <- function(x) {
+  x |>
+    attr(which = 'row.names', exact = TRUE) |>
+    split.data.frame(x = x)
+}
+
+
+
+
+#' @importFrom english ordinal
+#' @importFrom flextable flextable autofit vline
+show_match <- function(x) {
+  
+  if (!anyDuplicated.default(x)) return(invisible())
+  
+  tmp <- x |> 
+    seq_along() |>
+    split.default(f = factor(x))
+  id <- (lengths(tmp, use.names = FALSE) > 1L) |> which()
+  
+  data.frame(
+    'Unique Element' = paste(id, id |> ordinal(), sep = '; '),
+    'Appear at Location' = tmp[id] |> 
+      vapply(FUN = paste, collapse = ', ', FUN.VALUE = NA_character_),
+    'Excel Row (+1)' = tmp[id]|> 
+      lapply(FUN = `+`, 1L) |> 
+      vapply(FUN = paste, collapse = ', ', FUN.VALUE = NA_character_),
+    check.names = FALSE
+  ) |> 
+    flextable() |>
+    autofit() |>
+    vline(j = 1:2)
+  
+}

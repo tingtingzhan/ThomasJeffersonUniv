@@ -56,8 +56,6 @@ format_named <- function(x, sep = ': ') {
     lapply(FUN = \(i) {
       ret[i] |>
         lapply(FUN = message)
-      cat('\n')
-      # make use of RStudio 2025 !!!
     })
   
   return(invisible())

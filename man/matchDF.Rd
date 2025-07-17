@@ -11,7 +11,6 @@ matchDF(
   by.x = character(),
   by.table = character(),
   view.table = character(),
-  trace_duplicate = FALSE,
   trace_nomatch = FALSE,
   inspect_fuzzy = FALSE,
   ...
@@ -28,8 +27,6 @@ matchDF(
 
 \item{view.table}{(optional) \link[base]{character} scalar or \link[base]{vector},
 variable names of \code{table} to be printed in fuzzy suggestion (if applicable)}
-
-\item{trace_duplicate}{\link[base]{logical} scalar}
 
 \item{trace_nomatch}{\link[base]{logical} scalar, to provide detailed diagnosis information, default \code{FALSE}}
 
@@ -49,7 +46,7 @@ Unfortunately, R does not provide case-insensitive \link[base]{match}.
 Only case-insensitive \link[base]{grep} methods are available.
 }
 \examples{
-DF = swiss[sample(nrow(swiss), size = 55, replace = TRUE), ]
-matchDF(DF, trace_duplicate = TRUE)
+Formaldehyde[sample(nrow(Formaldehyde), size = 20, replace = TRUE), ] |>
+  matchDF()
 }
 \keyword{internal}
