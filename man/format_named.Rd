@@ -4,7 +4,7 @@
 \alias{format_named}
 \title{format_named}
 \usage{
-format_named(x, sep = ": ")
+format_named(x, sep = ": ", colour = list(col_cyan, col_magenta))
 }
 \arguments{
 \item{x}{\link[base]{character} \link[base]{vector},
@@ -12,6 +12,9 @@ or a \link[base]{list} of \link[base]{character} object.
 Input \code{x} must be named}
 
 \item{sep}{\link[base]{character} scalar, see \link[base]{paste}}
+
+\item{colour}{\link[base]{list} of color functions from package \CRANpkg{cli}, default
+\code{list(col_cyan, col_magenta)}}
 }
 \value{
 Function \code{\link[=format_named]{format_named()}} returns a \link[base]{character} \link[base]{vector}.

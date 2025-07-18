@@ -8,6 +8,9 @@
 #' 
 #' @param sep \link[base]{character} scalar, see \link[base]{paste}
 #' 
+#' @param colour \link[base]{list} of color functions from package \CRANpkg{cli}, default
+#' `list(col_cyan, col_magenta)`
+#' 
 #' @returns
 #' Function [format_named()] returns a \link[base]{character} \link[base]{vector}.
 #' 
@@ -19,8 +22,13 @@
 #' c(a = '1\n2') |> format_named()
 #' 
 #' @keywords internal
+#' @importFrom cli col_cyan col_magenta style_bold
 #' @export
-format_named <- function(x, sep = ': ') {
+format_named <- function(
+    x, 
+    sep = ': ',
+    colour = list(col_cyan, col_magenta)
+) {
   
   x0 <- x |>
     vapply(FUN = paste, collapse = ' ', FUN.VALUE = '') |> 
@@ -34,7 +42,8 @@ format_named <- function(x, sep = ': ') {
     strsplit(split = '\n')
   
   nx <- lengths(x2)
-  cx <- nx |> cumsum()
+  cx <- nx |> 
+    cumsum()
   
   if (!all(nx == 1L)) { # some element(s) contains '\n'
     x1 <- x2 |>
@@ -44,19 +53,23 @@ format_named <- function(x, sep = ': ') {
   } else xnm. <- nm
   
   ret <- xnm. |>
-    format.default(justify = 'right') |>
+    format.default(justify = 'right') |> # justify all elements!
     paste(x1, sep = sep)
   
-  mapply(
+  id <- mapply(
     FUN = `:`, 
     c(1L, cx[-length(cx)] + 1L) |> unname(),
     cx |> unname(), 
     SIMPLIFY = FALSE
-  ) |> # `real` indices
-    lapply(FUN = \(i) {
-      ret[i] |>
-        lapply(FUN = message)
-    })
+  ) # `real` indices
+  
+  mapply(FUN = \(i, col) {
+    ret[i] |>
+      col() |>
+      style_bold() |>
+      lapply(FUN = cat, '\n')
+  }, i = id, col = colour) |> 
+    suppressWarnings() # warning in length recycling
   
   return(invisible())
   
