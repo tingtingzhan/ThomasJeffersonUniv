@@ -2,7 +2,6 @@ Package: ThomasJeffersonUniv
 Type: Package
 Title: Handy Tools for TJU/TJUH Employees
 Version: 0.1.3
-Date: 2025-04-28
 Description: Functions for admin needs of employees of
       Thomas Jefferson University and Thomas Jefferson
       University Hospital, Philadelphia, PA.
@@ -15,6 +14,7 @@ Authors@R: c(person(given = "Tingting", family =
 Language: en-US
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.5.0)
-Imports: cli, english, flextable, matrixStats, stringdist, writexl
+Imports: cli, english, flextable, matrixStats, stringdist, writexl,
+      sideway
 RoxygenNote: 7.3.2
 Suggests: readxl

@@ -29,6 +29,7 @@
 #' @returns 
 #' Function [inspect_()] returns (invisibly) a \link[base]{data.frame}.
 #' 
+#' @importFrom sideway sideway
 #' @export
 inspect_ <- function(
     x, 
@@ -129,7 +130,8 @@ inspect_ <- function(
     c(i[1:6], 'etc.')
   })
   names(cls) <- sprintf(fmt = '%d %s', lengths(cl2, use.names = FALSE), names(cl2))
-  cls |> format_named()
+  cls |> 
+    sideway()
   return(invisible(x))
 }
 
