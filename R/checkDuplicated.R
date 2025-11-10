@@ -90,7 +90,7 @@ checkDuplicated <- function(
       as.data.frame.list(check.names = FALSE)
   } # else NULL
   
-  r1_truedup <- if (any(id_truedup)) {
+  if (any(id_truedup)) {
     n_truedup <- sum(id_truedup)
     
     dontshow_nc <- match(dontshow, table = names(data))
@@ -128,32 +128,36 @@ checkDuplicated <- function(
     
     if (missing(rule)) {
       '\u2765 Na\u00efvely select 1st row' |> message()
-      rid[ns][id_truedup] |>
+      r1_truedup <- rid[ns][id_truedup] |>
         vapply(FUN = `[`, 1L, FUN.VALUE = NA_integer_)
     } else {
       rule <- substitute(rule)
-      rule |> 
-        deparse1() |>
-        col_blue() |> style_bold() |>
-        sprintf(fmt = '\u2765 Selection rule %s (then na\u00efvely select 1st row)') |>
-        message()
-      rid[ns][id_truedup] |>
+      if (rule[[1L]] == '{') {
+        # complicated `rule` ..
+        message('\u2765 Selection rule')
+        print.default(rule) # not sure how to use \pkg{cli} here..
+      } else {
+        rule |> 
+          deparse1() |>
+          col_blue() |> style_bold() |>
+          sprintf(fmt = '\u2765 Selection rule %s (then na\u00efvely select 1st row)') |>
+          message()
+      }
+      r1_truedup <- rid[ns][id_truedup] |>
         vapply(FUN = \(i) { # (i = rid[ns][id_truedup][[1L]])
           idat <- data[i, , drop = FALSE]
           z <- rule |> 
             eval(envir = idat) # inside ?base::with.default
-          if (!is.logical(z) || length(z) != length(i)) stop('`rule` must return a logical-vector')
-          #if (sum(z, na.rm = TRUE) != 1L) {
-          #  print(idat)
-          #  print(z)
-          #  stop()
-          #}
-          #return(i[which(z)]) # drops `NA`
-          return(i[which(z)[1L]]) # drops `NA`; naively select 1st row
+          if (is.logical(z) && (length(z) == length(i))) {
+            return(i[which(z)[1L]]) # drops `NA`; naively select 1st row
+          }
+          if (is.integer(z) && length(z) == 1L) return(i[z])
+          print(z)
+          stop('illegal `z`')
         }, FUN.VALUE = NA_integer_)
     }
     
-  } # else NULL
+  } else r1_truedup <- NULL
   
   ret <- rbind.data.frame(
     data[c(
