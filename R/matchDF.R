@@ -33,7 +33,6 @@
 #' Formaldehyde[sample(nrow(Formaldehyde), size = 20, replace = TRUE), ] |>
 #'   matchDF()
 #' @keywords internal
-#' @importFrom cli col_yellow col_magenta
 #' @importFrom stringdist stringdist
 #' @importFrom utils write.csv
 #' @export
@@ -199,7 +198,8 @@ matchDF <- function(
 #'   'Heagerty & Liang & Scott Zeger')))
 #' (m = mergeDF(books, authors, by.x = 'name', by.table = 'surname'))
 #' attr(m, 'nomatch')
-#' @importFrom cli col_magenta
+#' 
+#' @keywords internal
 #' @export
 mergeDF <- function(
     x, table, 

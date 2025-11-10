@@ -57,4 +57,6 @@ even \code{sort = FALSE} may not completely retain the original order of input \
   'Heagerty & Liang & Scott Zeger')))
 (m = mergeDF(books, authors, by.x = 'name', by.table = 'surname'))
 attr(m, 'nomatch')
+
 }
+\keyword{internal}

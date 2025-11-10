@@ -10,7 +10,7 @@
 #' 
 #' Only for end-user!!!!
 #' 
-#' Function [%~%] appends two \link[base]{character} \link[base]{vector}s 
+#' Function `%~%` appends two \link[base]{character} \link[base]{vector}s 
 #' of variable names into a \link[stats]{formula}.
 #' This is much slower than \link[base]{~} operator, thus should only be used by end-user
 #' 

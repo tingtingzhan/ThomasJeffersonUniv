@@ -27,12 +27,18 @@
 #' Function [checkDuplicated()] returns a \link[base]{data.frame}.
 #' 
 #' @examples
-#' (x = swiss[c(1, 1:5), ])
-#' x$Agriculture[2] = x$Agriculture[1] + 1
+#' fml = Formaldehyde
+#' fml$id = seq_len(nrow(fml))
+#' (x = fml[c(1:3, 1:6), ])
+#' x$optden[4] = x$optden[1] + 1
+#' x$carb[2] = x$optden[5L] = NA_real_
+#' x$optden[3] = x$carb[6L] = NA_real_
 #' x
-#' checkDuplicated(x, ~ Fertility)
+#' 
+#' checkDuplicated(x, ~ id)
+#' checkDuplicated(x, ~ id, rule = optden == max(optden))
+#' 
 #' @keywords internal
-#' @importFrom cli cli_text bg_br_yellow col_magenta col_yellow style_bold
 #' @importFrom writexl write_xlsx
 #' @export
 checkDuplicated <- function(
@@ -43,51 +49,46 @@ checkDuplicated <- function(
     ...
 ) {
   
-  dup_txt <- f |> all.vars() |> paste(collapse = ':') |> col_magenta()
+  dup_txt <- f |> all.vars() |> paste(collapse = ':') |> style_bold() |> col_magenta()
   
+  # split-ted row-id by `f`
   rid <- data |> 
     .row_names_info(type = 2L) |> 
     seq_len() |>
     split.default(f = interaction(data[all.vars(f)], drop = TRUE, lex.order = TRUE))
 
-  n_ <- lengths(rid, use.names = FALSE)
-  if (any(n_ == 0L)) stop('wont happen')
-  ns_ <- (n_ > 1L)
-  if (!any(ns_)) {
+  n <- lengths(rid, use.names = FALSE)
+  if (any(n == 0L)) stop('wont happen')
+  ns <- (n > 1L)
+  if (!any(ns)) {
     sprintf(fmt = '\u2714 No duplicated %s\n', dup_txt) |> message()
     return(invisible(data))
   }
   
-  # rows of `data` without duplication
-  r0 <- sort.int(unlist(rid[!ns_], use.names = FALSE))
+  ds <- rid[ns] |>
+    lapply(FUN = \(i) data[i, , drop = FALSE]) # if too slow, use parallel
   
-  rid_dup <- rid[ns_]
+  ds_coalesce <- ds |>
+    lapply(FUN = \(d) {
+      # attempt column-wise coalesce?
+      tryCatch(expr = lapply(d, FUN = unique_), error = identity)
+    })
   
-  nm_dup <- format(sQuote(names(rid[ns_])), justify = 'left')
-  
-  # slow with big `data`!!
-  # ds_ <- mapply(FUN = \(i, nm) {
-  #  message('\rCreating subset ', nm, appendLF = FALSE)
-  #  data[i, , drop = FALSE]
-  #}, i = rid_dup, nm = sprintf(fmt = '%s - %d/%d', nm_dup, seq_along(nm_dup), length(nm_dup)), SIMPLIFY = FALSE)
-  #cat('\r')
-  ds_ <- lapply(rid[ns_], FUN = \(i) data[i, , drop = FALSE]) # if too slow, use parallel
-  
-  ds_coalesce <- lapply(ds_, FUN = \(d) {
-    # attempt column-wise coalesce?
-    tryCatch(expr = lapply(d, FUN = unique_), error = identity)
-  })
-  
-  id_truedup <- vapply(ds_coalesce, FUN = inherits, what = 'error', FUN.VALUE = NA)
+  id_truedup <- ds_coalesce |>
+    vapply(FUN = inherits, what = 'error', FUN.VALUE = NA)
   
   d_coalesce <- if (any(!id_truedup)) {
-    sprintf(fmt = '\u2756 %d %s with trivial (i.e., coalesce-able) duplicates', sum(!id_truedup), dup_txt) |> message()
-    as.data.frame.list(
-      x = do.call(what = mapply, args = c(
-        ds_coalesce[!id_truedup], 
-        list(FUN = c, SIMPLIFY = FALSE))),
-      check.names = FALSE)
-  }# else NULL
+    sprintf(fmt = '%d %s', sum(!id_truedup), dup_txt) |>
+      bg_br_green() |>
+      sprintf(fmt = '\u2714 %s with coalesce-able duplicates') |> 
+      message()
+    c(
+      ds_coalesce[!id_truedup], 
+      list(FUN = c, SIMPLIFY = FALSE, USE.NAMES = TRUE)
+    ) |>
+      do.call(what = mapply, args = _) |> # # ?base::.mapply drop names!
+      as.data.frame.list(check.names = FALSE)
+  } # else NULL
   
   r1_truedup <- if (any(id_truedup)) {
     n_truedup <- sum(id_truedup)
@@ -97,43 +98,75 @@ checkDuplicated <- function(
     if (!length(show_nc)) show_nc <- TRUE
     
     # slow with big `data`!!
-    tmp <- mapply(FUN = \(d, nm) {
-      #message('\rFinding duplicated columns ', nm, appendLF = FALSE)
-      not_unique_(d[show_nc])
-    }, d = ds_[id_truedup], nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), SIMPLIFY = FALSE)
+    nm_dup <- rid[ns] |>
+      names() |>
+      sQuote() |>
+      format(justify = 'left')
+    tmp <- mapply(
+      FUN = \(d, nm) {
+        #message('\rFinding duplicated columns ', nm, appendLF = FALSE)
+        not_unique_(d[show_nc])
+      }, 
+      d = ds[id_truedup], 
+      nm = sprintf(fmt = '%s - %d of %d', nm_dup[id_truedup], seq_len(n_truedup), n_truedup), 
+      SIMPLIFY = FALSE
+    )
     #cat('\r')
     
     write_xlsx(x = tmp, path = file)
-    # https://cli.r-lib.org/reference/links.html
-    sprintf(fmt = '\u261e {.href [%s](file://{path.expand(path = file)})} %d %s with substantial duplicates', 
-            file |> basename() |> col_yellow(), 
-            n_truedup, 
-            dup_txt) |> cli_text()
-    paste0('open ', dirname(file)) |> system()
+    
+    sprintf(
+      fmt = '\u261e %s with substantial duplicates {.href [%s](file://{path.expand(path = file)})}', # https://cli.r-lib.org/reference/links.html
+      sprintf(fmt = '%d %s', n_truedup, dup_txt) |> bg_br_yellow(),
+      file |> basename() |> col_yellow()
+    ) |> 
+      cli_text()
+    file |>
+      dirname() |>
+      sprintf(fmt = 'open %s') |> 
+      system()
     
     if (missing(rule)) {
-      'naively select the first row' |> message()
-      vapply(rid_dup[id_truedup], FUN = `[`, 1L, FUN.VALUE = NA_integer_)
+      '\u2765 Na\u00efvely select 1st row' |> message()
+      rid[ns][id_truedup] |>
+        vapply(FUN = `[`, 1L, FUN.VALUE = NA_integer_)
     } else {
-      message('Selection rule: ', deparse(rule))
-      vapply(rid_dup[id_truedup], FUN = \(i) { # (i = rid_dup[id_truedup][[1L]])
-        ret <- with(data[i,], expr = eval(rule))
-        if (length(ret) != 1L) {
-          print(data[i,])
-          stop()
-        }
-        return(ret)
-      }, FUN.VALUE = NA_integer_)
+      rule <- substitute(rule)
+      rule |> 
+        deparse1() |>
+        col_blue() |> style_bold() |>
+        sprintf(fmt = '\u2765 Selection rule %s (then na\u00efvely select 1st row)') |>
+        message()
+      rid[ns][id_truedup] |>
+        vapply(FUN = \(i) { # (i = rid[ns][id_truedup][[1L]])
+          idat <- data[i, , drop = FALSE]
+          z <- rule |> 
+            eval(envir = idat) # inside ?base::with.default
+          if (!is.logical(z) || length(z) != length(i)) stop('`rule` must return a logical-vector')
+          #if (sum(z, na.rm = TRUE) != 1L) {
+          #  print(idat)
+          #  print(z)
+          #  stop()
+          #}
+          #return(i[which(z)]) # drops `NA`
+          return(i[which(z)[1L]]) # drops `NA`; naively select 1st row
+        }, FUN.VALUE = NA_integer_)
     }
     
   } # else NULL
   
-  ret <- rbind.data.frame(data[c(r0, r1_truedup), , drop = FALSE], d_coalesce)
-  sprintf(
-    fmt = '\u21ac %s after %s duplicates removed\n', 
-    ret |> nrow() |> bg_br_yellow() |> style_bold(), 
-    dup_txt
-  ) |> 
+  ret <- rbind.data.frame(
+    data[c(
+      rid[!ns] |> # rows of `data` without duplication
+        unlist(use.names = FALSE) |>
+        sort.int(),
+      r1_truedup
+    ), , drop = FALSE], 
+    d_coalesce
+  )
+  sprintf(fmt = '%d %s', nrow(ret), dup_txt) |>
+    style_underline() |> style_bold() |>
+    sprintf(fmt = '\u21ac %s after duplicates removed') |> 
     message()
   return(ret)
   
@@ -141,7 +174,7 @@ checkDuplicated <- function(
 
 
 
-unique_ <- function(x) {
+unique_ <- \(x) {
   x0 <- x[!is.na(x)]
   if (!length(x0)) return(NA)
   # not using my [unique_allequal]
@@ -151,7 +184,7 @@ unique_ <- function(x) {
 
 
 
-not_unique_ <- function(data) {
+not_unique_ <- \(data) {
   unique_id <- vapply(data, FUN = \(x) {
     #inherits(tryCatch(unique_(x), error = identity), what = 'error')
     # base::tryCatch too slow

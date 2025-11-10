@@ -39,9 +39,16 @@ Function \code{\link[=checkDuplicated]{checkDuplicated()}} returns a \link[base]
 To inspect duplicated rows in a \link[base]{data.frame}.
 }
 \examples{
-(x = swiss[c(1, 1:5), ])
-x$Agriculture[2] = x$Agriculture[1] + 1
+fml = Formaldehyde
+fml$id = seq_len(nrow(fml))
+(x = fml[c(1:3, 1:6), ])
+x$optden[4] = x$optden[1] + 1
+x$carb[2] = x$optden[5L] = NA_real_
+x$optden[3] = x$carb[6L] = NA_real_
 x
-checkDuplicated(x, ~ Fertility)
+
+checkDuplicated(x, ~ id)
+checkDuplicated(x, ~ id, rule = optden == max(optden))
+
 }
 \keyword{internal}

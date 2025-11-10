@@ -16,5 +16,5 @@ Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.5.0)
 Imports: cli, english, flextable, matrixStats, stringdist, writexl,
       sideway
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: readxl
