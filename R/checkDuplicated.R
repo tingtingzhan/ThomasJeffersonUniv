@@ -129,7 +129,7 @@ checkDuplicated <- function(
     if (missing(rule)) {
       '\u2765 Na\u00efvely select 1st row' |> message()
       r1_truedup <- rid[ns][id_truedup] |>
-        vapply(FUN = `[`, 1L, FUN.VALUE = NA_integer_)
+        vapply(FUN = `[`, i = 1L, FUN.VALUE = NA_integer_)
     } else {
       rule <- substitute(rule)
       if (rule[[1L]] == '{') {
@@ -143,18 +143,18 @@ checkDuplicated <- function(
           sprintf(fmt = '\u2765 Selection rule %s (then na\u00efvely select 1st row)') |>
           message()
       }
-      r1_truedup <- rid[ns][id_truedup] |>
+      id_select <- rid[ns][id_truedup] |>
         vapply(FUN = \(i) { # (i = rid[ns][id_truedup][[1L]])
-          idat <- data[i, , drop = FALSE]
           z <- rule |> 
-            eval(envir = idat) # inside ?base::with.default
+            eval(envir = data[i, , drop = FALSE]) # inside ?base::with.default
           if (is.logical(z) && (length(z) == length(i))) {
-            return(i[which(z)[1L]]) # drops `NA`; naively select 1st row
+            return(which(z)[1L]) # drops `NA`; naively select 1st row
           }
-          if (is.integer(z) && length(z) == 1L) return(i[z])
+          if (is.integer(z) && length(z) == 1L) return(z)
           print(z)
           stop('illegal `z`')
         }, FUN.VALUE = NA_integer_)
+      r1_truedup <- mapply(FUN = `[`, x = rid[ns][id_truedup], i = id_select, SIMPLIFY = TRUE)
     }
     
   } else r1_truedup <- NULL
