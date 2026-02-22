@@ -23,11 +23,11 @@ that it removes
 \itemize{
 \item {non-UTF-8 characters}
 \item {duplicated white spaces}
-\item {symbols that look like white space, such as \verb{\\u00a0} (no-break space)}
+\item {symbols that look like white space, such as \href{https://www.compart.com/en/unicode/U+00A0}{\code{'\\u00a0'}} (no-break space)}
 }
 }
 \note{
-The function \link[base]{gsub} keeps \link[base]{attributes}.
+The function \link[base]{gsub} keeps the \link[base]{attributes}.
 }
 \examples{
 stopifnot(!identical('\u00a0', ' '))
