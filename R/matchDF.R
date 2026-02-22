@@ -35,6 +35,7 @@
 #' @keywords internal
 #' @importFrom stringdist stringdist
 #' @importFrom utils write.csv
+#' @importFrom fastmd where_duplicated
 #' @export
 matchDF <- function(
     x, 
@@ -72,7 +73,8 @@ matchDF <- function(
   if (anyDuplicated.data.frame(tab0)) stop('do not allow duplicated ', sQuote(paste0(by.tab, collapse = '+')), ' in `table`')
   
   id <- match(x = rsplit_(x0), table = rsplit_(tab0), nomatch = NA_integer_)
-  id |> show_match() |> print()
+  #id |> show_match() |> print()
+  id |> where_duplicated(at = 'row') |> show()
   
   if (any(na1 <- is.na(id))) { # rows without a match
     
@@ -262,19 +264,22 @@ rsplit_ <- function(x) {
 
 
 #' @importFrom english ordinal
-#' @importFrom flextable flextable autofit vline
+#' @importFrom flextable flextable autofit
 show_match <- function(x) {
+  
+  .Defunct(new = 'fastmd::where_duplicated')
   
   if (!anyDuplicated.default(x)) return(invisible())
   
   tmp <- x |> 
     seq_along() |>
     split.default(f = factor(x))
-  id <- (lengths(tmp, use.names = FALSE) > 1L) |> which()
+  id <- (lengths(tmp, use.names = FALSE) > 1L) |> 
+    which()
   
   data.frame(
     'Unique Element' = paste(id, id |> ordinal(), sep = '; '),
-    'Appear at Location' = tmp[id] |> 
+    'Appear at Row' = tmp[id] |> 
       vapply(FUN = paste, collapse = ', ', FUN.VALUE = NA_character_),
     'Excel Row (+1)' = tmp[id]|> 
       lapply(FUN = `+`, 1L) |> 
@@ -282,7 +287,6 @@ show_match <- function(x) {
     check.names = FALSE
   ) |> 
     flextable() |>
-    autofit() |>
-    vline(j = 1:2)
+    autofit(part = 'all')
   
 }
