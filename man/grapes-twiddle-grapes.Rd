@@ -2,12 +2,13 @@
 % Please edit documentation in R/grapes_ext.R
 \name{\%~\%}
 \alias{\%~\%}
-\title{Create Formula from Variable Names using only '+'}
+\title{Create Formula from Variable Names using only \link[base]{+}}
 \usage{
 lhs \%~\% rhs
 }
 \arguments{
-\item{lhs, rhs}{\link[base]{character} \link[base]{vector}s, variable names appearing in
+\item{lhs, rhs}{\link[base]{character} \link[base]{vector}s,
+variable names appearing in
 the left- and right-hand-side of a \link[stats]{formula}}
 }
 \description{
@@ -21,9 +22,8 @@ of variable names into a \link[stats]{formula}.
 This is much slower than \link[base]{~} operator, thus should only be used by end-user
 }
 \examples{
-xs = c('age', 'sex')
-character() \%~\% xs 
-'.' \%~\% xs
+character() \%~\% c('age', 'sex') 
+'.' \%~\% c('age', 'sex')
 
 .mapply(`\%~\%`, dots = list(rhs = c('age', 'sex')), MoreArgs = list(lhs = 'edp'))
 

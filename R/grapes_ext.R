@@ -1,9 +1,10 @@
 
-#' @title Create Formula from Variable Names using only '+'
+#' @title Create Formula from Variable Names using only \link[base]{+}
 #' 
 #' @description ..
 #' 
-#' @param lhs,rhs \link[base]{character} \link[base]{vector}s, variable names appearing in 
+#' @param lhs,rhs \link[base]{character} \link[base]{vector}s, 
+#' variable names appearing in 
 #' the left- and right-hand-side of a \link[stats]{formula}
 #' 
 #' @details 
@@ -15,9 +16,8 @@
 #' This is much slower than \link[base]{~} operator, thus should only be used by end-user
 #' 
 #' @examples
-#' xs = c('age', 'sex')
-#' character() %~% xs 
-#' '.' %~% xs
+#' character() %~% c('age', 'sex') 
+#' '.' %~% c('age', 'sex')
 #' 
 #' .mapply(`%~%`, dots = list(rhs = c('age', 'sex')), MoreArgs = list(lhs = 'edp'))
 #' 
@@ -25,18 +25,14 @@
 #' @export
 `%~%` <- function(lhs, rhs) {
   rhs <- do_plus(rhs)
-  if (!length(lhs)) return(eval(call(name = '~', rhs), envir = .GlobalEnv))
-  return(eval(call(name = '~', do_plus(lhs), rhs), envir = .GlobalEnv))
+  cl <- if (!length(lhs)) {
+    call(name = '~', rhs)
+  } else call(name = '~', do_plus(lhs), rhs)
+  cl |>
+    eval(envir = .GlobalEnv)
 }
 
 
-if (FALSE) {
-  library(microbenchmark)
-  e1 = 'a'; e2 = 'b'; microbenchmark(
-    call('~', as.symbol(e1), as.symbol(e2)), # better
-    str2lang(paste(e1, e2, sep = '~'))
-  )
-}
 
 
 

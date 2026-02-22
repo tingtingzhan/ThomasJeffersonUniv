@@ -5,7 +5,7 @@
 \alias{rowSums_}
 \alias{rowMeans_}
 \alias{rowAnys_}
-\title{Row and Column Operations Recognizing Full Row/Column Missingness}
+\title{Row Operations Recognizing Full Row Missingness}
 \usage{
 rowSums_(x)
 
@@ -17,19 +17,22 @@ rowAnys_(x)
 \item{x}{\link[base]{array} of two or more dimensions, or a \link[base]{numeric} \link[base]{data.frame}}
 }
 \value{
-The functions \code{\link[=rowSums_]{rowSums_()}}, \code{\link[=rowMeans_]{rowMeans_()}} return a \link[base]{numeric} \link[base]{vector}
+The functions \code{\link[=rowSums_]{rowSums_()}}, \code{\link[=rowMeans_]{rowMeans_()}} return
+a \link[base]{numeric} \link[base]{vector}.
+
+The function \code{\link[=rowAnys_]{rowAnys_()}} return
+a \link[base]{logical} \link[base]{vector}.
 }
 \description{
-To perform row and column operations using \code{na.rm = TRUE},
-and only to return a missing value if a full row/column of the input is missing.
+To perform row operations using \code{na.rm = TRUE},
+and only to return a missing value if a full row of the input is missing.
 }
 \details{
 The function \code{\link[=rowSums_]{rowSums_()}} performs ..
 
 The function \code{\link[=rowMeans_]{rowMeans_()}} performs ..
-}
-\note{
-Potential name clash with \link[matrixStats]{rowMeans2}
+
+The function \code{\link[=rowAnys_]{rowAnys_()}} performs ..
 }
 \examples{
 (x = matrix(c(1, 2, NA, 3, NA, NA), byrow = TRUE, ncol = 2L))
@@ -39,5 +42,7 @@ rowSums_(x)
 
 }
 \seealso{
-\link[base]{rowSums} \link[base]{rowMeans}
+\link[base]{rowSums};
+\link[base]{rowMeans};
+\link[matrixStats]{rowMeans2} (potential name clash)
 }
