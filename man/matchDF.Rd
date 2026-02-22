@@ -35,7 +35,7 @@ variable names of \code{table} to be printed in fuzzy suggestion (if applicable)
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \code{\link[=matchDF]{matchDF()}} returns a \link[base]{integer} \link[base]{vector}
+The function \code{\link[=matchDF]{matchDF()}} returns a \link[base]{integer} \link[base]{vector}
 }
 \description{
 To \link[base]{match} the rows of one \link[base]{data.frame}

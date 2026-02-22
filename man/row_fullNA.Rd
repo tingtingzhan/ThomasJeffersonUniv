@@ -17,16 +17,16 @@ rowAnys_(x)
 \item{x}{\link[base]{array} of two or more dimensions, or a \link[base]{numeric} \link[base]{data.frame}}
 }
 \value{
-Functions \code{\link[=rowSums_]{rowSums_()}}, \code{\link[=rowMeans_]{rowMeans_()}} return a \link[base]{numeric} \link[base]{vector}
+The functions \code{\link[=rowSums_]{rowSums_()}}, \code{\link[=rowMeans_]{rowMeans_()}} return a \link[base]{numeric} \link[base]{vector}
 }
 \description{
 To perform row and column operations using \code{na.rm = TRUE},
 and only to return a missing value if a full row/column of the input is missing.
 }
 \details{
-Function \code{\link[=rowSums_]{rowSums_()}} performs ..
+The function \code{\link[=rowSums_]{rowSums_()}} performs ..
 
-Function \code{\link[=rowMeans_]{rowMeans_()}} performs ..
+The function \code{\link[=rowMeans_]{rowMeans_()}} performs ..
 }
 \note{
 Potential name clash with \link[matrixStats]{rowMeans2}

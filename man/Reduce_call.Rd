@@ -14,14 +14,14 @@ do_average(x)
 \item{x}{\link[base]{character} \link[base]{vector}}
 }
 \value{
-Function \code{\link[=do_plus]{do_plus()}} returns a \link[base]{call}
+The function \code{\link[=do_plus]{do_plus()}} returns a \link[base]{call}
 }
 \description{
 Create a \link[base]{call} of Plus
 }
 \examples{
 do_plus(letters)
-
 do_average(letters)
+
 }
 \keyword{internal}

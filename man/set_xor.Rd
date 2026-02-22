@@ -19,13 +19,13 @@ human-friendly names of \code{e1} and \code{e2}.
 Default is the function call of \code{e1} and \code{e2}.}
 }
 \value{
-Function \code{\link[=set_xor]{set_xor()}} returns either a \link[base]{list} or a \link[base]{vector}.
+The function \code{\link[=set_xor]{set_xor()}} returns a \link[stats]{listof} of \link[base]{vector}s.
 }
 \description{
 Exclusive-OR elements in two vectors.
 }
 \details{
-Function \code{\link[=set_xor]{set_xor()}} returns the exclusive-OR elements in each of the sets, which is slow
+The function \code{\link[=set_xor]{set_xor()}} returns the exclusive-OR elements in each of the sets, which is slow
 and only intended for end-user.
 }
 \examples{

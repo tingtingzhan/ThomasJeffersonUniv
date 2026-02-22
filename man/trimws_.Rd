@@ -7,18 +7,18 @@
 trimws_(x)
 }
 \arguments{
-\item{x}{an object with \link[base]{typeof} being \link[base]{character}}
+\item{x}{an R object with \link[base]{typeof} being \link[base]{character}}
 }
 \value{
-Function \code{\link[=trimws_]{trimws_()}} returns an object of \link[base]{typeof} \link[base]{character}.
+The function \code{\link[=trimws_]{trimws_()}} returns an object of \link[base]{typeof} \link[base]{character}.
 }
 \description{
 To remove leading/trailing and duplicated (symbols that look like) white spaces.
-
-More aggressive than function \link[base]{trimws}.
 }
 \details{
-Function \code{\link[=trimws_]{trimws_()}} is more aggressive than \link[base]{trimws}, that it removes
+The function \code{\link[=trimws_]{trimws_()}} is more aggressive than
+the function \link[base]{trimws},
+that it removes
 
 \itemize{
 \item {non-UTF-8 characters}
@@ -27,14 +27,15 @@ Function \code{\link[=trimws_]{trimws_()}} is more aggressive than \link[base]{t
 }
 }
 \note{
-\link[base]{gsub} keeps \link[base]{attributes}
+The function \link[base]{gsub} keeps \link[base]{attributes}.
 }
 \examples{
+stopifnot(!identical('\u00a0', ' '))
 (x = c(A = ' a  b  ', b = 'a .  s', ' a  ,  b ; ', '\u00a0  ab '))
 base::trimws(x)
 trimws_(x)
 
-cat(x0 <- ' ab  \xa0cd ')
+(x0 = ' ab  \xa0cd ')
 tryCatch(base::trimws(x0), error = identity)
 trimws_(x0)
 

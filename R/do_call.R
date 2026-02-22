@@ -5,10 +5,11 @@
 #' @param x \link[base]{character} \link[base]{vector}
 #' 
 #' @returns 
-#' Function [do_plus()] returns a \link[base]{call}
+#' The function [do_plus()] returns a \link[base]{call}
 #' 
 #' @examples
 #' do_plus(letters)
+#' do_average(letters)
 #' 
 #' @keywords internal
 #' @name Reduce_call
@@ -24,8 +25,6 @@ do_plus <- function(x) {
 }
 
 #' @rdname Reduce_call
-#' @examples
-#' do_average(letters)
 #' @export
 do_average <- function(x) {
   call(name = '/', do_plus(x), length(x))

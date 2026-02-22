@@ -24,7 +24,7 @@
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns 
-#' Function [checkDuplicated()] returns a \link[base]{data.frame}.
+#' The function [checkDuplicated()] returns a \link[base]{data.frame}.
 #' 
 #' @examples
 #' fml = Formaldehyde

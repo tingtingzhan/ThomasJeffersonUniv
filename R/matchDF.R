@@ -23,7 +23,7 @@
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns 
-#' Function [matchDF()] returns a \link[base]{integer} \link[base]{vector}
+#' The function [matchDF()] returns a \link[base]{integer} \link[base]{vector}
 #' 
 #' @note
 #' Unfortunately, R does not provide case-insensitive \link[base]{match}.
@@ -176,7 +176,7 @@ matchDF <- function(
 #' even `sort = FALSE` may not completely retain the original order of input `x`.
 #' 
 #' @returns 
-#' Function [mergeDF] returns a \link[base]{data.frame}.
+#' The function [mergeDF()] returns a \link[base]{data.frame}.
 #' 
 #' @examples
 #' # examples inspired by ?merge.data.frame 
@@ -234,20 +234,18 @@ mergeDF <- function(
 #' @description
 #' \link[base]{split.data.frame} into individual rows.
 #' 
-#' @param x \link[base]{data.frame}
-#' 
-# @note
-# We use \link[base]{split.data.frame} with argument `f` being `attr(x, which = 'row.names', exact = TRUE)` instead of
-# `seq_len(.row_names_info(x, type = 2L))`,
-# not only because the former is faster, but also \link[base]{.rowNamesDF<-} enforces 
-# that \link[base]{row.names.data.frame} must be unique.
+#' @param x a \link[base]{data.frame}
 #' 
 #' @returns
-#' Function [rsplit_()] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+#' The function [rsplit_()] returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+#' 
+#' @seealso 
+#' \link[base]{split.data.frame};
+#' \link[base]{anyDuplicated.data.frame}.
 #' 
 #' @examples
-#' mtcars |> head(n = 3L) |> rsplit_() # with rownames
-#' Formaldehyde |> rsplit_() # without rownames
+#' datasets::USArrests |> head(n = 3L) |> rsplit_() # with rownames
+#' datasets::Formaldehyde |> rsplit_() # without rownames
 #' data.frame() |> rsplit_() # exception
 #' 
 #' @keywords internal
@@ -256,20 +254,9 @@ rsplit_ <- function(x) {
   x |>
     .row_names_info(type = 2L) |> 
     seq_len() |>
-    lapply(FUN = \(i) x[i, , drop = FALSE]) 
-  # inspired by 
-  # ?base::split.data.frame
-  # ?base::anyDuplicated.data.frame
+    lapply(FUN = \(i) x[i, , drop = FALSE])
 }
 
-
-
-
-rsplit_OLD <- function(x) {
-  x |>
-    attr(which = 'row.names', exact = TRUE) |>
-    split.data.frame(x = x)
-}
 
 
 

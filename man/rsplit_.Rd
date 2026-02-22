@@ -7,18 +7,22 @@
 rsplit_(x)
 }
 \arguments{
-\item{x}{\link[base]{data.frame}}
+\item{x}{a \link[base]{data.frame}}
 }
 \value{
-Function \code{\link[=rsplit_]{rsplit_()}} returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
+The function \code{\link[=rsplit_]{rsplit_()}} returns a \link[base]{list} of \link[base]{nrow}-1 \link[base]{data.frame}s.
 }
 \description{
 \link[base]{split.data.frame} into individual rows.
 }
 \examples{
-mtcars |> head(n = 3L) |> rsplit_() # with rownames
-Formaldehyde |> rsplit_() # without rownames
+datasets::USArrests |> head(n = 3L) |> rsplit_() # with rownames
+datasets::Formaldehyde |> rsplit_() # without rownames
 data.frame() |> rsplit_() # exception
 
+}
+\seealso{
+\link[base]{split.data.frame};
+\link[base]{anyDuplicated.data.frame}.
 }
 \keyword{internal}

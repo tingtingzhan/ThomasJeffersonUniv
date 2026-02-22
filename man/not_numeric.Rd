@@ -10,13 +10,13 @@ not_numeric(x)
 \item{x}{an R object}
 }
 \value{
-Function \link{not_numeric} returns a \link[base]{logical} \link[base]{vector}.
+The function \link{not_numeric} returns a \link[base]{logical} \link[base]{vector}.
 }
 \description{
 ..
 }
 \details{
-Function \link{not_numeric} finds the elements cannot be handled by
+The function \link{not_numeric} finds the elements cannot be handled by
 \link[base]{as.numeric} (workhorse \link[base]{as.double}).
 }
 \examples{

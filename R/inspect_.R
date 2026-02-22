@@ -27,7 +27,7 @@
 #' Be aware of potential name clash, e.g., `lavaan::inspect`.
 #' 
 #' @returns 
-#' Function [inspect_()] returns (invisibly) a \link[base]{data.frame}.
+#' The function [inspect_()] returns (invisibly) a \link[base]{data.frame}.
 #' 
 #' @importFrom sideway sideway
 #' @export
@@ -236,11 +236,11 @@ type2dbl <- function(x) { # element-wise
 #' @param x an R object
 #' 
 #' @details
-#' Function [not_numeric] finds the elements cannot be handled by 
+#' The function [not_numeric] finds the elements cannot be handled by 
 #' \link[base]{as.numeric} (workhorse \link[base]{as.double}).
 #' 
 #' @returns 
-#' Function [not_numeric] returns a \link[base]{logical} \link[base]{vector}.
+#' The function [not_numeric] returns a \link[base]{logical} \link[base]{vector}.
 #' 
 #' @examples
 #' not_numeric(c('1.9', '1.1.3', Inf, NA))

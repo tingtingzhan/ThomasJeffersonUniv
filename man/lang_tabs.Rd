@@ -4,17 +4,24 @@
 \alias{lang_tabs}
 \title{Cross-Tabulation by a \link[base]{list} of \link[base]{language}s}
 \usage{
-lang_tabs(lang, data, ...)
+lang_tabs(lang, envir = parent.frame(), ...)
 }
 \arguments{
 \item{lang}{a \link[base]{list} of \link[base]{language} objects}
 
-\item{data}{a \link[base]{data.frame}}
+\item{envir}{an \link[base]{environment} or a \link[base]{data.frame}}
 
-\item{...}{additional parameters of function \link[base]{table}}
+\item{...}{additional parameters of the function \link[base]{table}}
 }
 \description{
 Cross-Tabulation by a \link[base]{list} of \link[base]{language}s
+}
+\examples{
+m1 = quote((bill_dep > 18) & (bill_len > 45))
+m2 = quote((year == 2009) | sex == 'male')
+list(m1, m2) |> 
+ lang_tabs(envir = datasets::penguins, useNA = 'ifany')
+with(datasets::penguins, expr = lang_tabs(list(m1, m2), useNA = 'ifany'))
 }
 \seealso{
 \link[stats]{xtabs}

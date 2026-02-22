@@ -33,7 +33,7 @@ print out of substantial duplicates}
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \code{\link[=checkDuplicated]{checkDuplicated()}} returns a \link[base]{data.frame}.
+The function \code{\link[=checkDuplicated]{checkDuplicated()}} returns a \link[base]{data.frame}.
 }
 \description{
 To inspect duplicated rows in a \link[base]{data.frame}.

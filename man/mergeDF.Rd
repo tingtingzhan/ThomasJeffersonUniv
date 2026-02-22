@@ -27,7 +27,7 @@ Not all rows of \code{table} will be included in the returned object}
 \item{...}{additional parameters of \link{matchDF}}
 }
 \value{
-Function \link{mergeDF} returns a \link[base]{data.frame}.
+The function \code{\link[=mergeDF]{mergeDF()}} returns a \link[base]{data.frame}.
 }
 \description{
 ..
