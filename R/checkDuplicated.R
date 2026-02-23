@@ -49,11 +49,14 @@ checkDuplicated <- function(
     ...
 ) {
   
-  dup_txt <- f |> all.vars() |> paste(collapse = ':') |> style_bold() |> col_magenta()
+  f_txt <- f |> 
+    all.vars() |> 
+    paste(collapse = ':') |> 
+    style_bold() |> col_magenta()
   
   # split-ted row-id by `f`
   rid <- data |> 
-    .row_names_info(type = 2L) |> 
+    nrow() |> 
     seq_len() |>
     split.default(f = interaction(data[all.vars(f)], drop = TRUE, lex.order = TRUE))
 
@@ -61,7 +64,7 @@ checkDuplicated <- function(
   if (any(n == 0L)) stop('wont happen')
   ns <- (n > 1L)
   if (!any(ns)) {
-    sprintf(fmt = '\u2714 No duplicated %s\n', dup_txt) |> message()
+    sprintf(fmt = '\u2714 No duplicated %s\n', f_txt) |> message()
     return(invisible(data))
   }
   
@@ -78,7 +81,7 @@ checkDuplicated <- function(
     vapply(FUN = inherits, what = 'error', FUN.VALUE = NA)
   
   d_coalesce <- if (any(!id_truedup)) {
-    sprintf(fmt = '%d %s', sum(!id_truedup), dup_txt) |>
+    sprintf(fmt = '%d %s', sum(!id_truedup), f_txt) |>
       bg_br_green() |>
       sprintf(fmt = '\u2714 %s with coalesce-able duplicates') |> 
       message()
@@ -117,7 +120,7 @@ checkDuplicated <- function(
     
     sprintf(
       fmt = '\u261e %s with substantial duplicates {.href [%s](file://{path.expand(path = file)})}', # https://cli.r-lib.org/reference/links.html
-      sprintf(fmt = '%d %s', n_truedup, dup_txt) |> bg_br_yellow(),
+      sprintf(fmt = '%d %s', n_truedup, f_txt) |> bg_br_yellow(),
       file |> basename() |> col_yellow()
     ) |> 
       cli_text()
@@ -168,10 +171,11 @@ checkDuplicated <- function(
     ), , drop = FALSE], 
     d_coalesce
   )
-  sprintf(fmt = '%d %s', nrow(ret), dup_txt) |>
+  sprintf(fmt = '%d %s', nrow(ret), f_txt) |>
     style_underline() |> style_bold() |>
     sprintf(fmt = '\u21ac %s after duplicates removed') |> 
     message()
+  
   return(ret)
   
 }
@@ -189,14 +193,15 @@ unique_ <- \(x) {
 
 
 not_unique_ <- \(data) {
-  unique_id <- vapply(data, FUN = \(x) {
-    #inherits(tryCatch(unique_(x), error = identity), what = 'error')
-    # base::tryCatch too slow
-    x0 <- x[!is.na(x)]
-    if (!length(x0)) return(TRUE)
-    x1 <- unique(x0) # not using my [unique_allequal]
-    return(length(x1) == 1L)
-  }, FUN.VALUE = NA)
+  unique_id <- data |>
+    vapply(FUN = \(x) {
+      #inherits(tryCatch(unique_(x), error = identity), what = 'error')
+      # base::tryCatch too slow
+      x0 <- x[!is.na(x)]
+      if (!length(x0)) return(TRUE)
+      x1 <- unique(x0) # not using my [unique_allequal]
+      return(length(x1) == 1L)
+    }, FUN.VALUE = NA)
   data[!unique_id]
 }
 

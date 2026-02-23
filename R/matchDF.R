@@ -254,7 +254,7 @@ mergeDF <- function(
 #' @export
 rsplit_ <- function(x) {
   x |>
-    .row_names_info(type = 2L) |> 
+    nrow() |> 
     seq_len() |>
     lapply(FUN = \(i) x[i, , drop = FALSE])
 }
